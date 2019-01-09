@@ -8,9 +8,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:860653339755:android:ee11c9b993be49dd",
+        "mobilesdk_app_id": "1:860653339755:android:a1bf5bebc7c751d8",
         "android_client_info": {
-          "package_name": "tamiyo.student.nutritionappflutter"
+          "package_name": "com.company.flutternurtitionapp"
         }
       },
       "oauth_client": [
