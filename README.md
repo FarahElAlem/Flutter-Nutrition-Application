@@ -26,8 +26,8 @@
         - Constructor Functions
         - Utility Functions
         - @override Flutter Functions  
-       Example ```dart
-       class MyClass extends StatelessWidget{
+       Example 
+       ```class MyClass extends StatelessWidget{
                     int _currentIndex = 0;  
                     Widget myWidget;    
                     MyClass(this.myWidget);                      
@@ -38,7 +38,8 @@
                     Widget build (BuildContext context) {
                         return new MaterialApp();
                     }
-       }```
+       }
+       ```
 
 - Variables:
     - 'Private' variables are preceded by an _ (since private variables arn't really a thing).  
