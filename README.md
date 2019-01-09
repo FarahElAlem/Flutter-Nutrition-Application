@@ -31,10 +31,12 @@
        class MyClass extends StatelessWidget {
                     int _currentIndex = 0;  
                     Widget myWidget;    
-                    MyClass(this.myWidget);                      
+                    MyClass(this.myWidget);
+                    
                     void doStuff(Widget widget) {
                         this.myWidget = widget;
-                    }                    
+                    }
+                    
                     @override
                     Widget build (BuildContext context) {
                         return new MaterialApp();
