@@ -26,7 +26,8 @@
         - Constructor Functions
         - Utility Functions
         - @override Flutter Functions  
-       Example ```class MyClass extends StatelessWidget{
+       Example ```dart
+       class MyClass extends StatelessWidget{
                     int _currentIndex = 0;  
                     Widget myWidget;    
                     MyClass(this.myWidget);                      
