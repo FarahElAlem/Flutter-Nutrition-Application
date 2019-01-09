@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:nutrition_app_flutter/demo/placeholder.dart';
 import 'package:nutrition_app_flutter/screens/items.dart';
-import 'package:nutrition_app_flutter/screens/profile.dart';
 import 'package:nutrition_app_flutter/screens/search.dart';
 
 import 'package:firebase_core/firebase_core.dart';
@@ -24,9 +24,11 @@ class _HomeState extends State<Home> {
   // List of children that define the pages
   // that a user sees.
   final List<Widget> _bodyChildren = [
+    PlaceholderWidget(Colors.amber),
     Search(),
-    Items(database: database),
-    Profile()
+//    Items(database: database),
+    PlaceholderWidget(Colors.green),
+    PlaceholderWidget(Colors.red)
   ];
 
   @override
@@ -50,9 +52,14 @@ class _HomeState extends State<Home> {
       ),
       body: _bodyChildren[_currentIndex],
       bottomNavigationBar: new BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
         onTap: onTabTapped,
         currentIndex: _currentIndex,
         items: [
+          new BottomNavigationBarItem(
+            icon: Icon(Icons.dashboard),
+            title: Text('Dashboard'),
+          ),
           // Search Navigation Bar Item:
           // Navigates to a search page that allows users to
           // search for various food items and append it to
