@@ -2,12 +2,20 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:nutrition_app_flutter/screens/home.dart';
 
+import 'package:firebase_core/firebase_core.dart';
 
-void main() {
+Future<void> main() async {
+  final FirebaseApp app = await FirebaseApp.configure(
+      name: 'db2',
+      options: const FirebaseOptions(
+          googleAppID: '1:860653339755:android:ee11c9b993be49dd',
+          apiKey: 'AIzaSyAC-htfPSWJJshQwgjEUcN3aHB0nIbHdbs',
+          databaseURL: 'https://nutrition-app-flutter.firebaseio.com'));
+
   runApp(new MaterialApp(
     home: new Splash(),
     routes: <String, WidgetBuilder>{
-      '/Home': (BuildContext context) => new Home()
+      '/Home': (BuildContext context) => new Home(app: app)
     },
   ));
 }

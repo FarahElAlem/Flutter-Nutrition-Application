@@ -3,19 +3,36 @@ import 'package:nutrition_app_flutter/screens/items.dart';
 import 'package:nutrition_app_flutter/screens/profile.dart';
 import 'package:nutrition_app_flutter/screens/search.dart';
 
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
+
 class Home extends StatefulWidget {
+  Home({this.app});
+
+  final FirebaseApp app;
+
   @override
   _HomeState createState() => new _HomeState();
 }
 
 class _HomeState extends State<Home> {
-
   // Current widget index.
   int _currentIndex = 0;
 
+  static final FirebaseDatabase database = FirebaseDatabase.instance;
+
   // List of children that define the pages
   // that a user sees.
-  final List<Widget> _bodyChildren = [Search(), Items(), Profile()];
+  final List<Widget> _bodyChildren = [
+    Search(),
+    Items(database: database),
+    Profile()
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   // When a navigation item is tapped, update the
   // current index to display the correct page.
