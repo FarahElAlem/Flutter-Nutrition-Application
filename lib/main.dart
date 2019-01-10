@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:nutrition_app_flutter/screens/home.dart';
+import 'package:nutrition_app_flutter/pages/home.dart';
 
 import 'package:firebase_core/firebase_core.dart';
 
@@ -27,7 +27,7 @@ class Splash extends StatefulWidget {
 
 class _SplashState extends State<Splash> {
   startTime() async {
-    var _duration = new Duration(seconds: 3);
+    var _duration = new Duration(seconds: 2);
     return new Timer(_duration, navigationPage);
   }
 
