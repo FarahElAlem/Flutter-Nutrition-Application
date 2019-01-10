@@ -22,49 +22,38 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   // Firebase Database instance
   static final FirebaseDatabase database = FirebaseDatabase.instance;
 
-  List<Widget> _appBarBottom;
-
   // List of children that define the pages
   // that a user sees.
   List<Widget> _bodyChildren;
+
+  bool _isSearching = false;
+
+  Icon _searchIcon = Icon(Icons.search);
+  Widget _appBarTitle = new Center(child: new Text('Dashboard'));
+
+  List<String> _appBarTitles = [
+    'Dashboard',
+    'Search Nutrition',
+    'Search Recipes',
+    'Profile'
+  ];
+
+  List<Widget> _leadingIcons = [
+    null,
+    new Icon(Icons.fastfood),
+    new Icon(Icons.receipt),
+    null
+  ];
 
   @override
   void initState() {
     super.initState();
 
-    // For Search
-    TabController _searchTabController;
-
-    final List<Tab> _tabs = <Tab>[
-      new Tab(
-        icon: new Icon(Icons.fastfood),
-        text: 'Search Nutrition',
-      ),
-      new Tab(
-        icon: new Icon(Icons.receipt),
-        text: 'Search Recipes',
-      )
-    ];
-
-    List<Widget> _children = <Widget>[new SearchFood(), new SearchRecipe()];
-    _searchTabController = TabController(vsync: this, length: _tabs.length);
-
-    // Final Modifiers
-    _appBarBottom = [
-      null,
-      new TabBar(
-        controller: _searchTabController,
-        tabs: _tabs,
-      ),
-      null,
-      null
-    ];
-
     _bodyChildren = [
       Dashboard(),
-      Search(tabs: _children, searchTabController: _searchTabController),
+      Search(),
       PlaceholderWidget(Colors.green),
-      PlaceholderWidget(Colors.red)
+      PlaceholderWidget(Colors.amber)
     ];
   }
 
@@ -73,16 +62,54 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   void onTabTapped(int index) {
     setState(() {
       _currentIndex = index;
+      if (_currentIndex == 0 || _currentIndex == 3) {
+        _isSearching = false;
+        _searchIcon = Icon(Icons.search);
+      }
     });
+  }
+
+  Widget _buildDashboardAppBar() {
+    return new AppBar(
+      leading: _leadingIcons[_currentIndex],
+      title: (!_isSearching)
+          ? new Center(
+              child: new Text(_appBarTitles[_currentIndex]),
+            )
+          : _appBarTitle,
+      actions: <Widget>[
+        (_currentIndex == 1 || _currentIndex == 2)
+            ? new IconButton(
+                icon: _searchIcon,
+                onPressed: () {
+                  setState(() {
+                    if (this._searchIcon.icon == Icons.search) {
+                      this._isSearching = true;
+                      this._searchIcon = new Icon(Icons.close);
+                      this._appBarTitle = new TextField(
+                          decoration:
+                              new InputDecoration(hintText: 'Search...'));
+                    } else {
+                      this._isSearching = false;
+                      this._searchIcon = new Icon(Icons.search);
+                      this._appBarTitle = new Center(
+                        child: new Text(_appBarTitles[_currentIndex]),
+                      );
+                    }
+                  });
+                })
+            : new Container(
+                width: 0,
+                height: 0,
+              )
+      ],
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      appBar: new AppBar(
-        title: Text('This is an AppBar'),
-        bottom: _appBarBottom[_currentIndex],
-      ),
+      appBar: _buildDashboardAppBar(),
       body: _bodyChildren[_currentIndex],
       bottomNavigationBar: new BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
@@ -98,8 +125,8 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
           // search for various food items and append it to
           // their personal list.
           new BottomNavigationBarItem(
-            icon: Icon(Icons.search),
-            title: Text('Search'),
+            icon: Icon(Icons.fastfood),
+            title: Text('Nutrition'),
           ),
           // My Items Navigation Bar Item:
           // Allows users to view their total nutrition information
@@ -107,8 +134,8 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
           // nutrition list. Users can also save their
           // lists by name for future reference.
           new BottomNavigationBarItem(
-            icon: Icon(Icons.list),
-            title: Text('My Items'),
+            icon: Icon(Icons.receipt),
+            title: Text('Recipes'),
           ),
           // Profile Navigation Bar Item:
           // TODO
