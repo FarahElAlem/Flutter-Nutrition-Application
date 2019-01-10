@@ -30,7 +30,7 @@ build/
 
 # Android related
 **/android/**/gradle-wrapper.jar
-**/android/app/google-services.json
+**/android/app/google-services.jsonit
 **/android/.gradle
 **/android/captures/
 **/android/gradlew
