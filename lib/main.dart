@@ -1,16 +1,30 @@
 import 'dart:async';
+import 'dart:io';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:nutrition_app_flutter/pages/home.dart';
 
 import 'package:firebase_core/firebase_core.dart';
 
 Future<void> main() async {
+  String googleAppId;
+  String apiKey;
+  String databaseURL;
+
+  new File('src/config.json')
+      .readAsString()
+      .then((fileContents) => json.decode(fileContents))
+      .then((jsonData) {
+    googleAppId = jsonData['googleAppId'];
+    apiKey = jsonData['apiKey'];
+    databaseURL = jsonData['databaseURL'];
+  });
+
   final FirebaseApp app = await FirebaseApp.configure(
       name: 'db2',
-      options: const FirebaseOptions(
-          googleAppID: '1:860653339755:android:ee11c9b993be49dd',
-          apiKey: 'AIzaSyAC-htfPSWJJshQwgjEUcN3aHB0nIbHdbs',
-          databaseURL: 'https://nutrition-app-flutter.firebaseio.com'));
+      options: FirebaseOptions(
+          googleAppID: googleAppId, apiKey: apiKey, databaseURL: databaseURL));
 
   runApp(new MaterialApp(
     home: new Splash(),

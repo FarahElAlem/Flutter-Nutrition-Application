@@ -1,57 +1,53 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 class Search extends StatefulWidget {
-  Search({this.tabs, this.searchTabController});
 
-  List<Widget> tabs;
-  TabController searchTabController;
 
   @override
-  _SearchState createState() => _SearchState(searchTabController: searchTabController, tabs: tabs);
+  _SearchState createState() => _SearchState();
 }
 
 class _SearchState extends State<Search> {
 
-  _SearchState({this.tabs, this.searchTabController});
 
-  List<Widget> tabs;
-  TabController searchTabController;
-
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: new TabBarView(controller: searchTabController, children: tabs),
+    return new Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: <Widget>[
+        new Container(
+          padding: EdgeInsets.all(14.0),
+          child: Text(
+            'Search By Food Group',
+            style: TextStyle(fontSize: 18.0),
+          ),
+        ),
+        new Expanded(
+          child: new Container(
+            padding: new EdgeInsets.fromLTRB(4.0, 0.0, 4.0, 4.0),
+            child: new StaggeredGridView.countBuilder(
+              crossAxisCount: 4,
+              itemCount: 24,
+              itemBuilder: (BuildContext context, int index) => new Card(
+                    color: Color.fromRGBO(33, 150, 243, .5),
+                  ),
+              staggeredTileBuilder: (int index) =>
+                  new StaggeredTile.count(2, 2),
+              mainAxisSpacing: 1.0,
+              crossAxisSpacing: 1.0,
+            ),
+          ),
+        )
+      ],
     );
-  }
-}
-
-class SearchFood extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return new Center(
-        child: new Container(
-            padding: const EdgeInsets.all(20.0),
-            child: new TextField(
-                onSubmitted: null,
-                decoration: new InputDecoration(
-                  prefixIcon: new Icon(Icons.search),
-                  hintText: 'Search for Nutrition',
-                ))));
-  }
-}
-
-class SearchRecipe extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return new Center(
-        child: new Container(
-            padding: const EdgeInsets.all(20.0),
-            child: new TextField(
-                onSubmitted: null,
-                decoration: new InputDecoration(
-                  prefixIcon: new Icon(Icons.search),
-                  hintText: 'Search for Recipes',
-                ))));
   }
 }
