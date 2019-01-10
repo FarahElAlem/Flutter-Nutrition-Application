@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nutrition_app_flutter/demo/placeholder.dart';
-import 'package:nutrition_app_flutter/pages/dashboard.dart';
-import 'package:nutrition_app_flutter/pages/search.dart';
+import 'package:nutrition_app_flutter/pages/dashboard/dashboard.dart';
+import 'package:nutrition_app_flutter/pages/search/search.dart';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
