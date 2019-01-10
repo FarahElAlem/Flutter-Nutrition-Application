@@ -1,19 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_database/firebase_database.dart';
-
+/// class Search represents a Stateful widget that can have multiple states:
+/// - Seeking / Searching:
+///     - Consists of a StaggeredGridView of elements gathered from Firebase.
+/// - Result Gathering
+///     - Result of a query gathered from Firebase that users can interact with.
 class Search extends StatefulWidget {
-
-
   @override
   _SearchState createState() => _SearchState();
 }
 
 class _SearchState extends State<Search> {
-
-
   @override
   void initState() {
     super.initState();

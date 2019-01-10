@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
+/// class Dashboard creates a StaggeredGridView of menu items for
+/// the user in a fun-like fashion. TODO a lot needs to be customized here.
 class Dashboard extends StatelessWidget {
   // Width, Height
   List<StaggeredTile> _staggeredTiles = [

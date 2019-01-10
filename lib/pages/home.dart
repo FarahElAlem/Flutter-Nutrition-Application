@@ -9,6 +9,7 @@ import 'package:firebase_database/firebase_database.dart';
 class Home extends StatefulWidget {
   Home({this.app});
 
+  /// Firebase Database init
   final FirebaseApp app;
 
   @override
@@ -16,21 +17,32 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
-  // Current widget index.
+  /// Current widget index.
   int _currentIndex = 0;
 
-  // Firebase Database instance
+  /// Firebase Database instance
   static final FirebaseDatabase database = FirebaseDatabase.instance;
 
-  // List of children that define the pages
-  // that a user sees.
-  List<Widget> _bodyChildren;
+  /// List of children that define the pages that a user sees. WIP.
+  List<Widget> _bodyChildren = [
+    Dashboard(),
+    Search(),
+    PlaceholderWidget(Colors.green),
+    PlaceholderWidget(Colors.amber)
+  ];
 
+  /// This is used so that the AppBar can determine whether or not to
+  /// display the correct information when searching.
   bool _isSearching = false;
 
+  /// Placeholder Icon set to a default value, used in the AppBar
   Icon _searchIcon = Icon(Icons.search);
+
+  /// Placeholder Widget set to a default value, used in the AppBar
   Widget _appBarTitle = new Center(child: new Text('Dashboard'));
 
+  /// A list of strings that represent the AppBar titles.
+  /// Works nicely with the BottomNavigationBar
   List<String> _appBarTitles = [
     'Dashboard',
     'Search Nutrition',
@@ -38,6 +50,8 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
     'Profile'
   ];
 
+  /// A list of widgets to represent the leading icons of the AppBar.
+  /// Works nicely with the BottomNavigationBar
   List<Widget> _leadingIcons = [
     null,
     new Icon(Icons.fastfood),
@@ -45,20 +59,8 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
     null
   ];
 
-  @override
-  void initState() {
-    super.initState();
-
-    _bodyChildren = [
-      Dashboard(),
-      Search(),
-      PlaceholderWidget(Colors.green),
-      PlaceholderWidget(Colors.amber)
-    ];
-  }
-
-  // When a navigation item is tapped, update the
-  // current index to display the correct page.
+  /// When a navigation item is tapped, update the
+  /// current index to display the correct page.
   void onTabTapped(int index) {
     setState(() {
       _currentIndex = index;
@@ -69,6 +71,9 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
     });
   }
 
+  /// Returns the correct AppBar depending on which page the user has
+  /// navigated to through the BottomNavigationBar. Contains a icon button
+  /// that displays a search bar on the correct search pages inside the AppBar.
   Widget _buildDashboardAppBar() {
     return new AppBar(
       leading: _leadingIcons[_currentIndex],
@@ -120,25 +125,25 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
             icon: Icon(Icons.dashboard),
             title: Text('Dashboard'),
           ),
-          // Search Navigation Bar Item:
-          // Navigates to a search page that allows users to
-          // search for various food items and append it to
-          // their personal list.
+          /// Search Navigation Bar Item:
+          /// Navigates to a search page that allows users to
+          /// search for various food items and append it to
+          /// their personal list.
           new BottomNavigationBarItem(
             icon: Icon(Icons.fastfood),
             title: Text('Nutrition'),
           ),
-          // My Items Navigation Bar Item:
-          // Allows users to view their total nutrition information
-          // and edit (remove) items from their existing
-          // nutrition list. Users can also save their
-          // lists by name for future reference.
+          /// My Items Navigation Bar Item:
+          /// Allows users to view their total nutrition information
+          /// and edit (remove) items from their existing
+          /// nutrition list. Users can also save their
+          /// lists by name for future reference.
           new BottomNavigationBarItem(
             icon: Icon(Icons.receipt),
             title: Text('Recipes'),
           ),
-          // Profile Navigation Bar Item:
-          // TODO
+          /// Profile Navigation Bar Item:
+          /// TODO
           new BottomNavigationBarItem(
             icon: Icon(Icons.account_circle),
             title: Text('Profile'),
