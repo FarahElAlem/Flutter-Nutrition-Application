@@ -45,8 +45,6 @@
        ```
 
 - Variables:
-    - 'Private' variables are preceded by an _ (since private variables arn't really a thing).  
-       Example: `int _currentIndex = 0;`
     - Variables behave in a lower-upper camel case format similar to functions.
 
 
