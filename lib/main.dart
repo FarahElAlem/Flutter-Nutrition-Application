@@ -12,7 +12,7 @@ Future<void> main() async {
   String apiKey;
   String databaseURL;
 
-  new File('json/config.json')
+  new File('src/config.json')
       .readAsString()
       .then((fileContents) => json.decode(fileContents))
       .then((jsonData) {
