@@ -11,7 +11,7 @@
 - **Flutter:** v. 1.1.6 
 - **Dart:** v. 2.1.1
 - **Android API Platform:** v. 27
-- **Java:** v. 1.8.0_152 (Note included w/ Android API 27 Platform)
+- **Java:** v. 1.8.0_152 
 
 ## Coding Standards:
 - Functions:
