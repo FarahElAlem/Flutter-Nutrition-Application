@@ -35,7 +35,7 @@ class _SearchState extends State<Search> {
               itemCount: 24,
               itemBuilder: (BuildContext context, int index) => new InkWell(
                     onTap: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => Result(foodGroup: foodGroupNames[index])));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => Result(foodGroup: FOODGROUPNAMES[index])));
                     },
                     splashColor: Colors.transparent,
                     child: new Card(
@@ -44,7 +44,7 @@ class _SearchState extends State<Search> {
                           child: new Padding(
                         padding: EdgeInsets.all(8.0),
                         child: new Text(
-                          foodGroupNames[index],
+                          FOODGROUPNAMES[index],
                           textAlign: TextAlign.center,
                         ),
                       )),
