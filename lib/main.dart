@@ -1,13 +1,37 @@
 import 'dart:async';
+import 'dart:io';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:nutrition_app_flutter/pages/home.dart';
 
 import 'package:firebase_core/firebase_core.dart';
 
+import 'package:path_provider/path_provider.dart';
+
+/// Load data from config files and setup necessary items
+/// including the Firebase database connection.
 Future<void> main() async {
+//  String googleAppId;
+//  String apiKey;
+//  String databaseURL;
+//
+//  final Directory directory = await getApplicationDocumentsDirectory();
+//  final path = directory.path;
+//  print(path);
+//  new File('/src/config.json')
+//      .readAsString()
+//      .then((fileContents) => json.decode(fileContents))
+//      .then((jsonData) {
+//        print('data: ' + jsonData.toString());
+//    googleAppId = jsonData['googleAppId'];
+//    apiKey = jsonData['apiKey'];
+//    databaseURL = jsonData['databaseURL'];
+//  });
+
   final FirebaseApp app = await FirebaseApp.configure(
       name: 'db2',
-      options: const FirebaseOptions(
+      options: FirebaseOptions(
           googleAppID: '1:860653339755:android:ee11c9b993be49dd',
           apiKey: 'AIzaSyAC-htfPSWJJshQwgjEUcN3aHB0nIbHdbs',
           databaseURL: 'https://nutrition-app-flutter.firebaseio.com'));
@@ -20,6 +44,9 @@ Future<void> main() async {
   ));
 }
 
+/// Before the app is loaded, a logo splash screen is displayed.
+/// Note: Setup should be done during this time, and once it is complete the
+/// screen should vanish (such as loading the database, setting up final globals, etc.
 class Splash extends StatefulWidget {
   @override
   _SplashState createState() => new _SplashState();
