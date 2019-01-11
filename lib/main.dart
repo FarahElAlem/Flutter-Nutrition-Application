@@ -7,26 +7,34 @@ import 'package:nutrition_app_flutter/pages/home.dart';
 
 import 'package:firebase_core/firebase_core.dart';
 
+import 'package:path_provider/path_provider.dart';
+
 /// Load data from config files and setup necessary items
 /// including the Firebase database connection.
 Future<void> main() async {
-  String googleAppId;
-  String apiKey;
-  String databaseURL;
-
-  new File('src/config.json')
-      .readAsString()
-      .then((fileContents) => json.decode(fileContents))
-      .then((jsonData) {
-    googleAppId = jsonData['googleAppId'];
-    apiKey = jsonData['apiKey'];
-    databaseURL = jsonData['databaseURL'];
-  });
+//  String googleAppId;
+//  String apiKey;
+//  String databaseURL;
+//
+//  final Directory directory = await getApplicationDocumentsDirectory();
+//  final path = directory.path;
+//  print(path);
+//  new File('/src/config.json')
+//      .readAsString()
+//      .then((fileContents) => json.decode(fileContents))
+//      .then((jsonData) {
+//        print('data: ' + jsonData.toString());
+//    googleAppId = jsonData['googleAppId'];
+//    apiKey = jsonData['apiKey'];
+//    databaseURL = jsonData['databaseURL'];
+//  });
 
   final FirebaseApp app = await FirebaseApp.configure(
       name: 'db2',
       options: FirebaseOptions(
-          googleAppID: googleAppId, apiKey: apiKey, databaseURL: databaseURL));
+          googleAppID: '1:860653339755:android:ee11c9b993be49dd',
+          apiKey: 'AIzaSyAC-htfPSWJJshQwgjEUcN3aHB0nIbHdbs',
+          databaseURL: 'https://nutrition-app-flutter.firebaseio.com'));
 
   runApp(new MaterialApp(
     home: new Splash(),
