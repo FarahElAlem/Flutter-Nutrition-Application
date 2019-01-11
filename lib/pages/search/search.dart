@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:nutrition_app_flutter/globals.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:nutrition_app_flutter/pages/search/result.dart';
 
 /// class Search represents a Stateful widget that can have multiple states:
 /// - Seeking / Searching:
@@ -23,11 +25,7 @@ class _SearchState extends State<Search> {
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
         new Container(
-          padding: EdgeInsets.all(14.0),
-          child: Text(
-            'Search By Food Group',
-            style: TextStyle(fontSize: 18.0),
-          ),
+          padding: EdgeInsets.all(8.0),
         ),
         new Expanded(
           child: new Container(
@@ -35,8 +33,22 @@ class _SearchState extends State<Search> {
             child: new StaggeredGridView.countBuilder(
               crossAxisCount: 4,
               itemCount: 24,
-              itemBuilder: (BuildContext context, int index) => new Card(
-                    color: Color.fromRGBO(33, 150, 243, .5),
+              itemBuilder: (BuildContext context, int index) => new InkWell(
+                    onTap: (){
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => Result(foodGroup: foodGroupNames[index])));
+                    },
+                    splashColor: Colors.transparent,
+                    child: new Card(
+                      color: Color.fromRGBO(33, 150, 243, 1.0),
+                      child: new Center(
+                          child: new Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: new Text(
+                          foodGroupNames[index],
+                          textAlign: TextAlign.center,
+                        ),
+                      )),
+                    ),
                   ),
               staggeredTileBuilder: (int index) =>
                   new StaggeredTile.count(2, 2),
