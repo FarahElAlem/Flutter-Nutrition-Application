@@ -1,4 +1,4 @@
- import 'dart:async';
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -23,6 +23,8 @@ Future<void> main() async {
           apiKey: jsonData['apiKey'].toString(),
           databaseURL: jsonData['databaseURL'].toString()));
 
+  db = FirebaseDatabase.instance;
+
   runApp(new MaterialApp(
     home: new Splash(),
     routes: <String, WidgetBuilder>{
@@ -43,14 +45,13 @@ class Splash extends StatefulWidget {
 /// from the FireBase database
 class _SplashState extends State<Splash> {
   startTime() async {
-
-    await FirebaseDatabase.instance
+    await db
         .reference()
         .child('FOODGROUP')
         .once()
         .then((DataSnapshot snapshot) {
       for (var value in snapshot.value) {
-        FOODGROUPNAMES.add(value['FdGrp_Desc']);
+        FOODGROUPNAMES.add([value['Fd_Grp'], value['FdGrp_Desc']]);
       }
     });
 
@@ -69,7 +70,6 @@ class _SplashState extends State<Splash> {
 
   @override
   Widget build(BuildContext context) {
-
     SCREENWIDTH = MediaQuery.of(context).size.width;
     SCREENHEIGHT = MediaQuery.of(context).size.height;
 

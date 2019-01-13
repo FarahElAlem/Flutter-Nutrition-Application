@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nutrition_app_flutter/demo/placeholder.dart';
+import 'package:nutrition_app_flutter/globals.dart';
 import 'package:nutrition_app_flutter/pages/dashboard/dashboard.dart';
 import 'package:nutrition_app_flutter/pages/profile/profile.dart';
 import 'package:nutrition_app_flutter/pages/search/search.dart';
@@ -22,7 +23,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   int _currentIndex = 0;
 
   /// Firebase Database instance
-  static final FirebaseDatabase database = FirebaseDatabase.instance;
+  static final FirebaseDatabase database = db;
 
   /// List of children that define the pages that a user sees. WIP.
   List<Widget> _bodyChildren = [
