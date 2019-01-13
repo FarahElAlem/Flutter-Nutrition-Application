@@ -48,6 +48,6 @@
     - Variables behave in a lower-upper camel case format similar to functions.
 
 
-## Git
+## Git ( For Collaborators)
 - Make your own branch named "dev-*name*".
 - Once your are done with a task, submit a pull request to the **dev** branch for review.
