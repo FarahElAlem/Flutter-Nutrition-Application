@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:nutrition_app_flutter/demo/placeholder.dart';
+import 'package:nutrition_app_flutter/globals.dart';
 import 'package:nutrition_app_flutter/pages/dashboard/dashboard.dart';
+import 'package:nutrition_app_flutter/pages/profile/profile.dart';
 import 'package:nutrition_app_flutter/pages/search/search.dart';
 
 import 'package:firebase_core/firebase_core.dart';
@@ -21,14 +23,14 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   int _currentIndex = 0;
 
   /// Firebase Database instance
-  static final FirebaseDatabase database = FirebaseDatabase.instance;
+  static final FirebaseDatabase database = db;
 
   /// List of children that define the pages that a user sees. WIP.
   List<Widget> _bodyChildren = [
     Dashboard(),
     Search(),
     PlaceholderWidget(Colors.green),
-    PlaceholderWidget(Colors.amber)
+    Profile()
   ];
 
   /// This is used so that the AppBar can determine whether or not to
@@ -125,6 +127,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
             icon: Icon(Icons.dashboard),
             title: Text('Dashboard'),
           ),
+
           /// Search Navigation Bar Item:
           /// Navigates to a search page that allows users to
           /// search for various food items and append it to
@@ -133,6 +136,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
             icon: Icon(Icons.fastfood),
             title: Text('Nutrition'),
           ),
+
           /// My Items Navigation Bar Item:
           /// Allows users to view their total nutrition information
           /// and edit (remove) items from their existing
@@ -142,6 +146,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
             icon: Icon(Icons.receipt),
             title: Text('Recipes'),
           ),
+
           /// Profile Navigation Bar Item:
           /// TODO
           new BottomNavigationBarItem(

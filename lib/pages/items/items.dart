@@ -4,6 +4,7 @@ import 'dart:async';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
+import 'package:nutrition_app_flutter/globals.dart';
 
 class Items extends StatelessWidget {
   Items({this.database});
@@ -13,13 +14,12 @@ class Items extends StatelessWidget {
   bool _gathering = false;
 
   Widget firebaseAnimatedList() {
-
 //    setState(() {
 //      _gathering = true;
 //    });
 
     Widget firebaseAnimatedList = new FirebaseAnimatedList(
-        query: FirebaseDatabase.instance
+        query: db
             .reference()
             .child('ABBREV')
             .orderByChild('Energ_Kcal')
@@ -49,7 +49,6 @@ class Items extends StatelessWidget {
       ),
     );
   }
-
 
   @override
   Widget build(BuildContext context) {

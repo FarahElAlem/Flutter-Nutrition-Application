@@ -1,4 +1,4 @@
-package com.company.flutternurtitionapp;
+package tamiyo.student.nutritionappflutter;
 
 import android.os.Bundle;
 import io.flutter.app.FlutterActivity;

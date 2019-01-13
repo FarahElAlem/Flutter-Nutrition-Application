@@ -1,40 +1,29 @@
 import 'dart:async';
-import 'dart:io';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:nutrition_app_flutter/globals.dart';
 import 'package:nutrition_app_flutter/pages/home.dart';
 
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
 
-import 'package:path_provider/path_provider.dart';
+import 'package:flutter/services.dart' show rootBundle;
 
 /// Load data from config files and setup necessary items
 /// including the Firebase database connection.
 Future<void> main() async {
-//  String googleAppId;
-//  String apiKey;
-//  String databaseURL;
-//
-//  final Directory directory = await getApplicationDocumentsDirectory();
-//  final path = directory.path;
-//  print(path);
-//  new File('/src/config.json')
-//      .readAsString()
-//      .then((fileContents) => json.decode(fileContents))
-//      .then((jsonData) {
-//        print('data: ' + jsonData.toString());
-//    googleAppId = jsonData['googleAppId'];
-//    apiKey = jsonData['apiKey'];
-//    databaseURL = jsonData['databaseURL'];
-//  });
+  String data = await rootBundle.loadString('assets/config.json');
+  var jsonData = json.decode(data);
 
   final FirebaseApp app = await FirebaseApp.configure(
       name: 'db2',
       options: FirebaseOptions(
-          googleAppID: '1:860653339755:android:ee11c9b993be49dd',
-          apiKey: 'AIzaSyAC-htfPSWJJshQwgjEUcN3aHB0nIbHdbs',
-          databaseURL: 'https://nutrition-app-flutter.firebaseio.com'));
+          googleAppID: jsonData['googleAppID'].toString(),
+          apiKey: jsonData['apiKey'].toString(),
+          databaseURL: jsonData['databaseURL'].toString()));
+
+  db = FirebaseDatabase.instance;
 
   runApp(new MaterialApp(
     home: new Splash(),
@@ -52,10 +41,21 @@ class Splash extends StatefulWidget {
   _SplashState createState() => new _SplashState();
 }
 
+/// We create an async starTime() function that prelaods some global variables
+/// from the FireBase database
 class _SplashState extends State<Splash> {
   startTime() async {
-    var _duration = new Duration(seconds: 2);
-    return new Timer(_duration, navigationPage);
+    await db
+        .reference()
+        .child('FOODGROUP')
+        .once()
+        .then((DataSnapshot snapshot) {
+      for (var value in snapshot.value) {
+        FOODGROUPNAMES.add([value['Fd_Grp'], value['FdGrp_Desc']]);
+      }
+    });
+
+    navigationPage();
   }
 
   void navigationPage() {
@@ -70,9 +70,24 @@ class _SplashState extends State<Splash> {
 
   @override
   Widget build(BuildContext context) {
+    SCREENWIDTH = MediaQuery.of(context).size.width;
+    SCREENHEIGHT = MediaQuery.of(context).size.height;
+
     return new Scaffold(
       body: new Center(
-        child: new Text('Splash!'),
+        child: new Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            CircularProgressIndicator(
+              semanticsValue: 'Progress',
+            ),
+            Padding(
+              padding: EdgeInsets.all(40.0),
+              child: Text('Loading...'),
+            )
+          ],
+        ),
       ),
     );
   }
