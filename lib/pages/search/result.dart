@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:nutrition_app_flutter/globals.dart';
+import 'package:nutrition_app_flutter/pages/search/details.dart';
 
 import 'package:nutrition_app_flutter/structures/fooditem.dart';
 
@@ -76,10 +77,11 @@ class _ItemView extends State<ListItem> {
   @override
   Widget build(BuildContext context) {
     return new ListTile(
-      onTap: () {},
-      leading: new Text('NDB_No:\n' + foodItem.NDBNo),
-      title: new Text(foodItem.shrtDesc),
-      subtitle: new Text('Carbohydrates: ' + foodItem.carbohydrate + 'g'),
+      onTap: () async {
+        await showDialog(context: context, child: Details(foodItem: foodItem));
+      },
+      leading: new Text('NDB_No:\n' + foodItem.detailItems['FoodGroup']['value']),
+      title: new Text(foodItem.detailItems['ShortDescription']['value']),
       trailing: new Column(
         mainAxisAlignment: MainAxisAlignment.end,
         mainAxisSize: MainAxisSize.max,
