@@ -1,8 +1,29 @@
 import 'package:flutter/material.dart';
 
+/// TODO Change database to support  decimal pt precision
+/// TODO Also fill NULL values in with 0.0
+/// TODO Come back to formatting
+/// TODO Fill [Vitamin D, Vitamin B6] nulls
 class FoodItem {
   Map nutritionItems = new Map();
   Map detailItems = new Map();
+
+  List<String> _exceptionKeys = [
+    'LipidTotal',
+    'FASat',
+    'Cholesterol',
+    'Sodium',
+    'Carbohydrate',
+    'Fiber',
+    'SugarTotal',
+    'Protein',
+    'VitaminD',
+    'Calcium',
+    'Iron',
+    'Potassium',
+    'VitaminC',
+    'VitaminB6',
+  ];
 
   FoodItem(var value) {
     nutritionItems['Carbohydrate'] = {
@@ -28,17 +49,17 @@ class FoodItem {
     nutritionItems['FAMono'] = {
       'value': value['FA_Mono_(g)'].toString(),
       'measurement': 'g',
-      'name': 'Monounsaturated Fatty Acids: '
+      'name': 'Monounsaturated Fat: '
     };
     nutritionItems['FAPoly'] = {
       'value': value['FA_Poly_(g)'].toString(),
       'measurement': 'g',
-      'name': 'Polyunsaturated Fatty Acids: '
+      'name': 'Polyunsaturated Fat: '
     };
     nutritionItems['FASat'] = {
       'value': value['FA_Sat_(g)'].toString(),
       'measurement': 'g',
-      'name': 'Saturated Fatty Acid: '
+      'name': 'Saturated Fat: '
     };
     detailItems['FoodGroup'] = {
       'value': value['Fd_Grp'].toString(),
@@ -124,18 +145,18 @@ class FoodItem {
       'measurement': 'mg',
       'name': 'Vitamin C: '
     };
-    nutritionItems['VitaminB12'] = {
-      'value': value['Vit_B12_(µg)'].toString(),
+    nutritionItems['VitaminB1'] = {
+      'value': value['Vit_B1_(µg)'].toString(),
       'measurement': 'µg',
-      'name': 'Vitamin B12: '
+      'name': 'Vitamin B1: '
     };
     nutritionItems['VitaminB6'] = {
-      'value': value['Vit_B6_(µg)'].toString(),
-      'measurement': 'µg',
+      'value': value['Vit_B6_(mg)'].toString(),
+      'measurement': 'mg',
       'name': 'Vitamin B6: '
     };
     nutritionItems['VitaminD'] = {
-      'value': value['Vit_D_(µg)'].toString(),
+      'value': value['Vit_D_µg'].toString(),
       'measurement': 'µg',
       'name': 'Vitamin D: '
     };
@@ -163,7 +184,7 @@ class FoodItem {
 
   Widget buildListView() {
     return Column(
-      children: <Widget>[
+      children: [
         new Center(
           child: Text(
             'Nutrition Information\nServing Size 100g',
@@ -173,37 +194,176 @@ class FoodItem {
         new Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            new Text('Nutrition Name', style: TextStyle(fontWeight: FontWeight.bold),),
+            new Text(
+              'Nutrition Name',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
             new Text('Amount')
           ],
         ),
         new Divider(),
         new Flexible(
-            child: ListView.builder(
-                itemCount: nutritionItems.keys.length,
-                itemExtent: 30.0,
-                itemBuilder: (BuildContext context, int index) {
-                  return _buildListItem(index);
-                }))
+            child: new ListView(itemExtent: 24.0, children: _buildBody()))
       ],
     );
   }
 
-  Widget _buildListItem(int index) {
-    String key = nutritionItems.keys.toList()[index];
-    var item = nutritionItems[key];
+  List<Widget> _buildStructedList() {
+    List<Widget> structuredList = [
+      new Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          new Text(nutritionItems['LipidTotal']['name']),
+          new Text(nutritionItems['LipidTotal']['value'] +
+              nutritionItems['LipidTotal']['measurement'])
+        ],
+      ),
+      new Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          new Text(''),
+          new Text(nutritionItems['FASat']['name']),
+          new Text(nutritionItems['FASat']['value'] +
+              nutritionItems['FASat']['measurement'])
+        ],
+      ),
+      new Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          new Text(''),
+          new Text('Trans Fat: '),
+          new Text((double.parse(
+                          nutritionItems['LipidTotal']['value'].toString()) -
+                      (double.parse(
+                              nutritionItems['FAMono']['value'].toString()) +
+                          double.parse(
+                              nutritionItems['FAPoly']['value'].toString()) +
+                          double.parse(
+                              nutritionItems['FASat']['value'].toString())))
+                  .toStringAsFixed(2) +
+              'g')
+        ],
+      ),
+      new Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          new Text(nutritionItems['Cholesterol']['name']),
+          new Text(nutritionItems['Cholesterol']['value'] +
+              nutritionItems['Cholesterol']['measurement'])
+        ],
+      ),
+      new Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          new Text(nutritionItems['Sodium']['name']),
+          new Text(nutritionItems['Sodium']['value'] +
+              nutritionItems['Sodium']['measurement'])
+        ],
+      ),
+      new Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          new Text(nutritionItems['Carbohydrate']['name']),
+          new Text(nutritionItems['Carbohydrate']['value'] +
+              nutritionItems['Carbohydrate']['measurement'])
+        ],
+      ),
+      new Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          new Text(''),
+          new Text(nutritionItems['Fiber']['name']),
+          new Text(nutritionItems['Fiber']['value'] +
+              nutritionItems['Fiber']['measurement'])
+        ],
+      ),
+      new Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          new Text(''),
+          new Text(nutritionItems['SugarTotal']['name']),
+          new Text(nutritionItems['SugarTotal']['value'] +
+              nutritionItems['SugarTotal']['measurement'])
+        ],
+      ),
+      new Divider(
+        color: Colors.grey,
+      ),
+      new Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          new Text(nutritionItems['VitaminD']['name']),
+          new Text(nutritionItems['VitaminD']['value'] +
+              nutritionItems['VitaminD']['measurement'])
+        ],
+      ),
+      new Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          new Text(nutritionItems['Calcium']['name']),
+          new Text(nutritionItems['Calcium']['value'] +
+              nutritionItems['Calcium']['measurement'])
+        ],
+      ),
+      new Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          new Text(nutritionItems['Iron']['name']),
+          new Text(nutritionItems['Iron']['value'] +
+              nutritionItems['Iron']['measurement'])
+        ],
+      ),
+      new Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          new Text(nutritionItems['Potassium']['name']),
+          new Text(nutritionItems['Potassium']['value'] +
+              nutritionItems['Potassium']['measurement'])
+        ],
+      ),
+      new Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          new Text(nutritionItems['VitaminC']['name']),
+          new Text(nutritionItems['VitaminC']['value'] +
+              nutritionItems['VitaminC']['measurement'])
+        ],
+      ),
+      new Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          new Text(nutritionItems['VitaminB6']['name']),
+          new Text(nutritionItems['VitaminB6']['value'] +
+              nutritionItems['VitaminB6']['measurement'])
+        ],
+      ),
+    ];
 
-    return new Column(
-      children: <Widget>[
-        new Row(
+    return structuredList;
+  }
+
+  List<Widget> _buildRemainderList() {
+    List<Widget> remainderWidgets = [];
+    nutritionItems.forEach((key, value) {
+      if (!_exceptionKeys.contains(key.toString())) {
+        remainderWidgets.add(new Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            new Text(item['name'], style: TextStyle(fontSize: 14.0,fontWeight: FontWeight.bold)),
-            new Text((item['value'] == 'null' ? '0.0' : item['value']) + " " + item['measurement'])
+            new Text(value['name']),
+            new Text(value['value'] + value['measurement'])
           ],
-        )
-      ],
-    );
+        ));
+      }
+    });
+
+    return remainderWidgets;
+  }
+
+  List<Widget> _buildBody() {
+    List<Widget> list1 = _buildStructedList();
+    List<Widget> list2 = _buildRemainderList();
+
+    return new List.from(list1)..addAll(list2);
   }
 
   @override

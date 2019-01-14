@@ -7,28 +7,62 @@ import 'package:nutrition_app_flutter/pages/search/details.dart';
 
 import 'package:nutrition_app_flutter/structures/fooditem.dart';
 
-/// TODO - New Page upon click for further inspection?
-/// TODO - Change IconButton to a different IconButton (Add and remove)
+/// TODO - Calories?
+/// TODO - Search Bar?
+/// TODO - Multiple queries based on keys?
+/// TODO - Store locally?
 class Result extends StatefulWidget {
-  Result({this.foodGroup});
+  Result({this.token, this.type});
 
-  String foodGroup;
+  int type;
+  String token;
 
   @override
-  _ResultState createState() => _ResultState(foodGroup: foodGroup);
+  _ResultState createState() => _ResultState(token: token, type: type);
 }
 
 class _ResultState extends State<Result> {
-  _ResultState({this.foodGroup});
+  _ResultState({this.token, this.type});
 
-  String foodGroup;
+  int type;
+  String token;
 
   List<FoodItem> resultList = [];
   List<List<Object>> iconButtonList = [];
 
+  var query;
+  List<String> validKeys;
+
   @override
   void initState() {
     super.initState();
+
+    if (type == 1) {
+      validKeys = _getValidKeys();
+    }
+
+    query = (type == 0)
+        ? db.reference().child('ABBREV').orderByChild('Fd_Grp').equalTo(token)
+        : db
+            .reference()
+            .child('ABBREV')
+            .orderByChild('Shrt_Desc')
+            .equalTo(token);
+  }
+
+  List<String> _getValidKeys() {
+
+    print('TargetToken: ' + token);
+
+    List<String> validKeys = [];
+    ABBREVREF.forEach((str) {
+      if (str.contains(token.toUpperCase())) {
+        validKeys.add(str);
+      }
+    });
+
+    print('Done Validating');
+    return validKeys;
   }
 
   @override
@@ -39,17 +73,22 @@ class _ResultState extends State<Result> {
         children: <Widget>[
           new Flexible(
               child: new FirebaseAnimatedList(
-                  query: db
-                      .reference()
-                      .child('ABBREV')
-                      .orderByChild('Fd_Grp')
-                      .equalTo(foodGroup),
+                  query: query,
                   itemBuilder: (BuildContext context, DataSnapshot snapshot,
                       Animation<double> animation, int index) {
-                    final FoodItem foodItem = new FoodItem(snapshot.value);
-                    return ListItem(
-                      foodItem: foodItem,
-                    );
+                    if (type == 1 &&
+                        validKeys
+                            .contains(snapshot.value['Shrt_Desc'].toString())) {
+                      final FoodItem foodItem = new FoodItem(snapshot.value);
+                      return ListItem(
+                        foodItem: foodItem,
+                      );
+                    } else if (type == 0) {
+                      final FoodItem foodItem = new FoodItem(snapshot.value);
+                      return ListItem(
+                        foodItem: foodItem,
+                      );
+                    }
                   }))
         ],
       ),
@@ -80,21 +119,18 @@ class _ItemView extends State<ListItem> {
       onTap: () async {
         await showDialog(context: context, child: Details(foodItem: foodItem));
       },
-      leading: new Text('NDB_No:\n' + foodItem.detailItems['FoodGroup']['value']),
+      leading: new Text(foodItem.detailItems['FoodGroup']['value']),
       title: new Text(foodItem.detailItems['ShortDescription']['value']),
       trailing: new Column(
         mainAxisAlignment: MainAxisAlignment.end,
         mainAxisSize: MainAxisSize.max,
         children: <Widget>[
-          new Card(
-            color: (isAdd) ? Colors.lightGreen : Colors.red,
-            child: new IconButton(
-                icon: (isAdd) ? Icon(Icons.add) : Icon(Icons.remove),
-                onPressed: () {
-                  isAdd = !isAdd;
-                  setState(() {});
-                }),
-          )
+          new IconButton(
+              icon: (isAdd) ? Icon(Icons.add) : Icon(Icons.remove),
+              onPressed: () {
+                isAdd = !isAdd;
+                setState(() {});
+              })
         ],
       ),
     );
