@@ -96,7 +96,11 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                       this._searchIcon = new Icon(Icons.close);
                       this._appBarTitle = new TextField(
                           onSubmitted: (token) {
-//                            print('Search Token: ' + token.toString());
+                            this._isSearching = false;
+                            this._searchIcon = new Icon(Icons.search);
+                            this._appBarTitle = new Center(
+                              child: new Text(_appBarTitles[_currentIndex]),
+                            );
                             Navigator.push(context, MaterialPageRoute(builder: (context) => Result(token: token.toString(), type: 1)));
                           },
                           decoration:

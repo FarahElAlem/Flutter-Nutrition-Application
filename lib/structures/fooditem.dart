@@ -1,3 +1,4 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 /// TODO Change database to support  decimal pt precision
@@ -136,7 +137,7 @@ class FoodItem {
       'name': 'Thiamin: '
     };
     nutritionItems['VitaminA'] = {
-      'value': value['Vit_A_RAE(mg)'].toString(),
+      'value': value['Vit_A_RAE'].toString(),
       'measurement': 'mg',
       'name': 'Vitamin A: '
     };
@@ -145,10 +146,10 @@ class FoodItem {
       'measurement': 'mg',
       'name': 'Vitamin C: '
     };
-    nutritionItems['VitaminB1'] = {
-      'value': value['Vit_B1_(µg)'].toString(),
+    nutritionItems['VitaminB12'] = {
+      'value': value['Vit_B12_(µg)'].toString(),
       'measurement': 'µg',
-      'name': 'Vitamin B1: '
+      'name': 'Vitamin B12: '
     };
     nutritionItems['VitaminB6'] = {
       'value': value['Vit_B6_(mg)'].toString(),

@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 
 import 'package:firebase_database/firebase_database.dart';
@@ -27,6 +30,10 @@ class _ResultState extends State<Result> {
   int type;
   String token;
 
+  Widget listView;
+
+  bool _ready = false;
+
   List<FoodItem> resultList = [];
   List<List<Object>> iconButtonList = [];
 
@@ -39,60 +46,91 @@ class _ResultState extends State<Result> {
 
     if (type == 1) {
       validKeys = _getValidKeys();
+      _getSearchedResults().then((onValue) {
+        listView = onValue;
+        setState(() {
+          _ready = true;
+        });
+      });
     }
-
     query = (type == 0)
         ? db.reference().child('ABBREV').orderByChild('Fd_Grp').equalTo(token)
-        : db
-            .reference()
-            .child('ABBREV')
-            .orderByChild('Shrt_Desc')
-            .equalTo(token);
+        : null;
   }
 
   List<String> _getValidKeys() {
-
-    print('TargetToken: ' + token);
+//    print('TargetToken: ' + token);
 
     List<String> validKeys = [];
     ABBREVREF.forEach((str) {
+//      print(str + ", " + token + ", " + str.contains(token.toUpperCase()).toString());
       if (str.contains(token.toUpperCase())) {
         validKeys.add(str);
       }
     });
 
-    print('Done Validating');
+//    print('Done Validating');
     return validKeys;
+  }
+
+  Future<Widget> _getSearchedResults() async {
+    List<Widget> type1widget = [];
+//    print('Num?: ' + validKeys.length.toString());
+
+    for (String key in validKeys) {
+      await db
+          .reference()
+          .child('ABBREV')
+          .orderByChild('Shrt_Desc')
+          .equalTo(key)
+          .once()
+          .then((DataSnapshot snapshot) {
+            String key = snapshot.value.entries.elementAt(0).key.toString();
+        FoodItem foodItem = new FoodItem(snapshot.value[key]);
+        type1widget.add(new ListItem(
+          foodItem: foodItem,
+        ));
+      });
+    }
+
+    return new ListView(
+      children: type1widget,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      appBar: new AppBar(),
-      body: new Column(
-        children: <Widget>[
-          new Flexible(
-              child: new FirebaseAnimatedList(
-                  query: query,
-                  itemBuilder: (BuildContext context, DataSnapshot snapshot,
-                      Animation<double> animation, int index) {
-                    if (type == 1 &&
-                        validKeys
-                            .contains(snapshot.value['Shrt_Desc'].toString())) {
-                      final FoodItem foodItem = new FoodItem(snapshot.value);
-                      return ListItem(
-                        foodItem: foodItem,
-                      );
-                    } else if (type == 0) {
-                      final FoodItem foodItem = new FoodItem(snapshot.value);
-                      return ListItem(
-                        foodItem: foodItem,
-                      );
-                    }
-                  }))
-        ],
-      ),
-    );
+    if (!_ready && type == 1) {
+      return new Scaffold(
+        appBar: new AppBar(),
+        body: new Center(
+          child: Text('Loading...'),
+        ),
+      );
+    } else {
+      return new Scaffold(
+        appBar: new AppBar(),
+        body: new Column(
+          children: <Widget>[
+            new Flexible(
+                child: (type == 0)
+                    ? new FirebaseAnimatedList(
+                        query: query,
+                        itemBuilder: (BuildContext context,
+                            DataSnapshot snapshot,
+                            Animation<double> animation,
+                            int index) {
+                          final FoodItem foodItem =
+                              new FoodItem(snapshot.value);
+                          return ListItem(
+                            foodItem: foodItem,
+                          );
+                        })
+                    : listView)
+          ],
+        ),
+      );
+    }
   }
 }
 
