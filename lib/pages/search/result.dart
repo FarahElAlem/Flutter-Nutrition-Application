@@ -10,10 +10,6 @@ import 'package:nutrition_app_flutter/pages/search/details.dart';
 
 import 'package:nutrition_app_flutter/structures/fooditem.dart';
 
-/// TODO - Calories?
-/// TODO - Search Bar?
-/// TODO - Multiple queries based on keys?
-/// TODO - Store locally?
 class Result extends StatefulWidget {
   Result({this.token, this.type});
 
@@ -59,23 +55,18 @@ class _ResultState extends State<Result> {
   }
 
   List<String> _getValidKeys() {
-//    print('TargetToken: ' + token);
-
     List<String> validKeys = [];
     ABBREVREF.forEach((str) {
-//      print(str + ", " + token + ", " + str.contains(token.toUpperCase()).toString());
       if (str.contains(token.toUpperCase())) {
         validKeys.add(str);
       }
     });
 
-//    print('Done Validating');
     return validKeys;
   }
 
   Future<Widget> _getSearchedResults() async {
     List<Widget> type1widget = [];
-//    print('Num?: ' + validKeys.length.toString());
 
     for (String key in validKeys) {
       await db
@@ -85,7 +76,7 @@ class _ResultState extends State<Result> {
           .equalTo(key)
           .once()
           .then((DataSnapshot snapshot) {
-            String key = snapshot.value.entries.elementAt(0).key.toString();
+        String key = snapshot.value.entries.elementAt(0).key.toString();
         FoodItem foodItem = new FoodItem(snapshot.value[key]);
         type1widget.add(new ListItem(
           foodItem: foodItem,
@@ -93,9 +84,16 @@ class _ResultState extends State<Result> {
       });
     }
 
-    return new ListView(
-      children: type1widget,
-    );
+    return (validKeys.length == 0)
+        ? new Center(
+            child: Text(
+              'Nothing of that criteria found!',
+              textAlign: TextAlign.center,
+            ),
+          )
+        : new ListView(
+            children: type1widget,
+          );
   }
 
   @override
@@ -104,7 +102,22 @@ class _ResultState extends State<Result> {
       return new Scaffold(
         appBar: new AppBar(),
         body: new Center(
-          child: Text('Loading...'),
+          child: new Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Padding(
+                padding: EdgeInsets.all(12.0),
+                child: CircularProgressIndicator(
+                  semanticsValue: 'Progress',
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.all(12.0),
+                child: Text('Loading...'),
+              )
+            ],
+          ),
         ),
       );
     } else {

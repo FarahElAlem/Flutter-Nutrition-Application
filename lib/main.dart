@@ -72,19 +72,16 @@ class _SplashState extends State<Splash> {
 
   @override
   Widget build(BuildContext context) {
-    SCREENWIDTH = MediaQuery.of(context).size.width;
-    SCREENHEIGHT = MediaQuery.of(context).size.height;
-
     return new Scaffold(
       body: new Center(
         child: new Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            CircularProgressIndicator(
+            new CircularProgressIndicator(
               semanticsValue: 'Progress',
             ),
-            Padding(
+            new Padding(
               padding: EdgeInsets.all(40.0),
               child: Text('Loading...'),
             )
