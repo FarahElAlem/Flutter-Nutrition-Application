@@ -3,6 +3,7 @@ import 'package:nutrition_app_flutter/demo/placeholder.dart';
 import 'package:nutrition_app_flutter/globals.dart';
 import 'package:nutrition_app_flutter/pages/dashboard/dashboard.dart';
 import 'package:nutrition_app_flutter/pages/profile/profile.dart';
+import 'package:nutrition_app_flutter/pages/search/result.dart';
 import 'package:nutrition_app_flutter/pages/search/search.dart';
 
 import 'package:firebase_core/firebase_core.dart';
@@ -94,6 +95,14 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                       this._isSearching = true;
                       this._searchIcon = new Icon(Icons.close);
                       this._appBarTitle = new TextField(
+                          onSubmitted: (token) {
+                            this._isSearching = false;
+                            this._searchIcon = new Icon(Icons.search);
+                            this._appBarTitle = new Center(
+                              child: new Text(_appBarTitles[_currentIndex]),
+                            );
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => Result(token: token.toString(), type: 1)));
+                          },
                           decoration:
                               new InputDecoration(hintText: 'Search...'));
                     } else {
