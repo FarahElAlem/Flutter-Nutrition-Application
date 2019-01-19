@@ -51,3 +51,21 @@
 ## Git ( For Collaborators )
 - Make your own branch named "dev-*name*".
 - Once your are done with a task, submit a pull request to the **dev** branch for review.
+
+## TODO
+- ~~Setup 4 placeholder pages~~
+- ~~Setup Firebase DB~~
+    - ~~Setup Nutrient data~~
+    - Setup Recipe data (No easily avaliable information, working on this)
+- ~~Allow search features to query nutrient data from firebase~~
+    - ~~Allow users to search by food type~~
+    - ~~Allow users to search by food name~~
+- Allow search features to query recipe data from firebase
+    - Allow users to search by recipie type
+    - Allow users to search by recipie name
+    - Allow users to search by ingredient(s)
+- Find or write a ML model to identify similarity of words for recipie / nutrient db links (more on this later)
+- Allow nutrient information to be displayed on recipe (python data cleaning)
+- Add profile page, holding user informatio and search features
+- Allow users to save lists of nutrients and/ favorite recipies
+- Allow users to build a profile and share their recipies and nutrition lists
