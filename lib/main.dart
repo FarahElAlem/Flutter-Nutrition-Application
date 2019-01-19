@@ -54,8 +54,16 @@ class _SplashState extends State<Splash> {
         .then((DataSnapshot snapshot) {
       for (var value in snapshot.value) {
         FOODGROUPNAMES.add([value['Fd_Grp'], value['FdGrp_Desc']]);
-      }
+    }
     });
+
+    String data = await rootBundle.loadString('assets/testnutrients.json');
+    var jsonData = json.decode(data);
+    SAVEDNUTRIENTS = jsonData['payload'];
+
+    data = await rootBundle.loadString('assets/testrecipes.json');
+    jsonData = json.decode(data);
+    SAVEDRECIPES = jsonData['payload'];
 
     navigationPage();
   }

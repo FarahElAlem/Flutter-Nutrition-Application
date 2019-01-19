@@ -4,6 +4,10 @@ FirebaseDatabase db;
 List<List<String>> FOODGROUPNAMES = [];
 double SCREENWIDTH = 0.0;
 double SCREENHEIGHT = 0.0;
+
+var SAVEDNUTRIENTS;
+var SAVEDRECIPES;
+
 List<String> ABBREVREF = [
   'BUTTER WITH SALT',
   'BUTTER WHIPPED W/ SALT',

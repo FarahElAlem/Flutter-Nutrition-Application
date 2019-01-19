@@ -32,3 +32,5 @@ flutter:
   assets:
     - assets/flutter.png
     - assets/config.json
+    - assets/testnutrients.json
+    - assets/testrecipes.json
