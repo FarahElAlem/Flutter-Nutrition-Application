@@ -61,8 +61,8 @@
     - ~~Allow users to search by food type~~
     - ~~Allow users to search by food name~~
 - Allow search features to query recipe data from firebase
-    - Allow users to search by recipie type
-    - Allow users to search by recipie name
+    - Allow users to search by recipe type
+    - Allow users to search by recipe name
     - Allow users to search by ingredient(s)
 - Find or write a ML model to identify similarity of words for recipie / nutrient db links (more on this later)
 - Allow nutrient information to be displayed on recipe (python data cleaning)
