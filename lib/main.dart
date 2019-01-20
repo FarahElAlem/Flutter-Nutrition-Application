@@ -10,6 +10,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:nutrition_app_flutter/structures/fooditem.dart';
 import 'package:path_provider/path_provider.dart';
 
 /// Load data from config files and setup necessary items
@@ -59,7 +60,11 @@ class _SplashState extends State<Splash> {
 
     String data = await rootBundle.loadString('assets/testnutrients.json');
     var jsonData = json.decode(data);
-    SAVEDNUTRIENTS = jsonData['payload'];
+    jsonData = jsonData['payload'];
+    for(var v in jsonData) {
+      FoodItem f = new FoodItem(v);
+      SAVEDNUTRIENTS.add(f);
+    }
 
     data = await rootBundle.loadString('assets/testrecipes.json');
     jsonData = json.decode(data);

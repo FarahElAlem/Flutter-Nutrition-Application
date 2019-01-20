@@ -1,31 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:nutrition_app_flutter/globals.dart';
+import 'package:nutrition_app_flutter/pages/search/result.dart';
 
 class Profile extends StatelessWidget {
   Widget _getFavoriteNutrients(BuildContext context) {
     return new Container(
-        constraints:
-            BoxConstraints(maxHeight: 120.0, maxWidth: double.maxFinite),
+        constraints: BoxConstraints(
+            maxHeight: (60.0 *
+                ((SAVEDNUTRIENTS.length < 3) ? SAVEDNUTRIENTS.length : 3)),
+            maxWidth: double.maxFinite),
         child: ListView.builder(
             physics: NeverScrollableScrollPhysics(),
             padding: const EdgeInsets.all(10.0),
-            itemCount: SAVEDNUTRIENTS.length,
+            itemCount:
+                ((SAVEDNUTRIENTS.length < 3) ? SAVEDNUTRIENTS.length : 3),
             itemBuilder: (context, i) {
-              return new ListTile(
-                title: new Text(SAVEDNUTRIENTS[i]['Shrt_Desc']),
-                trailing: new Icon(Icons.star, color: Colors.amber),
+              return new ListItem(
+                foodItem: SAVEDNUTRIENTS[i],
+                type: 1,
               );
             }));
   }
 
   Widget _getFavoriteRecipes(BuildContext context) {
     return new Container(
-        constraints:
-            BoxConstraints(maxHeight: 80.0, maxWidth: double.maxFinite),
+        constraints: BoxConstraints(
+            maxHeight:
+                (60.0 * ((SAVEDRECIPES.length < 3) ? SAVEDRECIPES.length : 3)),
+            maxWidth: double.maxFinite),
         child: ListView.builder(
             physics: NeverScrollableScrollPhysics(),
             padding: const EdgeInsets.all(10.0),
-            itemCount: SAVEDRECIPES.length,
+            itemCount: ((SAVEDRECIPES.length < 3) ? SAVEDRECIPES.length : 3),
             itemBuilder: (context, i) {
               return new ListTile(
                 title: new Text(SAVEDRECIPES[i]['title']),
@@ -35,6 +41,33 @@ class Profile extends StatelessWidget {
                 ),
               );
             }));
+  }
+
+  Widget _showMoreNutrientButton(BuildContext context) {
+    return new Flex(
+      direction: Axis.horizontal,
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: <Widget>[
+        new MaterialButton(
+          onPressed: () async {
+            await showDialog(
+                context: context,
+                child: Dialog(
+                    child: new Column(children: <Widget>[
+                  new Flexible(
+                      child: new ListView.builder(
+                          itemCount: SAVEDNUTRIENTS.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return new ListItem(
+                              foodItem: SAVEDNUTRIENTS[index],
+                            );
+                          }))
+                ])));
+          },
+          child: new Text('More...'),
+        )
+      ],
+    );
   }
 
   @override
@@ -87,6 +120,12 @@ class Profile extends StatelessWidget {
             ),
           ),
           _getFavoriteNutrients(context),
+          (SAVEDNUTRIENTS.length > 3)
+              ? _showMoreNutrientButton(context)
+              : new Container(
+                  width: 0,
+                  height: 0,
+                ),
           new Divider(
             height: 1.0,
           ),

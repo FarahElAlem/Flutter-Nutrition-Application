@@ -1,11 +1,12 @@
 import 'package:firebase_database/firebase_database.dart';
+import 'package:nutrition_app_flutter/structures/fooditem.dart';
 
 FirebaseDatabase db;
 List<List<String>> FOODGROUPNAMES = [];
 double SCREENWIDTH = 0.0;
 double SCREENHEIGHT = 0.0;
 
-var SAVEDNUTRIENTS;
+List<FoodItem> SAVEDNUTRIENTS = [];
 var SAVEDRECIPES;
 
 List<String> ABBREVREF = [

@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 
@@ -80,6 +79,7 @@ class _ResultState extends State<Result> {
         FoodItem foodItem = new FoodItem(snapshot.value[key]);
         type1widget.add(new ListItem(
           foodItem: foodItem,
+          type: 0,
         ));
       });
     }
@@ -137,6 +137,7 @@ class _ResultState extends State<Result> {
                               new FoodItem(snapshot.value);
                           return ListItem(
                             foodItem: foodItem,
+                            type: 0,
                           );
                         })
                     : listView)
@@ -149,20 +150,28 @@ class _ResultState extends State<Result> {
 
 /// Widget as a Stateful Widget
 class ListItem extends StatefulWidget {
-  ListItem({this.foodItem});
+  ListItem({this.foodItem, this.type});
 
   FoodItem foodItem;
+  int type;
 
   @override
-  State<StatefulWidget> createState() => new _ItemView(foodItem: foodItem);
+  State<StatefulWidget> createState() => new _ItemView(foodItem: foodItem, type: type);
 }
 
 class _ItemView extends State<ListItem> {
-  _ItemView({this.foodItem});
+  _ItemView({this.foodItem, this.type});
 
   FoodItem foodItem;
+  int type;
 
-  bool isAdd = true;
+  bool isAdd;
+
+  @override
+  void initState() {
+    super.initState();
+    isAdd = (type == 0) ? true : false;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -177,9 +186,15 @@ class _ItemView extends State<ListItem> {
         mainAxisSize: MainAxisSize.max,
         children: <Widget>[
           new IconButton(
-              icon: (isAdd) ? Icon(Icons.add) : Icon(Icons.remove),
+              icon: (isAdd) ? Icon(Icons.star, color: Colors.grey,) : Icon(Icons.star, color: Colors.amber,),
               onPressed: () {
-                isAdd = !isAdd;
+                if(isAdd) {
+                  isAdd = !isAdd;
+                  SAVEDNUTRIENTS.add(this.foodItem);
+                } else {
+                  isAdd = !isAdd;
+                  SAVEDNUTRIENTS.remove(this.foodItem);
+                }
                 setState(() {});
               })
         ],
