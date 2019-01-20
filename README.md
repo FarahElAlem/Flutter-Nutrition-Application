@@ -67,5 +67,5 @@
 - Find or write a ML model to identify similarity of words for recipie / nutrient db links (more on this later)
 - Allow nutrient information to be displayed on recipe (python data cleaning)
 - ~~Add profile page, holding user information and saved nutrient lists / favorited recipes~~
-- Allow users to save lists of nutrients and/ favorite recipes
+- ~~Allow users to save lists of nutrients and/ favorite recipes~~
 - Allow users to build a profile and share their recipes and nutrition lists
