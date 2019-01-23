@@ -56,7 +56,7 @@
 - ~~Setup 4 placeholder pages~~
 - ~~Setup Firebase DB~~
     - ~~Setup Nutrient data~~
-    - ~~Setup Recipe data (No easily avaliable information, working on this)~
+    - ~~Setup Recipe data (No easily avaliable information, working on this)~~
         - Parsing the data now to accurately display nutritition information (done in python, not included in repo)
 - ~~Allow search features to query nutrient data from firebase~~
     - ~~Allow users to search by food type~~
