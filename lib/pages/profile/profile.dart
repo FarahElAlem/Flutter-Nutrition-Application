@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nutrition_app_flutter/globals.dart';
+import 'package:nutrition_app_flutter/pages/profile/moreinformation.dart';
 import 'package:nutrition_app_flutter/pages/search/result.dart';
 
 class Profile extends StatelessWidget {
@@ -49,20 +50,8 @@ class Profile extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.end,
       children: <Widget>[
         new MaterialButton(
-          onPressed: () async {
-            await showDialog(
-                context: context,
-                child: Dialog(
-                    child: new Column(children: <Widget>[
-                  new Flexible(
-                      child: new ListView.builder(
-                          itemCount: SAVEDNUTRIENTS.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return new ListItem(
-                              foodItem: SAVEDNUTRIENTS[index],
-                            );
-                          }))
-                ])));
+          onPressed: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileInfo(type: 0,)));
           },
           child: new Text('More...'),
         )

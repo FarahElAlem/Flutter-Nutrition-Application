@@ -1760,7 +1760,7 @@ List<String> ABBREVREF = [
   'BOLOGNA CHICK TURKEY PORK',
   'PORK SAUSAGE LINK/PATTY FULLY CKD MICROWAVED',
   'BEEF SAUSAGE PRE-COOKED',
-  'TURKEY SAUSAGE FRSH RAW',
+  'TURKEY SAUSAGE FRSH RAW',Fi
   'BEEF SAUSAGE FRSH CKD',
   'PORK & TURKEY SAUSAGE PRE-COOKED',
   'TURKEY SAUSAGE FRSH CKD',
@@ -3770,7 +3770,12 @@ List<String> ABBREVREF = [
   'BF RIB EYE SML END (RIB 10-12) LN & FT 0" FAT CHOIC CKD BRLD',
   'BEEF RIB EYE SML END (RIBS 10-12) LN 0"FAT CHOIC RAW',
   'BEEF RIB EYE SML END (RIBS 10-12) LN 0"FAT CHOIC CKD BRLD',
-  'BEEF RIB SHORTRIBS LN&FAT CHOIC RAW',
+  'BEEF RIB SHORTRIBcmd: Can't find service: activity
+Installing build\app\outputs\apk\app.apk...
+Error: ADB exited with exit code 1
+adb: failed to install C:\Users\Matt\Documents\Flutter-Nutrition-Application\build\app\outputs\apk\app.apk:
+Error launching application on Android SDK built for x86.
+S LN&FAT CHOIC RAW',
   'BEEF RIB SHORTRIBS LN&FAT CHOIC CKD BRSD',
   'BEEF RIB SHORTRIBS LN ONLY CHOIC RAW',
   'BEEF RIB SHORTRIBS LN CHOIC CKD BRSD',
