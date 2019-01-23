@@ -57,7 +57,8 @@
 - ~~Setup Firebase DB~~
     - ~~Setup Nutrient data~~
     - ~~Setup Recipe data (No easily avaliable information, working on this)~~
-        - Parsing the data now to accurately display nutritition information (done in python, not included in repo)
+        - ~~Parsing the data now to accurately display nutritition information (done in python, not included in repo)~~
+        - Parsed data, but I have realized that Cloud Firestore might be a better option that a RTDB at this moment, am converting...
 - ~~Allow search features to query nutrient data from firebase~~
     - ~~Allow users to search by food type~~
     - ~~Allow users to search by food name~~
