@@ -39,7 +39,7 @@ class _SearchState extends State<Search> {
                     },
                     splashColor: Colors.transparent,
                     child: new Card(
-                      color: Color.fromRGBO(33, 150, 243, 1.0),
+                      color: Colors.lightGreen,
                       child: new Center(
                           child: new Padding(
                         padding: EdgeInsets.all(8.0),

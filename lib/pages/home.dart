@@ -7,7 +7,8 @@ import 'package:nutrition_app_flutter/pages/search/result.dart';
 import 'package:nutrition_app_flutter/pages/search/search.dart';
 
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_database/firebase_database.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 
 class Home extends StatefulWidget {
   Home({this.app});
@@ -22,9 +23,6 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   /// Current widget index.
   int _currentIndex = 0;
-
-  /// Firebase Database instance
-  static final FirebaseDatabase database = db;
 
   /// List of children that define the pages that a user sees. WIP.
   List<Widget> _bodyChildren = [
@@ -74,6 +72,38 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
     });
   }
 
+  Widget _buildSearchBar() {
+    return new IconButton(
+        icon: _searchIcon,
+        onPressed: () {
+          setState(() {
+            if (this._searchIcon.icon == Icons.search) {
+              this._isSearching = true;
+              this._searchIcon = new Icon(Icons.close);
+              this._appBarTitle = new TextField(
+                  onSubmitted: (token) {
+                    this._isSearching = false;
+                    this._searchIcon = new Icon(Icons.search);
+                    this._appBarTitle = new Center(
+                      child: new Text(_appBarTitles[_currentIndex]),
+                    );
+                    Navigator.push(context, MaterialPageRoute(
+                        builder: (context) =>
+                            Result(token: token.toString(), type: 1)));
+                  },
+                  decoration:
+                  new InputDecoration(hintText: 'Search...'));
+            } else {
+              this._isSearching = false;
+              this._searchIcon = new Icon(Icons.search);
+              this._appBarTitle = new Center(
+                child: new Text(_appBarTitles[_currentIndex]),
+              );
+            }
+          });
+        });
+  }
+
   /// Returns the correct AppBar depending on which page the user has
   /// navigated to through the BottomNavigationBar. Contains a icon button
   /// that displays a search bar on the correct search pages inside the AppBar.
@@ -82,42 +112,16 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
       leading: _leadingIcons[_currentIndex],
       title: (!_isSearching)
           ? new Center(
-              child: new Text(_appBarTitles[_currentIndex]),
-            )
+        child: new Text(_appBarTitles[_currentIndex]),
+      )
           : _appBarTitle,
       actions: <Widget>[
         (_currentIndex == 1 || _currentIndex == 2)
-            ? new IconButton(
-                icon: _searchIcon,
-                onPressed: () {
-                  setState(() {
-                    if (this._searchIcon.icon == Icons.search) {
-                      this._isSearching = true;
-                      this._searchIcon = new Icon(Icons.close);
-                      this._appBarTitle = new TextField(
-                          onSubmitted: (token) {
-                            this._isSearching = false;
-                            this._searchIcon = new Icon(Icons.search);
-                            this._appBarTitle = new Center(
-                              child: new Text(_appBarTitles[_currentIndex]),
-                            );
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => Result(token: token.toString(), type: 1)));
-                          },
-                          decoration:
-                              new InputDecoration(hintText: 'Search...'));
-                    } else {
-                      this._isSearching = false;
-                      this._searchIcon = new Icon(Icons.search);
-                      this._appBarTitle = new Center(
-                        child: new Text(_appBarTitles[_currentIndex]),
-                      );
-                    }
-                  });
-                })
+            ? _buildSearchBar()
             : new Container(
-                width: 0,
-                height: 0,
-              )
+          width: 0,
+          height: 0,
+        )
       ],
     );
   }
