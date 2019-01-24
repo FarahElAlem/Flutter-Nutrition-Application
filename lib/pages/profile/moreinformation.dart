@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:nutrition_app_flutter/pages/search/result.dart';
 import 'package:nutrition_app_flutter/globals.dart';
 
+/// This is a new page navigated to by profile.
+/// This creates a listview of user saved data for extended inspection
+/// TODO Add some limit on the amount of user items this can edit
 class ProfileInfo extends StatelessWidget {
   ProfileInfo({this.type});
 

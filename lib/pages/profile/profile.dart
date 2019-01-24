@@ -3,7 +3,12 @@ import 'package:nutrition_app_flutter/globals.dart';
 import 'package:nutrition_app_flutter/pages/profile/moreinformation.dart';
 import 'package:nutrition_app_flutter/pages/search/result.dart';
 
+
+/// Displays a user's profile with their information and their saved items
+/// TODO Add login system
 class Profile extends StatelessWidget {
+
+  /// Helper Function that returns the saved nutrients of the user
   Widget _getFavoriteNutrients(BuildContext context) {
     return new Container(
         constraints: BoxConstraints(
@@ -23,6 +28,7 @@ class Profile extends StatelessWidget {
             }));
   }
 
+  /// Helper Function that returns the saved recipes of the user
   Widget _getFavoriteRecipes(BuildContext context) {
     return new Container(
         constraints: BoxConstraints(
@@ -44,6 +50,7 @@ class Profile extends StatelessWidget {
             }));
   }
 
+  /// Returns the 'more' button
   Widget _showMoreNutrientButton(BuildContext context) {
     return new Flex(
       direction: Axis.horizontal,

@@ -7,6 +7,9 @@ import 'package:nutrition_app_flutter/globals.dart';
 import 'package:nutrition_app_flutter/pages/search/details.dart';
 import 'package:nutrition_app_flutter/structures/fooditem.dart';
 
+/// Result displays information regarding Cloud Firestore queries in a list like fashion.
+/// Result has a token that specifics the search key, and a type that dictates the type of
+/// ListItem displayed.
 class Result extends StatefulWidget {
   Result({this.token, this.type});
 
@@ -25,9 +28,6 @@ class _ResultState extends State<Result> {
 
   bool _ready = false;
   var stream;
-
-  List<FoodItem> resultList = [];
-  List<List<Object>> iconButtonList = [];
 
   Widget _buildLoadingScreen() {
     return new Center(
@@ -58,8 +58,8 @@ class _ResultState extends State<Result> {
 
     if (type == 1) {
       stream = fdb
-          .collection('ABBREV_TEST')
-          .where('Shrt_Desc', arrayContains: 'BUTTER')
+          .collection('ABBREV')
+          .where('Shrt_Desc', isEqualTo: token)
           .snapshots();
     } else {
       stream = fdb
@@ -111,15 +111,6 @@ class _ResultState extends State<Result> {
     }
   }
 }
-
-//return new ListView(
-//children:
-//snapshot.data.documents.map((DocumentSnapshot document) {
-//print(document.toString());
-//final FoodItem foodItem = new FoodItem(document);
-//return ListItem(foodItem: foodItem, type: 0);
-//}).toList(),
-//);
 
 /// Widget as a Stateful Widget
 class ListItem extends StatefulWidget {
