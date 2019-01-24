@@ -47,7 +47,6 @@ class Splash extends StatefulWidget {
 /// from the FireBase database
 class _SplashState extends State<Splash> {
   startTime() async {
-
     await fdb
         .collection('FOODGROUP')
         .getDocuments()

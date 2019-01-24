@@ -3,11 +3,9 @@ import 'package:nutrition_app_flutter/globals.dart';
 import 'package:nutrition_app_flutter/pages/profile/moreinformation.dart';
 import 'package:nutrition_app_flutter/pages/search/result.dart';
 
-
 /// Displays a user's profile with their information and their saved items
 /// TODO Add login system
 class Profile extends StatelessWidget {
-
   /// Helper Function that returns the saved nutrients of the user
   Widget _getFavoriteNutrients(BuildContext context) {
     return new Container(
@@ -58,7 +56,12 @@ class Profile extends StatelessWidget {
       children: <Widget>[
         new MaterialButton(
           onPressed: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileInfo(type: 0,)));
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => ProfileInfo(
+                          type: 0,
+                        )));
           },
           child: new Text('More...'),
         )

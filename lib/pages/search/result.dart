@@ -84,27 +84,27 @@ class _ResultState extends State<Result> {
           children: <Widget>[
             new Flexible(
                 child: StreamBuilder<QuerySnapshot>(
-                  stream: stream,
-                  builder: (BuildContext context,
-                      AsyncSnapshot<QuerySnapshot> snapshot) {
-                    if (snapshot.hasError)
-                      return new Text('Error: ${snapshot.error}');
-                    switch (snapshot.connectionState) {
-                      case ConnectionState.waiting:
-                        return _buildLoadingScreen();
-                      default:
-                        return new ListView(
-                          children: snapshot.data.documents
-                              .map((DocumentSnapshot document) {
-                            return new ListItem(
-                              foodItem: new FoodItem(document),
-                              type: 0,
-                            );
-                          }).toList(),
+              stream: stream,
+              builder: (BuildContext context,
+                  AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (snapshot.hasError)
+                  return new Text('Error: ${snapshot.error}');
+                switch (snapshot.connectionState) {
+                  case ConnectionState.waiting:
+                    return _buildLoadingScreen();
+                  default:
+                    return new ListView(
+                      children: snapshot.data.documents
+                          .map((DocumentSnapshot document) {
+                        return new ListItem(
+                          foodItem: new FoodItem(document),
+                          type: 0,
                         );
-                    }
-                  },
-                ))
+                      }).toList(),
+                    );
+                }
+              },
+            ))
           ],
         ),
       );
@@ -153,13 +153,13 @@ class _ItemView extends State<ListItem> {
           new IconButton(
               icon: (isAdd)
                   ? Icon(
-                Icons.star,
-                color: Colors.grey,
-              )
+                      Icons.star,
+                      color: Colors.grey,
+                    )
                   : Icon(
-                Icons.star,
-                color: Colors.amber,
-              ),
+                      Icons.star,
+                      color: Colors.amber,
+                    ),
               onPressed: () {
                 if (isAdd) {
                   isAdd = !isAdd;

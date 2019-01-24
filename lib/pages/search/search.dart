@@ -34,8 +34,14 @@ class _SearchState extends State<Search> {
               crossAxisCount: 4,
               itemCount: 24,
               itemBuilder: (BuildContext context, int index) => new InkWell(
-                    onTap: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => Result(token: FOODGROUPNAMES[index][0], type: 0,)));
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => Result(
+                                    token: FOODGROUPNAMES[index][0],
+                                    type: 0,
+                                  )));
                     },
                     splashColor: Colors.transparent,
                     child: new Card(

@@ -9,7 +9,6 @@ import 'package:nutrition_app_flutter/pages/search/search.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-
 class Home extends StatefulWidget {
   Home({this.app});
 
@@ -87,12 +86,13 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                     this._appBarTitle = new Center(
                       child: new Text(_appBarTitles[_currentIndex]),
                     );
-                    Navigator.push(context, MaterialPageRoute(
-                        builder: (context) =>
-                            Result(token: token.toString(), type: 1)));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                Result(token: token.toString(), type: 1)));
                   },
-                  decoration:
-                  new InputDecoration(hintText: 'Search...'));
+                  decoration: new InputDecoration(hintText: 'Search...'));
             } else {
               this._isSearching = false;
               this._searchIcon = new Icon(Icons.search);
@@ -112,16 +112,16 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
       leading: _leadingIcons[_currentIndex],
       title: (!_isSearching)
           ? new Center(
-        child: new Text(_appBarTitles[_currentIndex]),
-      )
+              child: new Text(_appBarTitles[_currentIndex]),
+            )
           : _appBarTitle,
       actions: <Widget>[
         (_currentIndex == 1 || _currentIndex == 2)
             ? _buildSearchBar()
             : new Container(
-          width: 0,
-          height: 0,
-        )
+                width: 0,
+                height: 0,
+              )
       ],
     );
   }

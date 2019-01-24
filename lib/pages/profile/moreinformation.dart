@@ -28,7 +28,9 @@ class ProfileInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
-        title: (type == 0 ) ? new Text('My Nutrient List') : new Text('My Recipe List'),
+        title: (type == 0)
+            ? new Text('My Nutrient List')
+            : new Text('My Recipe List'),
       ),
       body: new Center(
         child: _buildBody(),
