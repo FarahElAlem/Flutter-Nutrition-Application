@@ -4,7 +4,6 @@ from firebase_admin import firestore
 import json
 
 cred = credentials.Certificate('configs/nutrition-app-flutter-firebase-adminsdk-e4kd4-109d82a4f1.json')
-
 keys = open('../assets/config.json').read()
 jsonData = json.loads(keys)
 
@@ -22,21 +21,17 @@ firestore = firestore.client()
 
 root = firebase_admin.db.reference()
 ABBREV = root.child('ABBREV').get()
-# FOODDESC = root.child('FOODDESC').get()
-# FOODGROUP = root.child('FOODGROUP').get()
-# NUTRDESC = root.child('NUTRDESC').get()
-# RECIPES = root.child('RECIPES').get()
+FOODDESC = root.child('FOODDESC').get()
+FOODGROUP = root.child('FOODGROUP').get()
+NUTRDESC = root.child('NUTRDESC').get()
+RECIPES = root.child('RECIPES').get()
 
 
-i = 0
-for a in list(ABBREV):
-    key = a['Shrt_Desc'].replace('/', '')
-    print(key)
-    firestore.collection(u'ABBREV_TEST').document().set(a)
-    i+=1
-    if i > 2:
-        break
-
+# for a in list(ABBREV):
+#     key = a['Shrt_Desc'].replace('/', '')
+#     print(key)
+#     firestore.collection(u'ABBREV').document().set(a)
+#
 # for a in list(FOODGROUP):
 #     key = a['FdGrp_Desc'].replace('/', '')
 #     print(key)
