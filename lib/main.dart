@@ -1,12 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:nutrition_app_flutter/globals.dart';
 import 'package:nutrition_app_flutter/pages/home.dart';
 
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_database/firebase_database.dart';
 
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:nutrition_app_flutter/structures/fooditem.dart';
@@ -24,7 +24,8 @@ Future<void> main() async {
           apiKey: jsonData['apiKey'].toString(),
           databaseURL: jsonData['databaseURL'].toString()));
 
-  db = FirebaseDatabase.instance;
+  fdb = Firestore.instance;
+  fdb.settings(timestampsInSnapshotsEnabled: true);
 
   runApp(new MaterialApp(
     home: new Splash(),
@@ -46,20 +47,19 @@ class Splash extends StatefulWidget {
 /// from the FireBase database
 class _SplashState extends State<Splash> {
   startTime() async {
-    await db
-        .reference()
-        .child('FOODGROUP')
-        .once()
-        .then((DataSnapshot snapshot) {
-      for (var value in snapshot.value) {
-        FOODGROUPNAMES.add([value['Fd_Grp'], value['FdGrp_Desc']]);
-    }
-    });
+
+    await fdb
+        .collection('FOODGROUP')
+        .getDocuments()
+        .then((data) => data.documents.forEach((doc) {
+              FOODGROUPNAMES.add([doc['Fd_Grp'], doc['FdGrp_Desc']]);
+            }));
+    print(FOODGROUPNAMES.toString());
 
     String data = await rootBundle.loadString('assets/testnutrients.json');
     var jsonData = json.decode(data);
     jsonData = jsonData['payload'];
-    for(var v in jsonData) {
+    for (var v in jsonData) {
       FoodItem f = new FoodItem(v);
       SAVEDNUTRIENTS.add(f);
     }

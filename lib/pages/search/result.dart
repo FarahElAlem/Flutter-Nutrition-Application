@@ -2,11 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-import 'package:firebase_database/firebase_database.dart';
-import 'package:firebase_database/ui/firebase_animated_list.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:nutrition_app_flutter/globals.dart';
 import 'package:nutrition_app_flutter/pages/search/details.dart';
-
 import 'package:nutrition_app_flutter/structures/fooditem.dart';
 
 class Result extends StatefulWidget {
@@ -25,75 +23,51 @@ class _ResultState extends State<Result> {
   int type;
   String token;
 
-  Widget listView;
-
   bool _ready = false;
+  var stream;
 
   List<FoodItem> resultList = [];
   List<List<Object>> iconButtonList = [];
 
-  var query;
-  List<String> validKeys;
+  Widget _buildLoadingScreen() {
+    return new Center(
+      child: new Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Padding(
+            padding: EdgeInsets.all(12.0),
+            child: CircularProgressIndicator(
+              semanticsValue: 'Progress',
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.all(12.0),
+            child: Text('Loading...'),
+          )
+        ],
+      ),
+    );
+  }
 
   @override
   void initState() {
     super.initState();
 
+    token = token.toUpperCase();
+
     if (type == 1) {
-      validKeys = _getValidKeys();
-      _getSearchedResults().then((onValue) {
-        listView = onValue;
-        setState(() {
-          _ready = true;
-        });
-      });
+      stream = fdb
+          .collection('ABBREV_TEST')
+          .where('Shrt_Desc', arrayContains: 'BUTTER')
+          .snapshots();
+    } else {
+      stream = fdb
+          .collection('ABBREV')
+          .where('Fd_Grp', isEqualTo: token)
+          .limit(100)
+          .snapshots();
     }
-    query = (type == 0)
-        ? db.reference().child('ABBREV').orderByChild('Fd_Grp').equalTo(token)
-        : null;
-  }
-
-  List<String> _getValidKeys() {
-    List<String> validKeys = [];
-    ABBREVREF.forEach((str) {
-      if (str.contains(token.toUpperCase())) {
-        validKeys.add(str);
-      }
-    });
-
-    return validKeys;
-  }
-
-  Future<Widget> _getSearchedResults() async {
-    List<Widget> type1widget = [];
-
-    for (String key in validKeys) {
-      await db
-          .reference()
-          .child('ABBREV')
-          .orderByChild('Shrt_Desc')
-          .equalTo(key)
-          .once()
-          .then((DataSnapshot snapshot) {
-        String key = snapshot.value.entries.elementAt(0).key.toString();
-        FoodItem foodItem = new FoodItem(snapshot.value[key]);
-        type1widget.add(new ListItem(
-          foodItem: foodItem,
-          type: 0,
-        ));
-      });
-    }
-
-    return (validKeys.length == 0)
-        ? new Center(
-            child: Text(
-              'Nothing of that criteria found!',
-              textAlign: TextAlign.center,
-            ),
-          )
-        : new ListView(
-            children: type1widget,
-          );
   }
 
   @override
@@ -101,24 +75,7 @@ class _ResultState extends State<Result> {
     if (!_ready && type == 1) {
       return new Scaffold(
         appBar: new AppBar(),
-        body: new Center(
-          child: new Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Padding(
-                padding: EdgeInsets.all(12.0),
-                child: CircularProgressIndicator(
-                  semanticsValue: 'Progress',
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.all(12.0),
-                child: Text('Loading...'),
-              )
-            ],
-          ),
-        ),
+        body: _buildLoadingScreen(),
       );
     } else {
       return new Scaffold(
@@ -126,27 +83,43 @@ class _ResultState extends State<Result> {
         body: new Column(
           children: <Widget>[
             new Flexible(
-                child: (type == 0)
-                    ? new FirebaseAnimatedList(
-                        query: query,
-                        itemBuilder: (BuildContext context,
-                            DataSnapshot snapshot,
-                            Animation<double> animation,
-                            int index) {
-                          final FoodItem foodItem =
-                              new FoodItem(snapshot.value);
-                          return ListItem(
-                            foodItem: foodItem,
-                            type: 0,
-                          );
-                        })
-                    : listView)
+                child: StreamBuilder<QuerySnapshot>(
+                  stream: stream,
+                  builder: (BuildContext context,
+                      AsyncSnapshot<QuerySnapshot> snapshot) {
+                    if (snapshot.hasError)
+                      return new Text('Error: ${snapshot.error}');
+                    switch (snapshot.connectionState) {
+                      case ConnectionState.waiting:
+                        return _buildLoadingScreen();
+                      default:
+                        return new ListView(
+                          children: snapshot.data.documents
+                              .map((DocumentSnapshot document) {
+                            return new ListItem(
+                              foodItem: new FoodItem(document),
+                              type: 0,
+                            );
+                          }).toList(),
+                        );
+                    }
+                  },
+                ))
           ],
         ),
       );
     }
   }
 }
+
+//return new ListView(
+//children:
+//snapshot.data.documents.map((DocumentSnapshot document) {
+//print(document.toString());
+//final FoodItem foodItem = new FoodItem(document);
+//return ListItem(foodItem: foodItem, type: 0);
+//}).toList(),
+//);
 
 /// Widget as a Stateful Widget
 class ListItem extends StatefulWidget {
@@ -156,7 +129,8 @@ class ListItem extends StatefulWidget {
   int type;
 
   @override
-  State<StatefulWidget> createState() => new _ItemView(foodItem: foodItem, type: type);
+  State<StatefulWidget> createState() =>
+      new _ItemView(foodItem: foodItem, type: type);
 }
 
 class _ItemView extends State<ListItem> {
@@ -186,9 +160,17 @@ class _ItemView extends State<ListItem> {
         mainAxisSize: MainAxisSize.max,
         children: <Widget>[
           new IconButton(
-              icon: (isAdd) ? Icon(Icons.star, color: Colors.grey,) : Icon(Icons.star, color: Colors.amber,),
+              icon: (isAdd)
+                  ? Icon(
+                Icons.star,
+                color: Colors.grey,
+              )
+                  : Icon(
+                Icons.star,
+                color: Colors.amber,
+              ),
               onPressed: () {
-                if(isAdd) {
+                if (isAdd) {
                   isAdd = !isAdd;
                   SAVEDNUTRIENTS.add(this.foodItem);
                 } else {

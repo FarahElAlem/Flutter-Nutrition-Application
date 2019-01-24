@@ -7,7 +7,8 @@ import 'package:nutrition_app_flutter/pages/search/result.dart';
 import 'package:nutrition_app_flutter/pages/search/search.dart';
 
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_database/firebase_database.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 
 class Home extends StatefulWidget {
   Home({this.app});
@@ -22,9 +23,6 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   /// Current widget index.
   int _currentIndex = 0;
-
-  /// Firebase Database instance
-  static final FirebaseDatabase database = db;
 
   /// List of children that define the pages that a user sees. WIP.
   List<Widget> _bodyChildren = [
