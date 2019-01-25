@@ -8,15 +8,15 @@ import 'package:nutrition_app_flutter/pages/home.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 
-Future<void> main() async {  SharedPreferences prefs = await SharedPreferences.getInstance();
+Future<void> main() async {
+
+  SharedPreferences prefs = await SharedPreferences.getInstance();
   String _email = (prefs.getString('email') ?? '');
   String _password = (prefs.getString('password') ?? '');
-  bool hasAccount = (_email == '') ?  false : true;
-
-  await signInWithFirestore(_email, _password);
+  FirebaseUser currentUser  = (_email == '') ? null : await signInWithFirestore(_email, _password);
 
   runApp(new MaterialApp(
-    home: _getLandingPage(_email, _password, hasAccount),
+    home: _getLandingPage(_email, _password, currentUser),
     routes: <String, WidgetBuilder>{
       '/Home': (BuildContext context) => new Home()
     },
@@ -34,7 +34,7 @@ Future<FirebaseUser> signInWithFirestore(String email, String password) async {
   return user;
 }
 
-Widget _getLandingPage(String email, String password, bool hasAccount) {
+Widget _getLandingPage(String email, String password, FirebaseUser currentUser) {
   return StreamBuilder<FirebaseUser>(
     stream: FirebaseAuth.instance.onAuthStateChanged,
     builder: (BuildContext context, snapshot) {
@@ -43,10 +43,9 @@ Widget _getLandingPage(String email, String password, bool hasAccount) {
       } else {
         if (snapshot.hasData) {
           return new Home(
-            hasAccount: hasAccount,
+            currentUser: currentUser,
           );
-        } else {
-        }
+        } else {}
       }
     },
   );

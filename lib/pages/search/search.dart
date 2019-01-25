@@ -1,7 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:nutrition_app_flutter/pages/search/result.dart';
+import 'result.dart';
 
 /// class Search represents a Stateful widget that can have multiple states:
 /// - Seeking / Searching:
@@ -9,9 +10,10 @@ import 'package:nutrition_app_flutter/pages/search/result.dart';
 /// - Result Gathering
 ///     - Result of a query gathered from Firebase that users can interact with.
 class Search extends StatefulWidget {
-  Search({this.foodGroupNames, this.firestore});
+  Search({this.foodGroupNames, this.firestore, this.currentUser});
 
   Firestore firestore;
+  FirebaseUser currentUser;
   List<List<String>> foodGroupNames;
 
   @override
@@ -46,6 +48,8 @@ class _SearchState extends State<Search> {
                               builder: (context) => Result(
                                     token: widget.foodGroupNames[index][0],
                                     type: 0,
+                                    currentUser: widget.currentUser,
+                                    firestore: widget.firestore,
                                   )));
                     },
                     splashColor: Colors.transparent,

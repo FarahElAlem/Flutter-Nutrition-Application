@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:nutrition_app_flutter/demo/placeholder.dart';
 import 'package:nutrition_app_flutter/pages/dashboard/dashboard.dart';
@@ -7,10 +8,10 @@ import 'package:nutrition_app_flutter/pages/search/result.dart';
 import 'package:nutrition_app_flutter/pages/search/search.dart';
 
 class Home extends StatefulWidget {
-  Home({this.hasAccount});
+  Home({this.currentUser});
 
   Firestore firestore = Firestore.instance;
-  bool hasAccount;
+  FirebaseUser currentUser;
 
   @override
   _HomeState createState() => new _HomeState();
@@ -126,14 +127,13 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
     super.initState();
 
     widget.firestore.settings(persistenceEnabled: true);
-    bool hasAccount = widget.hasAccount;
 
     // Define the children to the tabbed body here
     _bodyChildren = [
       Dashboard(firestore: widget.firestore),
-      Search(foodGroupNames: foodGroupNames, firestore: widget.firestore),
+      Search(foodGroupNames: foodGroupNames, firestore: widget.firestore, currentUser: widget.currentUser),
       PlaceholderWidget(Colors.green),
-      LoginPage(firestore: widget.firestore, hasAccount: widget.hasAccount,)
+      LoginPage(firestore: widget.firestore, currentUser: widget.currentUser)
     ];
 
     // Gather our information from firestore here

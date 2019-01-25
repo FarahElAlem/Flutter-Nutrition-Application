@@ -9,11 +9,10 @@ import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
-  LoginPage({this.firestore, this.currentUser, this.hasAccount});
+  LoginPage({this.firestore, this.currentUser});
 
   Firestore firestore;
   FirebaseUser currentUser;
-  bool hasAccount;
 
   @override
   _LoginPageState createState() =>
@@ -33,27 +32,6 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
     _emailTextFieldController.dispose();
     _passwordTextFieldController.dispose();
-  }
-
-  Future<String> get _localPath async {
-    final directory = await getTemporaryDirectory();
-    return directory.path;
-  }
-
-  Future<File> get _localFile async {
-    final path = await _localPath;
-    File file = File('$path/assets/userdata.json');
-    return (file == null) ? file.create() : file;
-  }
-
-  Future<File> writeFile(String text) async {
-    final file = await _localFile;
-    return file.writeAsString('$text\r\n', mode: FileMode.append);
-  }
-
-  Future<String> readFile() async {
-    final file = await _localFile;
-    return file.readAsString();
   }
 
   void _handleAccountCreation(String email, String password) {
@@ -76,8 +54,6 @@ class _LoginPageState extends State<LoginPage> {
 
       widget.firestore.collection('USERS').document(email).setData(data);
       Navigator.pop(context);
-      widget.hasAccount = true;
-
       setState(() {});
     });
   }
@@ -162,6 +138,6 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return widget.hasAccount ? _buildProfilePage() : _buildLoginPage();
+    return (currentUser == null) ? _buildLoginPage() : _buildProfilePage();
   }
 }
