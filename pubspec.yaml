@@ -4,7 +4,7 @@ description: A new Flutter project.
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.0.0-dev.68.0 <3.0.0"
+  sdk: ">=2.1.0 <3.0.0"
 
 dependencies:
   flutter:
@@ -12,8 +12,9 @@ dependencies:
   flutter_staggered_grid_view: ^0.2.6
 
   path_provider: ^0.4.1
-  cloud_firestore: ^0.8.2
+  cloud_firestore: ^0.8.2+3
   firebase_core: ^0.2.5
+  firebase_auth: ^0.6.6
 
 dev_dependencies:
   flutter_test:
@@ -23,7 +24,7 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/flutter.png
     - assets/config.json
+    - assets/userdata.json
     - assets/testnutrients.json
     - assets/testrecipes.json

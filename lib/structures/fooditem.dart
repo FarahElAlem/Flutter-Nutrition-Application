@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 /// TODO Change database to support  decimal pt precision
 /// TODO Also fill NULL values in with 0.0
 /// TODO Come back to formatting
-/// TODO Fill [Vitamin D, Vitamin B6] nulls
+/// TODO Fill [Vitamin D, Vitamin B6]
 class FoodItem {
   Map nutritionItems = new Map();
   Map detailItems = new Map();

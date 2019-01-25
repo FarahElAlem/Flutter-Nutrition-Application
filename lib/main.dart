@@ -1,101 +1,106 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
+import 'package:path_provider/path_provider.dart';
+
 import 'package:flutter/material.dart';
-import 'package:nutrition_app_flutter/globals.dart';
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:nutrition_app_flutter/pages/home.dart';
 
-import 'package:firebase_core/firebase_core.dart';
+final FirebaseAuth _auth = FirebaseAuth.instance;
 
-import 'package:flutter/services.dart' show rootBundle;
-import 'package:nutrition_app_flutter/structures/fooditem.dart';
-
-/// Load data from config files and setup necessary items
-/// including the Firebase database connection.
-Future<void> main() async {
-  String data = await rootBundle.loadString('assets/config.json');
-  var jsonData = json.decode(data);
-
-  final FirebaseApp app = await FirebaseApp.configure(
-      name: 'db2',
-      options: FirebaseOptions(
-          googleAppID: jsonData['googleAppID'].toString(),
-          apiKey: jsonData['apiKey'].toString(),
-          databaseURL: jsonData['databaseURL'].toString()));
-
-  fdb = Firestore.instance;
-  fdb.settings(timestampsInSnapshotsEnabled: true);
-
+void main() {
   runApp(new MaterialApp(
-    home: new Splash(),
+    home: _getLandingPage(),
     routes: <String, WidgetBuilder>{
-      '/Home': (BuildContext context) => new Home(app: app)
+      '/Home': (BuildContext context) => new Home()
     },
   ));
 }
 
-/// Before the app is loaded, a logo splash screen is displayed.
-/// Note: Setup should be done during this time, and once it is complete the
-/// screen should vanish (such as loading the database, setting up final globals, etc.
-class Splash extends StatefulWidget {
-  @override
-  _SplashState createState() => new _SplashState();
+String getFileData(String path) {
+  rootBundle.loadString(path).then((String str) {
+    return str;
+  });
 }
 
-/// We create an async starTime() function that prelaods some global variables
-/// from the FireBase database
-class _SplashState extends State<Splash> {
-  startTime() async {
-    await fdb
-        .collection('FOODGROUP')
-        .getDocuments()
-        .then((data) => data.documents.forEach((doc) {
-              FOODGROUPNAMES.add([doc['Fd_Grp'], doc['FdGrp_Desc']]);
-            }));
-    print(FOODGROUPNAMES.toString());
+Future<String> get _localPath async {
+  final directory = await getApplicationDocumentsDirectory();
+  return directory.path;
+}
 
-    String data = await rootBundle.loadString('assets/testnutrients.json');
-    var jsonData = json.decode(data);
-    jsonData = jsonData['payload'];
-    for (var v in jsonData) {
-      FoodItem f = new FoodItem(v);
-      SAVEDNUTRIENTS.add(f);
-    }
+/// TODO Do this stuff
+Widget _getLandingPage() {
+  String filedata;
+  var userdata = json.decode(filedata);
 
-    data = await rootBundle.loadString('assets/testrecipes.json');
-    jsonData = json.decode(data);
-    SAVEDRECIPES = jsonData['payload'];
-
-    navigationPage();
+  bool hasAccount;
+  if (userdata['email'] == '') {
+    hasAccount = false;
+  } else {
+    hasAccount = true;
   }
 
-  void navigationPage() {
-    Navigator.of(context).pushReplacementNamed('/Home');
-  }
+  return StreamBuilder<FirebaseUser>(
+    stream: FirebaseAuth.instance.onAuthStateChanged,
+    builder: (BuildContext context, snapshot) {
+      if (snapshot.connectionState == ConnectionState.waiting) {
+        return new SplashScreenAuth();
+      } else {
+        if (snapshot.hasData) {
+          return new Home(
+            hasAccount: hasAccount,
+          );
+        } else {
+          return LoginPage(userdata: userdata);
+        }
+      }
+    },
+  );
+}
 
+class SplashScreenAuth extends StatelessWidget {
   @override
-  void initState() {
-    super.initState();
-    startTime();
+  Widget build(BuildContext context) {
+    return new Scaffold(
+      appBar: AppBar(),
+      body: Center(
+        child: CircularProgressIndicator(),
+      ),
+    );
+  }
+}
+
+class LoginPage extends StatelessWidget {
+  LoginPage({this.userdata});
+
+  var userdata;
+
+  Future<FirebaseUser> signInWithFirestore() async {
+    FirebaseUser user;
+    if (userdata['email'] == '') {
+      user = await _auth.signInAnonymously();
+    } else {
+      user = await _auth.signInWithEmailAndPassword(
+          email: userdata['email'], password: userdata['password']);
+    }
+    return user;
   }
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      body: new Center(
-        child: new Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            new CircularProgressIndicator(
-              semanticsValue: 'Progress',
-            ),
-            new Padding(
-              padding: EdgeInsets.all(40.0),
-              child: Text('Loading...'),
-            )
-          ],
+    return Scaffold(
+      appBar: AppBar(),
+      body: Center(
+        child: MaterialButton(
+          onPressed: () {
+            signInWithFirestore();
+          },
+          color: Colors.purple,
+          child: Text('Login!'),
         ),
       ),
     );

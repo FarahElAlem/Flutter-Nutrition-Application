@@ -1,5 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:nutrition_app_flutter/globals.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:nutrition_app_flutter/pages/search/result.dart';
 
@@ -9,6 +9,11 @@ import 'package:nutrition_app_flutter/pages/search/result.dart';
 /// - Result Gathering
 ///     - Result of a query gathered from Firebase that users can interact with.
 class Search extends StatefulWidget {
+  Search({this.foodGroupNames, this.firestore});
+
+  Firestore firestore;
+  List<List<String>> foodGroupNames;
+
   @override
   _SearchState createState() => _SearchState();
 }
@@ -39,7 +44,7 @@ class _SearchState extends State<Search> {
                           context,
                           MaterialPageRoute(
                               builder: (context) => Result(
-                                    token: FOODGROUPNAMES[index][0],
+                                    token: widget.foodGroupNames[index][0],
                                     type: 0,
                                   )));
                     },
@@ -50,7 +55,7 @@ class _SearchState extends State<Search> {
                           child: new Padding(
                         padding: EdgeInsets.all(8.0),
                         child: new Text(
-                          FOODGROUPNAMES[index][1],
+                          widget.foodGroupNames[index][1],
                           textAlign: TextAlign.center,
                         ),
                       )),

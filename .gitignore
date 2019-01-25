@@ -73,4 +73,5 @@ build/
 
 # Data
 assets/config.json
+assets/userdata.json
 python/configs/nutrition-app-flutter-684d31b499fb.json

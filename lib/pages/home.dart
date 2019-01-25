@@ -1,19 +1,16 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:nutrition_app_flutter/demo/placeholder.dart';
-import 'package:nutrition_app_flutter/globals.dart';
 import 'package:nutrition_app_flutter/pages/dashboard/dashboard.dart';
-import 'package:nutrition_app_flutter/pages/profile/profile.dart';
+import 'package:nutrition_app_flutter/pages/profile/login.dart';
 import 'package:nutrition_app_flutter/pages/search/result.dart';
 import 'package:nutrition_app_flutter/pages/search/search.dart';
 
-import 'package:firebase_core/firebase_core.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 class Home extends StatefulWidget {
-  Home({this.app});
+  Home({this.hasAccount});
 
-  /// Firebase Database init
-  final FirebaseApp app;
+  Firestore firestore = Firestore.instance;
+  bool hasAccount;
 
   @override
   _HomeState createState() => new _HomeState();
@@ -23,13 +20,11 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   /// Current widget index.
   int _currentIndex = 0;
 
+  /// List of foodgroupnames for subpages
+  List<List<String>> foodGroupNames = [];
+
   /// List of children that define the pages that a user sees. WIP.
-  List<Widget> _bodyChildren = [
-    Dashboard(),
-    Search(),
-    PlaceholderWidget(Colors.green),
-    Profile()
-  ];
+  List<Widget> _bodyChildren = [];
 
   /// This is used so that the AppBar can determine whether or not to
   /// display the correct information when searching.
@@ -124,6 +119,31 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
               )
       ],
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    widget.firestore.settings(persistenceEnabled: true);
+    bool hasAccount = widget.hasAccount;
+
+    // Define the children to the tabbed body here
+    _bodyChildren = [
+      Dashboard(firestore: widget.firestore),
+      Search(foodGroupNames: foodGroupNames, firestore: widget.firestore),
+      PlaceholderWidget(Colors.green),
+      LoginPage(firestore: widget.firestore, hasAccount: widget.hasAccount,)
+    ];
+
+    // Gather our information from firestore here
+    Firestore.instance
+        .collection('FOODGROUP')
+        .orderBy('FdGrp_Desc')
+        .getDocuments()
+        .then((data) => data.documents.forEach((doc) {
+              foodGroupNames.add([doc['Fd_Grp'], doc['FdGrp_Desc']]);
+            }));
   }
 
   @override

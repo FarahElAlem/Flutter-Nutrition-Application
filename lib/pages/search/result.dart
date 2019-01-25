@@ -1,9 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:nutrition_app_flutter/globals.dart';
+
 import 'package:nutrition_app_flutter/pages/search/details.dart';
 import 'package:nutrition_app_flutter/structures/fooditem.dart';
 
@@ -57,12 +56,12 @@ class _ResultState extends State<Result> {
     token = token.toUpperCase();
 
     if (type == 1) {
-      stream = fdb
+      stream = Firestore.instance
           .collection('ABBREV')
           .where('Shrt_Desc', isEqualTo: token)
           .snapshots();
     } else {
-      stream = fdb
+      stream = Firestore.instance
           .collection('ABBREV')
           .where('Fd_Grp', isEqualTo: token)
           .limit(100)
@@ -163,10 +162,8 @@ class _ItemView extends State<ListItem> {
               onPressed: () {
                 if (isAdd) {
                   isAdd = !isAdd;
-                  SAVEDNUTRIENTS.add(this.foodItem);
                 } else {
                   isAdd = !isAdd;
-                  SAVEDNUTRIENTS.remove(this.foodItem);
                 }
                 setState(() {});
               })

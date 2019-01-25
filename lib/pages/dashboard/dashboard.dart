@@ -1,9 +1,14 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 /// class Dashboard creates a StaggeredGridView of menu items for
 /// the user in a fun-like fashion. TODO a lot needs to be customized here.
 class Dashboard extends StatelessWidget {
+  Dashboard({this.firestore});
+
+  Firestore firestore;
+
   // Width, Height
   List<StaggeredTile> _staggeredTiles = [
     const StaggeredTile.count(4, 2),
