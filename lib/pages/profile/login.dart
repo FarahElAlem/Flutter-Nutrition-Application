@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:nutrition_app_flutter/pages/profile/profile.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({this.firestore, this.currentUser, this.hasAccount});
@@ -62,9 +63,10 @@ class _LoginPageState extends State<LoginPage> {
         .then((FirebaseUser firebaseUser) {
       currentUser = firebaseUser;
 
-      Map<String, Object> write = Map();
-      write['email'] = email;
-      write['password'] = password;
+      SharedPreferences.getInstance().then((SharedPreferences prefs) {
+        prefs.setString('email', email);
+        prefs.setString('password', password);
+      });
 
       Map<String, Object> data = Map();
       data['email'] = email;
@@ -76,9 +78,7 @@ class _LoginPageState extends State<LoginPage> {
       Navigator.pop(context);
       widget.hasAccount = true;
 
-      writeFile(json.encode(write).toString());
-      setState(() {
-      });
+      setState(() {});
     });
   }
 

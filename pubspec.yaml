@@ -15,6 +15,7 @@ dependencies:
   cloud_firestore: ^0.8.2+3
   firebase_core: ^0.2.5
   firebase_auth: ^0.6.6
+  shared_preferences: ^0.5.0
 
 dev_dependencies:
   flutter_test:
@@ -25,6 +26,5 @@ flutter:
   uses-material-design: true
   assets:
     - assets/config.json
-    - assets/userdata.json
     - assets/testnutrients.json
     - assets/testrecipes.json
