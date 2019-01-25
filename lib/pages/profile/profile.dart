@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:nutrition_app_flutter/pages/search/result.dart';
 
 class ProfilePage extends StatefulWidget {
   ProfilePage({this.firestore, this.currentUser});
@@ -21,18 +20,15 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Widget _buildSavedNutrientsSection() {
-    return new ListView.builder(itemBuilder: (BuildContext context, int index) {
-      var snapshots = widget.firestore.collection('USERS').document(widget.currentUser.email).snapshots();
-      return new ListItem();
-    });
+    return new Text('Saved Nutrients');
   }
 
   Widget _buildSavedRecipesSection() {
-    return null;
+    return new Text('Saved Recipes');
   }
 
   Widget _buildUserInformationSection() {
-    return null;
+    return new Text('User Info');
   }
 
   @override

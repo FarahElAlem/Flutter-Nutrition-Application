@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:nutrition_app_flutter/pages/profile/profile.dart';
+import 'package:path_provider/path_provider.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({this.firestore, this.currentUser, this.hasAccount});
@@ -33,6 +34,27 @@ class _LoginPageState extends State<LoginPage> {
     _passwordTextFieldController.dispose();
   }
 
+  Future<String> get _localPath async {
+    final directory = await getTemporaryDirectory();
+    return directory.path;
+  }
+
+  Future<File> get _localFile async {
+    final path = await _localPath;
+    File file = File('$path/assets/userdata.json');
+    return (file == null) ? file.create() : file;
+  }
+
+  Future<File> writeFile(String text) async {
+    final file = await _localFile;
+    return file.writeAsString('$text\r\n', mode: FileMode.append);
+  }
+
+  Future<String> readFile() async {
+    final file = await _localFile;
+    return file.readAsString();
+  }
+
   void _handleAccountCreation(String email, String password) {
     _onLoading();
     FirebaseAuth.instance
@@ -40,20 +62,23 @@ class _LoginPageState extends State<LoginPage> {
         .then((FirebaseUser firebaseUser) {
       currentUser = firebaseUser;
 
+      Map<String, Object> write = Map();
+      write['email'] = email;
+      write['password'] = password;
+
       Map<String, Object> data = Map();
       data['email'] = email;
       data['password'] = password;
-
-      final file = File('assets/userdata.json');
-      file.writeAsString(json.encode(data).toString());
-
       data['nutrients'] = new List();
       data['recipes'] = new List();
 
       widget.firestore.collection('USERS').document(email).setData(data);
       Navigator.pop(context);
-
       widget.hasAccount = true;
+
+      writeFile(json.encode(write).toString());
+      setState(() {
+      });
     });
   }
 

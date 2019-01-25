@@ -12,38 +12,48 @@ import 'package:nutrition_app_flutter/pages/home.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 
-void main() {
+Future<void> main() async {
+  bool hasAccount;
+  var userdata;
+  String filedata = await readFile();
+  if(filedata != null) {
+    userdata = json.decode(filedata);
+    if (userdata['email'] == '') {
+      hasAccount = false;
+    } else {
+      hasAccount = true;
+    }
+  } else {
+    userdata = null;
+  }
+
   runApp(new MaterialApp(
-    home: _getLandingPage(),
+    home: _getLandingPage(userdata, hasAccount),
     routes: <String, WidgetBuilder>{
       '/Home': (BuildContext context) => new Home()
     },
   ));
 }
 
-String getFileData(String path) {
-  rootBundle.loadString(path).then((String str) {
-    return str;
-  });
-}
-
 Future<String> get _localPath async {
-  final directory = await getApplicationDocumentsDirectory();
+  final directory = await getTemporaryDirectory();
   return directory.path;
 }
 
-/// TODO Do this stuff
-Widget _getLandingPage() {
-  String filedata;
-  var userdata = json.decode(filedata);
+Future<File> get _localFile async {
+  final path = await _localPath;
+  File file = File('$path/assets/userdata.json');
+  return (file == null) ? file.create() : file;
+}
 
-  bool hasAccount;
-  if (userdata['email'] == '') {
-    hasAccount = false;
-  } else {
-    hasAccount = true;
-  }
+/// Figure out how to store locally on file system.
+/// TODO https://pub.dartlang.org/packages/sqflite
+Future<String> readFile() async {
+  final file = await _localFile;
+  return file.readAsString();
+}
 
+Widget _getLandingPage(var userdata, bool hasAccount) {
   return StreamBuilder<FirebaseUser>(
     stream: FirebaseAuth.instance.onAuthStateChanged,
     builder: (BuildContext context, snapshot) {
@@ -81,7 +91,7 @@ class LoginPage extends StatelessWidget {
 
   Future<FirebaseUser> signInWithFirestore() async {
     FirebaseUser user;
-    if (userdata['email'] == '') {
+    if (userdata == null) {
       user = await _auth.signInAnonymously();
     } else {
       user = await _auth.signInWithEmailAndPassword(
