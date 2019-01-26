@@ -1,69 +1,34 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:nutrition_app_flutter/globals.dart';
-import 'package:nutrition_app_flutter/pages/profile/moreinformation.dart';
-import 'package:nutrition_app_flutter/pages/search/result.dart';
 
+class ProfilePage extends StatefulWidget {
+  ProfilePage({this.firestore, this.currentUser});
 
-/// Displays a user's profile with their information and their saved items
-/// TODO Add login system
-class Profile extends StatelessWidget {
+  Firestore firestore;
+  FirebaseUser currentUser;
 
-  /// Helper Function that returns the saved nutrients of the user
-  Widget _getFavoriteNutrients(BuildContext context) {
-    return new Container(
-        constraints: BoxConstraints(
-            maxHeight: (60.0 *
-                ((SAVEDNUTRIENTS.length < 3) ? SAVEDNUTRIENTS.length : 3)),
-            maxWidth: double.maxFinite),
-        child: ListView.builder(
-            physics: NeverScrollableScrollPhysics(),
-            padding: const EdgeInsets.all(10.0),
-            itemCount:
-                ((SAVEDNUTRIENTS.length < 3) ? SAVEDNUTRIENTS.length : 3),
-            itemBuilder: (context, i) {
-              return new ListItem(
-                foodItem: SAVEDNUTRIENTS[i],
-                type: 1,
-              );
-            }));
+  @override
+  _ProfilePageState createState() => new _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+
+  @override
+  void initState() {
+    super.initState();
   }
 
-  /// Helper Function that returns the saved recipes of the user
-  Widget _getFavoriteRecipes(BuildContext context) {
-    return new Container(
-        constraints: BoxConstraints(
-            maxHeight:
-                (60.0 * ((SAVEDRECIPES.length < 3) ? SAVEDRECIPES.length : 3)),
-            maxWidth: double.maxFinite),
-        child: ListView.builder(
-            physics: NeverScrollableScrollPhysics(),
-            padding: const EdgeInsets.all(10.0),
-            itemCount: ((SAVEDRECIPES.length < 3) ? SAVEDRECIPES.length : 3),
-            itemBuilder: (context, i) {
-              return new ListTile(
-                title: new Text(SAVEDRECIPES[i]['title']),
-                trailing: new Icon(
-                  Icons.star,
-                  color: Colors.amber,
-                ),
-              );
-            }));
+  Widget _buildSavedNutrientsSection() {
+    return new Text('Saved Nutrients');
   }
 
-  /// Returns the 'more' button
-  Widget _showMoreNutrientButton(BuildContext context) {
-    return new Flex(
-      direction: Axis.horizontal,
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: <Widget>[
-        new MaterialButton(
-          onPressed: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileInfo(type: 0,)));
-          },
-          child: new Text('More...'),
-        )
-      ],
-    );
+  Widget _buildSavedRecipesSection() {
+    return new Text('Saved Recipes');
+  }
+
+  Widget _buildUserInformationSection() {
+    return new Text('User Info');
   }
 
   @override
@@ -73,68 +38,18 @@ class Profile extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          new Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              new Center(
-                child: new Icon(
-                  Icons.account_circle,
-                  size: 160.0,
-                ),
-              )
-            ],
-          ),
-          new Padding(
-            padding: EdgeInsets.all(24.0),
-            child: new Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                new Text('Name:\n' + 'John Doe'),
-                new Text('Age:\n' + '27')
-              ],
-            ),
-          ),
-          new Padding(
-            padding: EdgeInsets.all(24.0),
-            child: new Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                new Text('Favorite Recipe:\n' + 'Green Eggs and Ham'),
-                new Text('Most Recent Serach:\n' + 'Chocolate covered nuts')
-              ],
-            ),
-          ),
+          _buildUserInformationSection(),
           new Divider(
             height: 1.0,
           ),
-          new Container(
-            padding: new EdgeInsets.all(8.0),
-            child: new Text(
-              'Favorite Nutrients:',
-              textAlign: TextAlign.start,
-            ),
-          ),
-          _getFavoriteNutrients(context),
-          (SAVEDNUTRIENTS.length > 3)
-              ? _showMoreNutrientButton(context)
-              : new Container(
-                  width: 0,
-                  height: 0,
-                ),
+          _buildSavedNutrientsSection(),
           new Divider(
             height: 1.0,
           ),
-          new Container(
-            padding: new EdgeInsets.all(8.0),
-            child: new Text(
-              'Favorite Recipes:',
-              textAlign: TextAlign.start,
-            ),
-          ),
-          _getFavoriteRecipes(context)
+          _buildSavedRecipesSection()
         ],
       ),
     );
   }
+
 }

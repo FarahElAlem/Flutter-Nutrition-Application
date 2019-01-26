@@ -10,12 +10,11 @@ class Details extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Dialog(
-      child: Container(
-        padding: EdgeInsets.all(4.0),
-        child: new Column(
-          children: <Widget>[new Flexible(child: foodItem.buildListView())],
-        ),
+    return Scaffold(
+      appBar: AppBar(),
+      body: Container(
+        padding: EdgeInsets.all(24.0),
+        child: foodItem.buildListView(),
       ),
     );
   }

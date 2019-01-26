@@ -1,20 +1,18 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:nutrition_app_flutter/demo/placeholder.dart';
-import 'package:nutrition_app_flutter/globals.dart';
 import 'package:nutrition_app_flutter/pages/dashboard/dashboard.dart';
-import 'package:nutrition_app_flutter/pages/profile/profile.dart';
+import 'package:nutrition_app_flutter/pages/profile/login.dart';
 import 'package:nutrition_app_flutter/pages/search/result.dart';
 import 'package:nutrition_app_flutter/pages/search/search.dart';
-
-import 'package:firebase_core/firebase_core.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-
+import 'package:nutrition_app_flutter/globals.dart';
 
 class Home extends StatefulWidget {
-  Home({this.app});
+  Home({this.currentUser});
 
-  /// Firebase Database init
-  final FirebaseApp app;
+  Firestore firestore = Firestore.instance;
+  FirebaseUser currentUser;
 
   @override
   _HomeState createState() => new _HomeState();
@@ -24,13 +22,14 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   /// Current widget index.
   int _currentIndex = 0;
 
+  /// Controller for tabview
+  TabController controller;
+
+  /// List of foodgroupnames for subpages
+  List<List<String>> foodGroupNames = [];
+
   /// List of children that define the pages that a user sees. WIP.
-  List<Widget> _bodyChildren = [
-    Dashboard(),
-    Search(),
-    PlaceholderWidget(Colors.green),
-    Profile()
-  ];
+  List<Widget> _bodyChildren = [];
 
   /// This is used so that the AppBar can determine whether or not to
   /// display the correct information when searching.
@@ -64,6 +63,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   /// current index to display the correct page.
   void onTabTapped(int index) {
     setState(() {
+      controller.index = index;
       _currentIndex = index;
       if (_currentIndex == 0 || _currentIndex == 3) {
         _isSearching = false;
@@ -87,12 +87,13 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                     this._appBarTitle = new Center(
                       child: new Text(_appBarTitles[_currentIndex]),
                     );
-                    Navigator.push(context, MaterialPageRoute(
-                        builder: (context) =>
-                            Result(token: token.toString(), type: 1)));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                Result(token: token.toString(), type: 1)));
                   },
-                  decoration:
-                  new InputDecoration(hintText: 'Search...'));
+                  decoration: new InputDecoration(hintText: 'Search...'));
             } else {
               this._isSearching = false;
               this._searchIcon = new Icon(Icons.search);
@@ -112,25 +113,62 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
       leading: _leadingIcons[_currentIndex],
       title: (!_isSearching)
           ? new Center(
-        child: new Text(_appBarTitles[_currentIndex]),
-      )
+              child: getHeadingText(_appBarTitles[_currentIndex]),
+            )
           : _appBarTitle,
       actions: <Widget>[
         (_currentIndex == 1 || _currentIndex == 2)
             ? _buildSearchBar()
             : new Container(
-          width: 0,
-          height: 0,
-        )
+                width: 0,
+                height: 0,
+              )
       ],
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    widget.firestore.settings(persistenceEnabled: true);
+    controller = new TabController(length: 4, vsync: this);
+
+    // Define the children to the tabbed body here
+    _bodyChildren = [
+      Dashboard(firestore: widget.firestore),
+      Search(
+          foodGroupNames: foodGroupNames,
+          firestore: widget.firestore,
+          currentUser: widget.currentUser),
+      PlaceholderWidget(Colors.green),
+      LoginPage(firestore: widget.firestore, currentUser: widget.currentUser)
+    ];
+
+    // Gather our information from firestore here
+    Firestore.instance
+        .collection('FOODGROUP')
+        .orderBy('FdGrp_Desc')
+        .getDocuments()
+        .then((data) => data.documents.forEach((doc) {
+              foodGroupNames.add([doc['Fd_Grp'], doc['FdGrp_Desc']]);
+            }));
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: _buildDashboardAppBar(),
-      body: _bodyChildren[_currentIndex],
+      body: new TabBarView(
+        physics: new NeverScrollableScrollPhysics(),
+        children: _bodyChildren,
+        controller: controller,
+      ),
       bottomNavigationBar: new BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         onTap: onTabTapped,
@@ -138,7 +176,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
         items: [
           new BottomNavigationBarItem(
             icon: Icon(Icons.dashboard),
-            title: Text('Dashboard'),
+            title: getIconText('Dashboard'),
           ),
 
           /// Search Navigation Bar Item:
@@ -147,7 +185,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
           /// their personal list.
           new BottomNavigationBarItem(
             icon: Icon(Icons.fastfood),
-            title: Text('Nutrition'),
+            title: getIconText('Nutrition'),
           ),
 
           /// My Items Navigation Bar Item:
@@ -157,14 +195,14 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
           /// lists by name for future reference.
           new BottomNavigationBarItem(
             icon: Icon(Icons.receipt),
-            title: Text('Recipes'),
+            title: getIconText('Recipes'),
           ),
 
           /// Profile Navigation Bar Item:
           /// TODO
           new BottomNavigationBarItem(
             icon: Icon(Icons.account_circle),
-            title: Text('Profile'),
+            title: getIconText('Profile'),
           )
         ],
       ),

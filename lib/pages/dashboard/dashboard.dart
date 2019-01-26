@@ -1,16 +1,20 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 /// class Dashboard creates a StaggeredGridView of menu items for
 /// the user in a fun-like fashion. TODO a lot needs to be customized here.
 class Dashboard extends StatelessWidget {
+  Dashboard({this.firestore});
+
+  Firestore firestore;
+
   // Width, Height
   List<StaggeredTile> _staggeredTiles = [
     const StaggeredTile.count(4, 2),
     const StaggeredTile.count(2, 2),
     const StaggeredTile.count(2, 2),
-    const StaggeredTile.count(3, 2),
-    const StaggeredTile.count(1, 2),
+    const StaggeredTile.count(4, 2),
   ];
 
   // Todo: Design Cards based on attributes
@@ -51,14 +55,6 @@ class Dashboard extends StatelessWidget {
         child: new ListTile(
           leading: Icon(Icons.new_releases),
           title: Text('Checkout some of our new stuff!'),
-        ),
-      ),
-    ),
-    Card(
-      color: Colors.purple,
-      child: new Center(
-        child: new ListTile(
-          title: Text('I exist!'),
         ),
       ),
     ),
