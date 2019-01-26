@@ -76,3 +76,5 @@
 - "Hello User" Splash Screen for returning users
 - "Welcome User" Splash Screen for new users
 - Login Button for users who got logged out but already have an account
+- Hero buttons, 3/4ths image 1/4 text on item selection
+- Clean up recipes and nutrition for better user experience
