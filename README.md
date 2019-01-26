@@ -73,3 +73,6 @@
 - ~~Allow users to build a profile and share their recipes and nutrition lists~~
 - Privacy Policy
 - First Name Register Field
+- "Hello User" Splash Screen for returning users
+- "Welcome User" Splash Screen for new users
+- Login Button for users who got logged out but already have an account
