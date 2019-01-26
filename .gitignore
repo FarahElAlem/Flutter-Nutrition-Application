@@ -72,6 +72,7 @@ build/
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
 
 # Data
+fonts/
 assets/config.json
 assets/userdata.json
-python/configs/nutrition-app-flutter-684d31b499fb.json
+python/configs/

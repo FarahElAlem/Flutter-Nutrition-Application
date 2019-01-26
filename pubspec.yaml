@@ -24,7 +24,26 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  fonts:
+  - family: Montserrat
+    fonts:
+    - asset: fonts/Montserrat-Regular.ttf
+      weight: 400
+    - asset: fonts/Montserrat-Italic.ttf
+      weight: 400
+      style: italic
+    - asset: fonts/Montserrat-Medium.ttf
+      weight: 500
+    - asset: fonts/Montserrat-MediumItalic.ttf
+      weight: 500
+      style: italic
+  - family: RobotoSlab
+    fonts:
+    - asset: fonts/RobotoSlab-Regular.ttf
+      weight: 400
+    - asset: fonts/RobotoSlab-Bold.ttf
+      weight: 600
   assets:
-    - assets/config.json
-    - assets/testnutrients.json
-    - assets/testrecipes.json
+  - assets/config.json
+  - assets/testnutrients.json
+  - assets/testrecipes.json

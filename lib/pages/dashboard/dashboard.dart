@@ -14,8 +14,7 @@ class Dashboard extends StatelessWidget {
     const StaggeredTile.count(4, 2),
     const StaggeredTile.count(2, 2),
     const StaggeredTile.count(2, 2),
-    const StaggeredTile.count(3, 2),
-    const StaggeredTile.count(1, 2),
+    const StaggeredTile.count(4, 2),
   ];
 
   // Todo: Design Cards based on attributes
@@ -56,14 +55,6 @@ class Dashboard extends StatelessWidget {
         child: new ListTile(
           leading: Icon(Icons.new_releases),
           title: Text('Checkout some of our new stuff!'),
-        ),
-      ),
-    ),
-    Card(
-      color: Colors.purple,
-      child: new Center(
-        child: new ListTile(
-          title: Text('I exist!'),
         ),
       ),
     ),

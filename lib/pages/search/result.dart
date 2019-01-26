@@ -1,8 +1,7 @@
-import 'dart:async';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:nutrition_app_flutter/globals.dart';
 
 import 'package:nutrition_app_flutter/pages/search/details.dart';
 import 'package:nutrition_app_flutter/structures/fooditem.dart';
@@ -179,10 +178,12 @@ class _ItemView extends State<ListItem> {
   Widget build(BuildContext context) {
     return new ListTile(
       onTap: () async {
-        await showDialog(context: context, child: Details(foodItem: foodItem));
+        Navigator.push(context,
+            MaterialPageRoute(
+                builder: (context) => Details(foodItem: foodItem,)));
       },
-      leading: new Text(foodItem.detailItems['FoodGroup']['value']),
-      title: new Text(foodItem.detailItems['ShortDescription']['value']),
+      leading: getIconText(foodItem.detailItems['FoodGroup']['value']),
+      title: getIconText(foodItem.detailItems['ShortDescription']['value']),
       trailing: new Column(
         mainAxisAlignment: MainAxisAlignment.end,
         mainAxisSize: MainAxisSize.max,
