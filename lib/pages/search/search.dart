@@ -39,11 +39,12 @@ class _SearchState extends State<Search> {
           child: new Container(
             padding: new EdgeInsets.fromLTRB(4.0, 0.0, 4.0, 4.0),
             child: new StaggeredGridView.countBuilder(
-              crossAxisCount: 3,
+              crossAxisCount: 2,
               itemCount: 24,
               itemBuilder: (BuildContext context, int index) => new InkWell(
                     onTap: () {
-                      Navigator.push(context,
+                      Navigator.push(
+                          context,
                           MaterialPageRoute(
                               builder: (context) => Result(
                                     token: widget.foodGroupNames[index][0],
@@ -55,11 +56,38 @@ class _SearchState extends State<Search> {
                     splashColor: Colors.transparent,
                     child: new Card(
                       color: Colors.blue,
-                      child: new Center(
-                          child: new Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: getMainContentText(widget.foodGroupNames[index][1], TextAlign.center),
-                      )),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          Expanded(
+                            flex: 4,
+                            // Image Goes Here...
+                            child: getMainContentText(
+                                widget.foodGroupNames[index][1],
+                                TextAlign.center),
+                          ),
+                          Expanded(
+                            flex: 1,
+                            child: SizedBox.expand(
+                              child: Material(
+                                color: Colors.green,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: <Widget>[
+                                    Padding(
+                                      padding: EdgeInsets.fromLTRB(12.0, 0.0, 12.0, 0.0),
+                                      child: getIconText(
+                                          widget.foodGroupNames[index][1], TextAlign.center),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            )
+                          )
+                        ],
+                      ),
                     ),
                   ),
               staggeredTileBuilder: (int index) =>

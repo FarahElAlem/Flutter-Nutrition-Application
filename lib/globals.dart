@@ -43,10 +43,14 @@ Widget getMainContentText(String text,
   );
 }
 
-Widget getIconText(String text) {
-  return Text(text, style: iconTextStyle);
+Widget getIconText(String text, [TextAlign textAlign = TextAlign.start]) {
+  return Text(text, style: iconTextStyle, textAlign: textAlign);
 }
 
 Widget getDetailsText(String text, [TextAlign textAlign = TextAlign.start]) {
-  return Text(text, style: detailsTextStyle);
+  return Text(
+    text,
+    style: detailsTextStyle,
+    textAlign: textAlign,
+  );
 }
