@@ -59,15 +59,17 @@
     - ~~Setup Recipe data (No easily avaliable information, working on this)~~
         - ~~Parsing the data now to accurately display nutritition information (done in python, not included in repo)~~
         - ~~Parsed data, but I have realized that Cloud Firestore might be a better option that a RTDB at this moment, am converting...~~
-        - Converted to cloud firestore, but am having some issues searching substrings. Have found some solutions, but I may have to upgrade my Cloud Firestore plan ($$$) to add the functionality.
+        - ~~Converted to cloud firestore, but am having some issues searching substrings. Have found some solutions, but I may have to upgrade my Cloud Firestore plan ($$$) to add the functionality~~.
 - ~~Allow search features to query nutrient data from firebase~~
     - ~~Allow users to search by food type~~
     - ~~Allow users to search by food name~~
-- Allow search features to query recipe data from firebase
-    - Allow users to search by recipe type
-    - Allow users to search by recipe name
-    - Allow users to search by ingredient(s)
+- ~~Allow search features to query recipe data from firebase~~
+    - ~~Allow users to search by recipe type~~
+    - ~~Allow users to search by recipe name~~
+    - ~~Allow users to search by ingredient(s)~~
 - Find or write a ML model, or find an easy way to map the nutrient values to the recipe ingredient values to identify similarity of words for recipie / nutrient db links
 - ~~Add profile page, holding user information and saved nutrient lists / favorited recipes~~
 - ~~Allow users to save lists of nutrients and/ favorite recipes~~
-- Allow users to build a profile and share their recipes and nutrition lists
+- ~~Allow users to build a profile and share their recipes and nutrition lists~~
+- Privacy Policy
+- First Name Register Field
