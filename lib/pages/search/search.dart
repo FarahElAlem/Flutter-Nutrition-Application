@@ -61,7 +61,6 @@ class _SearchState extends State<Search> {
                 },
                 splashColor: Colors.transparent,
                 child: new Card(
-                  color: Colors.blue,
                   shape:  RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15.0),
                   ),
@@ -88,7 +87,7 @@ class _SearchState extends State<Search> {
                           flex: 1,
                           child: SizedBox.expand(
                             child: Material(
-                              color: Colors.blue,
+                              color: Colors.green,
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment:

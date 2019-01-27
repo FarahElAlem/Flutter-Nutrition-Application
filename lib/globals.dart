@@ -18,6 +18,9 @@ TextStyle iconTextStyle = new TextStyle(
 TextStyle detailsTextStyle =
     new TextStyle(fontFamily: 'Montserrat', fontSize: 16.0);
 
+TextStyle detailsBoldTextStyle =
+new TextStyle(fontFamily: 'Montserrat', fontSize: 16.0, fontWeight: FontWeight.w500);
+
 Widget getHeadingText(String text, [TextAlign textAlign = TextAlign.start]) {
   return Text(
     text,
@@ -51,6 +54,14 @@ Widget getDetailsText(String text, [TextAlign textAlign = TextAlign.start]) {
   return Text(
     text,
     style: detailsTextStyle,
+    textAlign: textAlign,
+  );
+}
+
+Widget getDetailsBoldText(String text, [TextAlign textAlign = TextAlign.start]) {
+  return Text(
+    text,
+    style: detailsBoldTextStyle,
     textAlign: textAlign,
   );
 }

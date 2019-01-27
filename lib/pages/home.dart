@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:nutrition_app_flutter/demo/placeholder.dart';
 import 'package:nutrition_app_flutter/pages/dashboard/dashboard.dart';
 import 'package:nutrition_app_flutter/pages/profile/login.dart';
-import 'package:nutrition_app_flutter/pages/search/foodgroupresult.dart';
 import 'package:nutrition_app_flutter/pages/search/search.dart';
 import 'package:nutrition_app_flutter/globals.dart';
 

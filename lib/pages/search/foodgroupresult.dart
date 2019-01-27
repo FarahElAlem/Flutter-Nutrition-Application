@@ -37,7 +37,7 @@ class _FoodGroupResultState extends State<FoodGroupResult> {
   void initState() {
     super.initState();
 
-    if (widget.currentUser != null) {
+    if (widget.currentUser.email != '') {
       widget.firestore
           .collection('USERS')
           .document(widget.currentUser.email)
@@ -82,61 +82,6 @@ class _FoodGroupResultState extends State<FoodGroupResult> {
     );
   }
 
-  Widget _getBody() {
-    return new Column(
-      children: <Widget>[
-        Padding(
-          padding: EdgeInsets.all(8.0),
-          child: getHeadingText(widget.foodInformation[1], TextAlign.center),
-        ),
-        Flexible(
-          flex: 3,
-          child: Hero(
-            tag: widget.foodInformation[0],
-            child: widget.foodImage,
-          ),
-        ),
-        Flexible(
-          flex: 3,
-          child: SizedBox(
-              child: Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: Center(
-                    child: getIconText(widget.foodInformation[2]),
-                  ))),
-        ),
-        Flexible(
-          flex: 3,
-          child: StreamBuilder<QuerySnapshot>(
-            stream: stream,
-            builder:
-                (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-              if (snapshot.hasError)
-                return new Text('Error: ${snapshot.error}');
-              switch (snapshot.connectionState) {
-                case ConnectionState.waiting:
-                  return _buildLoadingScreen();
-                default:
-                  return new ListView(
-                    physics: NeverScrollableScrollPhysics(),
-                    children: snapshot.data.documents
-                        .map((DocumentSnapshot document) {
-                      return new ListItem(
-                        foodItem: new FoodItem(document),
-                        firestore: widget.firestore,
-                        userNutrients: widget.userNutrients,
-                        currentUser: widget.currentUser,
-                      );
-                    }).toList(),
-                  );
-              }
-            },
-          ),
-        )
-      ],
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     if (!_ready) {
@@ -160,9 +105,17 @@ class _FoodGroupResultState extends State<FoodGroupResult> {
                   Flexible(
                       child: Hero(
                     tag: widget.foodInformation[0],
-                    child: AspectRatio(
-                      aspectRatio: 16 / 9,
-                      child: widget.foodImage,
+                    child: new AspectRatio(
+                      aspectRatio: 16 / 8,
+                      child: new Container(
+                        decoration: new BoxDecoration(
+                            image: new DecorationImage(
+                              fit: BoxFit.cover,
+                              alignment: FractionalOffset.center,
+                              image: widget.foodImage.image,
+                            )
+                        ),
+                      ),
                     ),
                   )),
                   Flexible(
@@ -173,6 +126,7 @@ class _FoodGroupResultState extends State<FoodGroupResult> {
                               child: getIconText(widget.foodInformation[2]),
                             ))),
                   ),
+                  Divider(height: 1.0, color: Colors.black,),
                   StreamBuilder<QuerySnapshot>(
                     stream: stream,
                     builder: (BuildContext context,
@@ -236,7 +190,7 @@ class _ItemView extends State<ListItem> {
     if (widget.currentUser == null) {
       isFavorited = false;
     } else {
-      if (userNutrients.contains(
+      if (userNutrients != null && userNutrients.contains(
           foodItem.detailItems['ShortDescription']['value'].toString())) {
         isFavorited = true;
       } else {
@@ -263,6 +217,7 @@ class _ItemView extends State<ListItem> {
         mainAxisSize: MainAxisSize.max,
         children: <Widget>[
           new IconButton(
+              splashColor: (!isFavorited) ? Colors.amber : Colors.black12,
               icon: (!isFavorited)
                   ? Icon(
                       Icons.star,
