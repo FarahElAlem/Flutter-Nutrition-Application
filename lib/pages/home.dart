@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 
 import 'package:nutrition_app_flutter/demo/placeholder.dart';
 import 'package:nutrition_app_flutter/pages/dashboard/dashboard.dart';
-import 'package:nutrition_app_flutter/pages/profile/login.dart';
+import 'package:nutrition_app_flutter/pages/profile/register.dart';
 import 'package:nutrition_app_flutter/pages/search/search.dart';
 import 'package:nutrition_app_flutter/globals.dart';
 
@@ -181,7 +181,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
           currentUser: widget.currentUser,
           foodGroupImages: foodGroupImages),
       PlaceholderWidget(Colors.green),
-      LoginPage(firestore: widget.firestore, currentUser: widget.currentUser)
+      RegisterPage(firestore: widget.firestore, currentUser: widget.currentUser)
     ];
 
     _gatherData().whenComplete(() {

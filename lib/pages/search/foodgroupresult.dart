@@ -37,7 +37,7 @@ class _FoodGroupResultState extends State<FoodGroupResult> {
   void initState() {
     super.initState();
 
-    if (widget.currentUser.email != '') {
+    if (!widget.currentUser.isAnonymous) {
       widget.firestore
           .collection('USERS')
           .document(widget.currentUser.email)
@@ -57,7 +57,7 @@ class _FoodGroupResultState extends State<FoodGroupResult> {
     stream = Firestore.instance
         .collection('ABBREV')
         .where('Fd_Grp', isEqualTo: widget.foodInformation[0])
-        .limit(100)
+        .limit(50)
         .snapshots();
   }
 
@@ -110,11 +110,10 @@ class _FoodGroupResultState extends State<FoodGroupResult> {
                       child: new Container(
                         decoration: new BoxDecoration(
                             image: new DecorationImage(
-                              fit: BoxFit.cover,
-                              alignment: FractionalOffset.center,
-                              image: widget.foodImage.image,
-                            )
-                        ),
+                          fit: BoxFit.cover,
+                          alignment: FractionalOffset.center,
+                          image: widget.foodImage.image,
+                        )),
                       ),
                     ),
                   )),
@@ -126,7 +125,27 @@ class _FoodGroupResultState extends State<FoodGroupResult> {
                               child: getIconText(widget.foodInformation[2]),
                             ))),
                   ),
-                  Divider(height: 1.0, color: Colors.black,),
+                  Row(children: <Widget>[
+                    Expanded(
+                      child: new Container(
+                          margin:
+                              const EdgeInsets.only(left: 20.0, right: 10.0),
+                          child: Divider(
+                            color: Colors.black,
+                            height: 36,
+                          )),
+                    ),
+                    getDetailsBoldText('Browse Items'),
+                    Expanded(
+                      child: new Container(
+                          margin:
+                              const EdgeInsets.only(left: 20.0, right: 10.0),
+                          child: Divider(
+                            color: Colors.black,
+                            height: 36,
+                          )),
+                    ),
+                  ]),
                   StreamBuilder<QuerySnapshot>(
                     stream: stream,
                     builder: (BuildContext context,
@@ -190,8 +209,9 @@ class _ItemView extends State<ListItem> {
     if (widget.currentUser == null) {
       isFavorited = false;
     } else {
-      if (userNutrients != null && userNutrients.contains(
-          foodItem.detailItems['ShortDescription']['value'].toString())) {
+      if (userNutrients != null &&
+          userNutrients.contains(
+              foodItem.detailItems['ShortDescription']['value'].toString())) {
         isFavorited = true;
       } else {
         isFavorited = false;
@@ -228,7 +248,19 @@ class _ItemView extends State<ListItem> {
                       color: Colors.amber,
                     ),
               onPressed: () async {
-                if (isFavorited && widget.currentUser != null) {
+                if (widget.currentUser.isAnonymous) {
+                  final snackbar = SnackBar(
+                    content: getDetailsText(
+                      'You must register before you can do that!',
+                      TextAlign.center,
+                    ),
+                    duration: Duration(milliseconds: 1500),
+                    backgroundColor: Colors.green,
+                  );
+                  Scaffold.of(context).showSnackBar(snackbar);
+                }
+
+                if (isFavorited && !widget.currentUser.isAnonymous) {
                   isFavorited = false;
                   setState(() {});
 
@@ -248,7 +280,7 @@ class _ItemView extends State<ListItem> {
                       .collection('USERS')
                       .document(widget.currentUser.email)
                       .updateData(data);
-                } else if (!isFavorited && widget.currentUser != null) {
+                } else if (!isFavorited && !widget.currentUser.isAnonymous) {
                   isFavorited = true;
                   setState(() {});
 
