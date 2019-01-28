@@ -30,6 +30,8 @@ class _SearchState extends State<Search> {
     super.initState();
   }
 
+
+  /// TODO make db images 256px or 128px
   @override
   Widget build(BuildContext context) {
     return new Column(

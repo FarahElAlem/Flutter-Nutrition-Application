@@ -84,7 +84,18 @@ class _LoginPageState extends State<LoginPage> {
                             _passwordTextFieldController.text,
                             widget.firestore);
                         if (s != null) {
-                          /// Tell the user they messed up; no account
+                          // this snackbar doesnt work, need to forward context key...
+                          final snackbar = SnackBar(
+                            content: getDetailsText(
+                                'No account matching these credentials',
+                                TextAlign.center),
+                            backgroundColor: Colors.green,
+                            duration: Duration(milliseconds: 1500),
+                          );
+                          Scaffold.of(context).showSnackBar(snackbar);
+                        } else {
+//                          FirebaseAuth.instance.signOut();
+//                          widget.currentUser = await FirebaseAuth.instance.signInWithEmailAndPassword(email: _emailTextFieldController.text, password: _passwordTextFieldController.text);
                         }
                       }
                     },

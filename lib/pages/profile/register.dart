@@ -38,6 +38,7 @@ class _RegisterPageState extends State<RegisterPage> {
     _nameTextFieldController.dispose();
   }
 
+  /// TODO Check if account already exists...
   void _handleAccountCreation(String email, String password, String name) {
     _onLoading();
     FirebaseAuth.instance
@@ -48,11 +49,13 @@ class _RegisterPageState extends State<RegisterPage> {
       SharedPreferences.getInstance().then((SharedPreferences prefs) {
         prefs.setString('email', email);
         prefs.setString('password', password);
+        prefs.setString('name', name);
       });
 
       Map<String, Object> data = Map();
       data['email'] = email;
       data['password'] = password;
+      data['name'] = name;
       data['nutrients'] = new List();
       data['recipes'] = new List();
 
@@ -147,11 +150,11 @@ class _RegisterPageState extends State<RegisterPage> {
                 width: double.infinity,
                 child: OutlineButton(
                     onPressed: () {
-//                        _handleAccountCreation(
-//                            _emailTextFieldController.text,
-//                            _passwordTextFieldController.text,
-//                            _nameTextFieldController.text);
                       if (_formKey.currentState.validate()) {
+//                        _handleAccountCreation(
+//                          _emailTextFieldContro ller.text,
+//                          _passwordTextFieldController.text,
+//                          _nameTextFieldController.text);
                         Scaffold.of(context).showSnackBar(
                             SnackBar(content: Text('Processing Data')));
                       }
