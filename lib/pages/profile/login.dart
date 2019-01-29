@@ -29,7 +29,8 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       resizeToAvoidBottomPadding: true,
       appBar: AppBar(
-        title: getHeadingText('Login'),
+        centerTitle: true,
+        title: getHeadingText('Login')
       ),
       body: Form(
         key: _formKey,

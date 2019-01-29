@@ -15,9 +15,11 @@ firebase_admin.initialize_app(cred, {
 
 firestore = firestore.client()
 
-ABBREV = firestore.collection(u'ABBREV').get()
-for doc in ABBREV:
-    ddict = doc.to_dict()
+data = open('data/ABBREV.json').read()
+parsed_json = json.loads(data)
 
-
-
+for item in parsed_json:
+    item['calories'] = item['calories'] = round(
+        float(item['Carbohydrt_(g)']) * 4 + float(item['Protein_(g)']) * 4 + float(
+            item['Lipid_Tot_(g)']) * 9)
+    firestore.collection(u'ABBREV').document().set(item)

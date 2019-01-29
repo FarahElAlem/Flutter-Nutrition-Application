@@ -91,14 +91,14 @@ class _RegisterPageState extends State<RegisterPage> {
               getHeadingText('Register With Us!', TextAlign.center),
               Divider(
                 color: Colors.transparent,
-                height: 8.0,
+                height: 16.0,
               ),
               getDetailsText(
                   'Then you can save your favorite\nrecipes & nutrients on your phone!',
                   TextAlign.center),
               Divider(
                 color: Colors.transparent,
-                height: 36.0,
+                height: 56.0,
               ),
               TextFormField(
                 validator: (value) {
