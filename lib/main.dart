@@ -48,18 +48,20 @@ Future<FirebaseUser> signInWithFirestore(String email, String password) async {
 }
 
 Widget _getLandingPage(String email, String password, FirebaseUser currentUser, Firestore firestore) {
+  int connected = 0;
   return StreamBuilder<FirebaseUser>(
     stream: FirebaseAuth.instance.onAuthStateChanged,
     builder: (BuildContext context, snapshot) {
-      if (snapshot.connectionState == ConnectionState.waiting) {
+      if (snapshot.connectionState == ConnectionState.waiting && connected <= 0) {
         return new SplashScreenAuth();
       } else {
         if (snapshot.hasData) {
+          connected = 1;
           return new Home(
             currentUser: currentUser,
             firestore: firestore,
           );
-        } else {
+        } else if (connected <= 0) {
           return new ErrorScreen();
         }
       }
