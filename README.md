@@ -72,9 +72,13 @@
 - ~~Allow users to save lists of nutrients and/ favorite recipes~~
 - ~~Allow users to build a profile and share their recipes and nutrition lists~~
 - Privacy Policy
-- First Name Register Field
+- ~~First Name Register Field~~
 - "Hello User" Splash Screen for returning users
 - "Welcome User" Splash Screen for new users
-- Login Button for users who got logged out but already have an account
-- Hero buttons, 3/4ths image 1/4 text on item selection
-- Clean up recipes and nutrition for better user experience
+- ~~Login Button for users who got logged out but already have an account~~
+- ~~Hero buttons, 3/4ths image 1/4 text on item selection~~
+- ~~Clean up recipes and nutrition for better user experience~~
+- Create User Profile Page
+- Create Dashboard
+- Redesign Details UI for nutrients
+- Design Details UI for recipes
