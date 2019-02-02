@@ -11,7 +11,7 @@ class Details extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(title: Text(foodItem.detailItems['description']['value'])),
       body: Container(
         padding: EdgeInsets.all(24.0),
         child: foodItem.buildListView(),

@@ -1,17 +1,22 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+
 import 'package:flutter/material.dart';
+
 import 'package:nutrition_app_flutter/demo/placeholder.dart';
 import 'package:nutrition_app_flutter/pages/dashboard/dashboard.dart';
-import 'package:nutrition_app_flutter/pages/profile/login.dart';
-import 'package:nutrition_app_flutter/pages/search/result.dart';
+import 'package:nutrition_app_flutter/pages/profile/register.dart';
+import 'package:nutrition_app_flutter/pages/recipe/search.dart';
 import 'package:nutrition_app_flutter/pages/search/search.dart';
 import 'package:nutrition_app_flutter/globals.dart';
 
 class Home extends StatefulWidget {
-  Home({this.currentUser});
+  Home({this.currentUser, this.firestore});
 
-  Firestore firestore = Firestore.instance;
+  Firestore firestore;
+  final FirebaseStorage storage = FirebaseStorage(
+      storageBucket: 'gs://nutrition-app-flutter-5260f.appspot.com');
   FirebaseUser currentUser;
 
   @override
@@ -22,11 +27,19 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   /// Current widget index.
   int _currentIndex = 0;
 
+  bool _ready = false;
+
   /// Controller for tabview
   TabController controller;
 
   /// List of foodgroupnames for subpages
   List<List<String>> foodGroupNames = [];
+
+  /// Image Links
+  Map<String, String> foodGroupUrls = new Map();
+
+  /// Image Widgets
+  Map<String, Image> foodGroupImages = new Map();
 
   /// List of children that define the pages that a user sees. WIP.
   List<Widget> _bodyChildren = [];
@@ -72,6 +85,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
     });
   }
 
+  /// Builds the search bar inside of the view's appbar. Acts dynamically.
   Widget _buildSearchBar() {
     return new IconButton(
         icon: _searchIcon,
@@ -87,11 +101,11 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                     this._appBarTitle = new Center(
                       child: new Text(_appBarTitles[_currentIndex]),
                     );
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                Result(token: token.toString(), type: 1)));
+//                    Navigator.push(
+//                        context,
+//                        MaterialPageRoute(
+//                            builder: (context) =>
+//                                Result(token: token.toString(), type: 1)));
                   },
                   decoration: new InputDecoration(hintText: 'Search...'));
             } else {
@@ -127,11 +141,38 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
     );
   }
 
+  /// Gathers prerequisite data from the Cloud Firestore Database.
+  Future<void> _gatherData() async {
+    // Gather our information from Firestore here
+    var data = await Firestore.instance
+        .collection('FOODGROUP')
+        .orderBy('FdGrp_Desc')
+        .getDocuments();
+
+    for (DocumentSnapshot doc in data.documents) {
+      foodGroupNames.add([doc['Fd_Grp'], doc['FdGrp_Desc'], doc['Paragraph']]);
+    }
+
+    for (List<String> foodGroup in foodGroupNames) {
+      var url = await widget.storage
+          .ref()
+          .child(foodGroup[1].replaceAll(' ', '').replaceAll('/', '') + '.png')
+          .getDownloadURL();
+      foodGroupUrls[foodGroup[1]] = url.toString();
+    }
+
+    for (String key in foodGroupUrls.keys) {
+      foodGroupImages[key] = Image.network(
+        foodGroupUrls[key],
+        alignment: Alignment.center,
+      );
+    }
+  }
+
   @override
   void initState() {
     super.initState();
 
-    widget.firestore.settings(persistenceEnabled: true);
     controller = new TabController(length: 4, vsync: this);
 
     // Define the children to the tabbed body here
@@ -139,73 +180,75 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
       Dashboard(firestore: widget.firestore),
       Search(
           foodGroupNames: foodGroupNames,
-          firestore: widget.firestore,
-          currentUser: widget.currentUser),
-      PlaceholderWidget(Colors.green),
-      LoginPage(firestore: widget.firestore, currentUser: widget.currentUser)
+          foodGroupImages: foodGroupImages),
+      ResultsSearchPage(),
+      RegisterPage()
     ];
 
-    // Gather our information from firestore here
-    Firestore.instance
-        .collection('FOODGROUP')
-        .orderBy('FdGrp_Desc')
-        .getDocuments()
-        .then((data) => data.documents.forEach((doc) {
-              foodGroupNames.add([doc['Fd_Grp'], doc['FdGrp_Desc']]);
-            }));
+    _gatherData().whenComplete(() {
+      _ready = true;
+      setState(() {});
+    });
   }
 
   @override
   void dispose() {
     super.dispose();
+    controller.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      appBar: _buildDashboardAppBar(),
-      body: new TabBarView(
-        physics: new NeverScrollableScrollPhysics(),
-        children: _bodyChildren,
-        controller: controller,
-      ),
-      bottomNavigationBar: new BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        onTap: onTabTapped,
-        currentIndex: _currentIndex,
-        items: [
-          new BottomNavigationBarItem(
-            icon: Icon(Icons.dashboard),
-            title: getIconText('Dashboard'),
-          ),
-
-          /// Search Navigation Bar Item:
-          /// Navigates to a search page that allows users to
-          /// search for various food items and append it to
-          /// their personal list.
-          new BottomNavigationBarItem(
-            icon: Icon(Icons.fastfood),
-            title: getIconText('Nutrition'),
-          ),
-
-          /// My Items Navigation Bar Item:
-          /// Allows users to view their total nutrition information
-          /// and edit (remove) items from their existing
-          /// nutrition list. Users can also save their
-          /// lists by name for future reference.
-          new BottomNavigationBarItem(
-            icon: Icon(Icons.receipt),
-            title: getIconText('Recipes'),
-          ),
-
-          /// Profile Navigation Bar Item:
-          /// TODO
-          new BottomNavigationBarItem(
-            icon: Icon(Icons.account_circle),
-            title: getIconText('Profile'),
+    return (!_ready)
+        ? new Scaffold(
+            body: new Center(
+              child: new CircularProgressIndicator(),
+            ),
           )
-        ],
-      ),
-    );
+        : new Scaffold(
+            appBar: _buildDashboardAppBar(),
+            body: new TabBarView(
+              physics: new NeverScrollableScrollPhysics(),
+              children: _bodyChildren,
+              controller: controller,
+            ),
+            bottomNavigationBar: new BottomNavigationBar(
+              type: BottomNavigationBarType.fixed,
+              onTap: onTabTapped,
+              currentIndex: _currentIndex,
+              items: [
+                new BottomNavigationBarItem(
+                  icon: Icon(Icons.dashboard),
+                  title: getIconText('Dashboard'),
+                ),
+
+                /// Search Navigation Bar Item:
+                /// Navigates to a search page that allows users to
+                /// search for various food items and append it to
+                /// their personal list.
+                new BottomNavigationBarItem(
+                  icon: Icon(Icons.fastfood),
+                  title: getIconText('Nutrition'),
+                ),
+
+                /// My Items Navigation Bar Item:
+                /// Allows users to view their total nutrition information
+                /// and edit (remove) items from their existing
+                /// nutrition list. Users can also save their
+                /// lists by name for future reference.
+                new BottomNavigationBarItem(
+                  icon: Icon(Icons.receipt),
+                  title: getIconText('Recipes'),
+                ),
+
+                /// Profile Navigation Bar Item:
+                /// TODO
+                new BottomNavigationBarItem(
+                  icon: Icon(Icons.account_circle),
+                  title: getIconText('Profile'),
+                )
+              ],
+            ),
+          );
   }
 }

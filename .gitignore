@@ -73,6 +73,8 @@ build/
 
 # Data
 fonts/
+assets/images/
 assets/config.json
 assets/userdata.json
 python/configs/
+python/data/

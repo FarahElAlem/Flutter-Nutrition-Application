@@ -1,283 +1,262 @@
 import 'package:flutter/material.dart';
 import 'package:nutrition_app_flutter/globals.dart';
 
-/// TODO Change database to support  decimal pt precision
-/// TODO Also fill NULL values in with 0.0
-/// TODO Come back to formatting
-/// TODO Fill [Vitamin D, Vitamin B6]
+/// FoodItem class that stores information gathered from the
+/// Cloud Firestore Database. Contains a build function that formats
+/// the nutrition data on request.
 class FoodItem {
   Map nutritionItems = new Map();
   Map detailItems = new Map();
 
-  List<String> _exceptionKeys = [
-    'LipidTotal',
-    'FASat',
-    'Cholesterol',
-    'Sodium',
-    'Carbohydrate',
-    'Fiber',
-    'SugarTotal',
-    'Protein',
-    'VitaminD',
-    'Calcium',
-    'Iron',
-    'Potassium',
-    'VitaminC',
-    'VitaminB6',
-  ];
-
   FoodItem(var value) {
-    nutritionItems['Carbohydrate'] = {
-      'value': value['Carbohydrt_(g)'].toString(),
+    nutritionItems['carbohydrate'] = {
+      'value': value['carbohydrate'].toString().trim(),
       'measurement': 'g',
-      'name': 'Carbohydrates: '
+      'name': 'Carbohydrates:',
+      'daily':
+          (double.parse(value['carbohydrate']) / 325.0).toStringAsFixed(1) + '%'
     };
-    nutritionItems['Calcium'] = {
-      'value': value['Calcium_(mg)'].toString(),
+    nutritionItems['calcium'] = {
+      'value': value['calcium'].toString().trim(),
       'measurement': 'mg',
-      'name': 'Calcium: '
+      'name': 'Calcium:',
+      'daily':
+          (double.parse(value['calcium']) * 100 / 1000.0).toStringAsFixed(1) +
+              '%'
     };
-    nutritionItems['Cholesterol'] = {
-      'value': value['Cholestrl_(mg)'].toString(),
+    nutritionItems['cholesterol'] = {
+      'value': value['cholesterol)'].toString().trim(),
       'measurement': 'mg',
-      'name': 'Cholesterol: '
+      'name': 'Cholesterol:',
+      'daily': (double.parse(value['cholesterol']) * 100 / 300.0)
+              .toStringAsFixed(1) +
+          '%'
     };
-    nutritionItems['Energy'] = {
-      'value': value['Energ_Kcal'].toString(),
-      'measurement': 'kcal',
-      'name': 'Energy: '
+    nutritionItems['calorie'] = {
+      'value': value['calorie'].toString().trim(),
+      'measurement': 'cal',
+      'name': 'Calories:',
+      'daily':
+          (double.parse(value['calorie']) / 2079.0).toStringAsFixed(1) + '%'
     };
-    nutritionItems['FAMono'] = {
-      'value': value['FA_Mono_(g)'].toString(),
-      'measurement': 'g',
-      'name': 'Monounsaturated Fat: '
-    };
-    nutritionItems['FAPoly'] = {
-      'value': value['FA_Poly_(g)'].toString(),
-      'measurement': 'g',
-      'name': 'Polyunsaturated Fat: '
-    };
-    nutritionItems['FASat'] = {
-      'value': value['FA_Sat_(g)'].toString(),
-      'measurement': 'g',
-      'name': 'Saturated Fat: '
-    };
-    detailItems['FoodGroup'] = {
-      'value': value['Fd_Grp'].toString(),
+    detailItems['foodgroup'] = {
+      'value': value['foodgroup'].toString().trim(),
       'measurement': 'N/A',
       'name': 'Food Group: '
     };
-    nutritionItems['Fiber'] = {
-      'value': value['Fiber_TD_(g)'].toString(),
+    nutritionItems['fiber'] = {
+      'value': value['fiber'].toString().trim(),
       'measurement': 'g',
-      'name': 'Total Fiber: '
+      'name': 'Total Fiber:',
+      'daily':
+          (double.parse(value['fiber']) * 100 / 30.0).toStringAsFixed(1) + '%'
     };
-    nutritionItems['Iron'] = {
-      'value': value['Iron_(mg)'].toString(),
+    nutritionItems['iron'] = {
+      'value': value['iron'].toString().trim(),
       'measurement': 'mg',
-      'name': 'Iron: '
+      'name': 'Iron:',
+      'daily':
+          (double.parse(value['iron']) * 100 / 15.1).toStringAsFixed(1) + '%'
     };
-    nutritionItems['LipidTotal'] = {
-      'value': value['Lipid_Tot_(g)'].toString(),
+    nutritionItems['lipid'] = {
+      'value': value['lipid'].toString().trim(),
       'measurement': 'g',
-      'name': 'Total Lipids: '
+      'name': 'Total Fat:',
+      'daily':
+          (double.parse(value['lipid']) * 100 / 77.0).toStringAsFixed(1) + '%'
     };
-    nutritionItems['Magnesium'] = {
-      'value': value['Magnesium_(mg)'].toString(),
+    nutritionItems['potassium'] = {
+      'value': value['potassium'].toString().trim(),
       'measurement': 'mg',
-      'name': 'Magnesium: '
+      'name': 'Potassium:',
+      'daily':
+          (double.parse(value['potassium']) * 100 / 4700.0).toStringAsFixed(1) +
+              '%'
     };
-    nutritionItems['Niacin'] = {
-      'value': value['Niacin_(mg)'].toString(),
-      'measurement': 'mg',
-      'name': 'Niacin: '
-    };
-    nutritionItems['Copper'] = {
-      'value': value['Copper_mg)'].toString(),
-      'measurement': 'mg',
-      'name': 'Copper: '
-    };
-    nutritionItems['Phosphorus'] = {
-      'value': value['Phosphorus_(mg)'].toString(),
-      'measurement': 'mg',
-      'name': 'Phosphorus: '
-    };
-    nutritionItems['Potassium'] = {
-      'value': value['Potassium_(mg)'].toString(),
-      'measurement': 'mg',
-      'name': 'Potassium: '
-    };
-    nutritionItems['Protein'] = {
-      'value': value['Protein_(g)'].toString(),
+    nutritionItems['protein'] = {
+      'value': value['protein'].toString().trim(),
       'measurement': 'g',
-      'name': 'Protein: '
+      'name': 'Protein:',
+      'daily':
+          (double.parse(value['protein']) * 100 / 56.0).toStringAsFixed(1) + '%'
     };
-    nutritionItems['Riboflavin'] = {
-      'value': value['Riboflavin_(mg)'].toString(),
+    detailItems['description'] = {
+      'value': value['description'].toString().trim(),
+      'name': 'Description: '
+    };
+    nutritionItems['sodium'] = {
+      'value': value['sodium'].toString().trim(),
       'measurement': 'mg',
-      'name': 'Riboflavin: '
+      'name': 'Sodium:',
+      'daily':
+          (double.parse(value['sodium']) * 100 / 2300.0).toStringAsFixed(1) +
+              '%'
     };
-    detailItems['ShortDescription'] = {
-      'value': value['Shrt_Desc'].toString(),
-      'name': 'Short Description: '
-    };
-    nutritionItems['Sodium'] = {
-      'value': value['Sodium_(mg)'].toString(),
+    nutritionItems['sugar'] = {
+      'value': value['sugar'].toString().trim(),
       'measurement': 'g',
-      'name': 'Sodium: '
+      'name': 'Total Sugar:',
+      'daily':
+          (double.parse(value['sugar']) * 100 / 31.0).toStringAsFixed(1) + '%'
     };
-    nutritionItems['SugarTotal'] = {
-      'value': value['Sugar_Tot_(g)'].toString(),
-      'measurement': 'g',
-      'name': 'Total Sugar: '
-    };
-    nutritionItems['Thiamin'] = {
-      'value': value['Thiamin_(mg)'].toString(),
-      'measurement': 'mg',
-      'name': 'Thiamin: '
-    };
-    nutritionItems['VitaminA'] = {
-      'value': value['Vit_A_RAE'].toString(),
-      'measurement': 'mg',
-      'name': 'Vitamin A: '
-    };
-    nutritionItems['VitaminC'] = {
-      'value': value['Vit_C_(mg)'].toString(),
-      'measurement': 'mg',
-      'name': 'Vitamin C: '
-    };
-    nutritionItems['VitaminB12'] = {
-      'value': value['Vit_B12_(µg)'].toString(),
+    nutritionItems['vitamind'] = {
+      'value': value['vitamind'].toString().trim(),
       'measurement': 'µg',
-      'name': 'Vitamin B12: '
-    };
-    nutritionItems['VitaminB6'] = {
-      'value': value['Vit_B6_(mg)'].toString(),
-      'measurement': 'mg',
-      'name': 'Vitamin B6: '
-    };
-    nutritionItems['VitaminD'] = {
-      'value': value['Vit_D_µg'].toString(),
-      'measurement': 'µg',
-      'name': 'Vitamin D: '
-    };
-    nutritionItems['VitaminK'] = {
-      'value': value['Vit_K_(µg)'].toString(),
-      'measurement': 'µg',
-      'name': 'Vitamin K: '
-    };
-    nutritionItems['VitaminE'] = {
-      'value': value['Vit_E_(mg)'].toString(),
-      'measurement': 'mg',
-      'name': 'Vitamin E: '
-    };
-    nutritionItems['Water'] = {
-      'value': value['Water_(g)'].toString(),
-      'measurement': 'g',
-      'name': 'Water: '
-    };
-    nutritionItems['Zinc'] = {
-      'value': value['Zinc_(mg)'].toString(),
-      'measurement': 'mg',
-      'name': 'Zinc: '
+      'name': 'Vitamin D:',
+      'daily':
+          (double.parse(value['vitamind']) * 100 / 20.0).toStringAsFixed(1) +
+              '%'
     };
   }
 
   Widget buildListView() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: _buildBody(),
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: _buildBody(),
+      ),
     );
   }
 
-  List<Widget> _buildGeneralInformation() {
-    return [
-      getHeadingText('General Information'),
-      Divider(
-        color: Colors.black,
-        height: 36.0,
-      ),
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          getSubHeadingText('Serving Size:'),
-          getMainContentText('100g'),
-        ],
-      ),
-    ];
-  }
-
-//  getSubHeadingText(
-//  this.nutritionItems['Carbohydrate']['name']),
-//  getMainContentText(this.nutritionItems['Carbohydrate']
-//  ['value'] +
-//  this.nutritionItems['Carbohydrate']['measurement']),
-//  getMainContentText('2%')
-
-  List<Widget> _buildNutritionInformation() {
-    return [
-      Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          getHeadingText('Nutrition Information'),
-        ],
-      ),
-      Divider(
-        color: Colors.black,
-        height: 36.0,
-      ),
-      Row(
-        children: <Widget>[
-          Expanded(
-            flex: 5,
-            child:
-                getSubHeadingText(this.nutritionItems['Carbohydrate']['name']),
-          ),
-          Expanded(
-            flex: 3,
-            child: getMainContentText(this.nutritionItems['Carbohydrate']
-                    ['value'] +
-                this.nutritionItems['Carbohydrate']['measurement']),
-          ),
-          Expanded(
-            flex: 1,
-            child: getMainContentText('2%'),
-          )
-        ],
-      ),
-      Divider(),
-      Row(
-        children: <Widget>[
-          Expanded(
-            flex: 5,
-            child:
-            getSubHeadingText(this.nutritionItems['Fiber']['name']),
-          ),
-          Expanded(
-            flex: 3,
-            child: getMainContentText(this.nutritionItems['Fiber']
-            ['value'] +
-                this.nutritionItems['Fiber']['measurement']),
-          ),
-          Expanded(
-            flex: 1,
-            child: getMainContentText('6%'),
-          )
-        ],
-      ),
-    ];
-  }
-
   List<Widget> _buildBody() {
-    List<Widget> _body = [];
-    _body.addAll(_buildGeneralInformation());
-    _body.add(Divider(height: 48.0));
-    _body.addAll(_buildNutritionInformation());
+    Map<String, List<String>> names = {
+      'lipid': [],
+      'cholesterol': [],
+      'sodium': [],
+      'carbohydrate': ['fiber', 'sugar'],
+      'protein': [],
+      'calcium': [],
+      'iron': [],
+      'potassium': []
+    };
 
-    return _body;
+    var tKeys = [
+      'lipid',
+      'cholesterol',
+      'sodium',
+      'carbohydrate',
+      'protein',
+      'calcium',
+      'iron',
+      'potassium',
+      'fiber',
+      'sugar'
+    ];
+
+    List<Widget> out = [];
+
+    /// General Information Adding to Body
+    out.add(getHeadingText('General Information'));
+    out.add(Divider(
+      color: Colors.black,
+    ));
+    out.add(Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        getMainContentText(this.nutritionItems['calorie']['name']),
+        getMainContentText(this.nutritionItems['calorie']['value'] +
+            this.nutritionItems['calorie']['measurement'])
+      ],
+    ));
+    out.add(Divider(
+      height: 8.0,
+      color: Colors.transparent,
+    ));
+    out.add(Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        getMainContentText('Serving Size:'),
+        getMainContentText('100g'),
+      ],
+    ));
+    out.add(Divider(
+      height: 48.0,
+      color: Colors.transparent,
+    ));
+
+    /// Nutrition Information Adding to Body
+    out.add(getHeadingText('Nutrition Information'));
+    out.add(Padding(
+        padding: EdgeInsets.fromLTRB(0.0, 16.0, 0.0, 8.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: <Widget>[
+            Expanded(
+              flex: 3,
+              child: getDetailsBoldText('Name'),
+            ),
+            Expanded(
+              flex: 2,
+              child: getDetailsBoldText('Amount'),
+            ),
+            Expanded(
+              child: getDetailsBoldText('Daily %'),
+            )
+          ],
+        )));
+    out.add(Divider(
+      color: Colors.black,
+      height: 0,
+    ));
+    out.add(Divider(
+      height: 8.0,
+      color: Colors.transparent,
+    ));
+    for (String key in names.keys) {
+      out.add(Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.max,
+        children: <Widget>[
+          Expanded(
+            flex: 3,
+            child: getMainContentText(this.nutritionItems[key]['name']),
+          ),
+          Expanded(
+            flex: 2,
+            child: getMainContentText(this.nutritionItems[key]['value'] +
+                this.nutritionItems[key]['measurement']),
+          ),
+          Expanded(
+            child: getMainContentText(this.nutritionItems[key]['daily']),
+          )
+        ],
+      ));
+      out.add(Divider(
+        color: Colors.transparent,
+      ));
+      if (names[key].length > 0) {
+        for (String key in names[key]) {
+          out.add(Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Expanded(
+                flex: 3,
+                child: getMainContentText(
+                    '\t\t' + this.nutritionItems[key]['name']),
+              ),
+              Expanded(
+                flex: 2,
+                child: getMainContentText(this.nutritionItems[key]['value'] +
+                    this.nutritionItems[key]['measurement']),
+              ),
+              Expanded(
+                child: getMainContentText(this.nutritionItems[key]['daily']),
+              )
+            ],
+          ));
+          out.add(Divider(
+            color: Colors.transparent,
+          ));
+        }
+      }
+    }
+    out.removeLast();
+
+    return out;
   }
 
   @override
