@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:nutrition_app_flutter/globals.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfilePage extends StatefulWidget {
   ProfilePage({this.firestore, this.currentUser});
@@ -13,7 +15,6 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-
   @override
   void initState() {
     super.initState();
@@ -35,21 +36,27 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: new Column(
-        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          _buildUserInformationSection(),
-          new Divider(
-            height: 1.0,
-          ),
-          _buildSavedNutrientsSection(),
-          new Divider(
-            height: 1.0,
-          ),
-          _buildSavedRecipesSection()
+          OutlineButton(
+              onPressed: () async {
+                await FirebaseAuth.instance.signOut();
+                await FirebaseAuth.instance.signInAnonymously();
+
+                SharedPreferences.getInstance().then((SharedPreferences prefs) {
+                  prefs.setString('email', '');
+                  prefs.setString('password', '');
+                  prefs.setString('name', '');
+                });
+
+              },
+              child: getIconText('Logout'),
+              color: Colors.green,
+              shape: new RoundedRectangleBorder(
+                  borderRadius: new BorderRadius.circular(30.0)))
         ],
       ),
     );
   }
-
 }

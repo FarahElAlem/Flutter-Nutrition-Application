@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:nutrition_app_flutter/demo/placeholder.dart';
 import 'package:nutrition_app_flutter/pages/dashboard/dashboard.dart';
 import 'package:nutrition_app_flutter/pages/profile/register.dart';
+import 'package:nutrition_app_flutter/pages/recipe/search.dart';
 import 'package:nutrition_app_flutter/pages/search/search.dart';
 import 'package:nutrition_app_flutter/globals.dart';
 
@@ -84,6 +85,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
     });
   }
 
+  /// Builds the search bar inside of the view's appbar. Acts dynamically.
   Widget _buildSearchBar() {
     return new IconButton(
         icon: _searchIcon,
@@ -139,6 +141,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
     );
   }
 
+  /// Gathers prerequisite data from the Cloud Firestore Database.
   Future<void> _gatherData() async {
     // Gather our information from Firestore here
     var data = await Firestore.instance
@@ -177,11 +180,9 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
       Dashboard(firestore: widget.firestore),
       Search(
           foodGroupNames: foodGroupNames,
-          firestore: widget.firestore,
-          currentUser: widget.currentUser,
           foodGroupImages: foodGroupImages),
-      PlaceholderWidget(Colors.green),
-      RegisterPage(firestore: widget.firestore, currentUser: widget.currentUser)
+      ResultsSearchPage(),
+      RegisterPage()
     ];
 
     _gatherData().whenComplete(() {
@@ -193,6 +194,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   @override
   void dispose() {
     super.dispose();
+    controller.dispose();
   }
 
   @override

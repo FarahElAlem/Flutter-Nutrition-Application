@@ -4,12 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:nutrition_app_flutter/globals.dart';
 import 'package:nutrition_app_flutter/structures/validator.dart';
 
+/// class LoginPage presents a form for a User
+/// to log into Cloud Firestore, giving them the
+/// ability to store and retrieve data from their personal
+/// 'accounts'.
 class LoginPage extends StatefulWidget {
-  LoginPage({this.currentUser, this.firestore});
-
-  Firestore firestore;
-  FirebaseUser currentUser;
-
   @override
   _LoginPageState createState() => new _LoginPageState();
 }
@@ -39,7 +38,7 @@ class _LoginPageState extends State<LoginPage> {
             shrinkWrap: true,
             padding: EdgeInsets.all(32.0),
             children: <Widget>[
-              getHeadingText('Welcome Back!', TextAlign.center),
+              getHeadingText('Welcome Back!', textAlign: TextAlign.center),
               Divider(
                 color: Colors.transparent,
                 height: 64.0,
@@ -82,21 +81,13 @@ class _LoginPageState extends State<LoginPage> {
                       if (_formKey.currentState.validate()) {
                         String s = await Validator().validateLoggedInUser(
                             _emailTextFieldController.text,
-                            _passwordTextFieldController.text,
-                            widget.firestore);
+                            _passwordTextFieldController.text);
                         if (s != null) {
-                          // this snackbar doesnt work, need to forward context key...
-                          final snackbar = SnackBar(
-                            content: getDetailsText(
-                                'No account matching these credentials',
-                                TextAlign.center),
-                            backgroundColor: Colors.green,
-                            duration: Duration(milliseconds: 1500),
-                          );
-                          Scaffold.of(context).showSnackBar(snackbar);
+                          print('Dobby is upset');
                         } else {
-//                          FirebaseAuth.instance.signOut();
-//                          widget.currentUser = await FirebaseAuth.instance.signInWithEmailAndPassword(email: _emailTextFieldController.text, password: _passwordTextFieldController.text);
+                          await FirebaseAuth.instance.signOut();
+                          await FirebaseAuth.instance.signInWithEmailAndPassword(email: _emailTextFieldController.text, password: _passwordTextFieldController.text);
+                          Navigator.pop(context);
                         }
                       }
                     },

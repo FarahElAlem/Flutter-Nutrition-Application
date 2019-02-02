@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+/// TODO Turn this into a themedata
+
 TextStyle headingTextStyle =
     new TextStyle(fontFamily: 'Montserrat', fontSize: 24.0);
 
@@ -18,10 +20,13 @@ TextStyle iconTextStyle = new TextStyle(
 TextStyle detailsTextStyle =
     new TextStyle(fontFamily: 'Montserrat', fontSize: 16.0);
 
-TextStyle detailsBoldTextStyle =
-new TextStyle(fontFamily: 'Montserrat', fontSize: 16.0, fontWeight: FontWeight.w500);
+TextStyle detailsBoldTextStyle = new TextStyle(
+    fontFamily: 'Montserrat', fontSize: 16.0, fontWeight: FontWeight.w500);
 
-Widget getHeadingText(String text, [TextAlign textAlign = TextAlign.start]) {
+Widget getHeadingText(String text,
+    {TextAlign textAlign = TextAlign.start,
+    Color color = Colors.black,
+    int maxLines = 30}) {
   return Text(
     text,
     style: headingTextStyle,
@@ -29,7 +34,10 @@ Widget getHeadingText(String text, [TextAlign textAlign = TextAlign.start]) {
   );
 }
 
-Widget getSubHeadingText(String text, [TextAlign textAlign = TextAlign.start]) {
+Widget getSubHeadingText(String text,
+    {TextAlign textAlign = TextAlign.start,
+    Color color = Colors.black,
+    int maxLines = 30}) {
   return Text(
     text,
     style: subHeadingTextStyle,
@@ -38,27 +46,49 @@ Widget getSubHeadingText(String text, [TextAlign textAlign = TextAlign.start]) {
 }
 
 Widget getMainContentText(String text,
-    [TextAlign textAlign = TextAlign.start]) {
+    {TextAlign textAlign = TextAlign.start,
+    Color color = Colors.black,
+    int maxLines = 30}) {
   return Text(
     text,
-    style: mainContentTextStyle,
+    style:
+        new TextStyle(fontFamily: 'Montserrat', fontSize: 18.0, color: color),
+    maxLines: maxLines,
     textAlign: textAlign,
   );
 }
 
-Widget getIconText(String text, [TextAlign textAlign = TextAlign.start]) {
-  return Text(text, style: iconTextStyle, textAlign: textAlign);
+Widget getIconText(String text,
+    {TextAlign textAlign = TextAlign.start,
+    Color color = Colors.black,
+    int maxLines = 30}) {
+  return Text(text,
+      style: new TextStyle(
+          fontFamily: 'Montserrat',
+          fontSize: 14.0,
+          fontWeight: FontWeight.w600,
+          color: color),
+      maxLines: maxLines,
+      overflow: TextOverflow.ellipsis,
+      textAlign: textAlign);
 }
 
-Widget getDetailsText(String text, [TextAlign textAlign = TextAlign.start]) {
+Widget getDetailsText(String text,
+    {TextAlign textAlign = TextAlign.start,
+    Color color = Colors.black,
+    int maxLines = 30}) {
   return Text(
     text,
-    style: detailsTextStyle,
+    style:
+        new TextStyle(fontFamily: 'Montserrat', fontSize: 16.0, color: color),
     textAlign: textAlign,
   );
 }
 
-Widget getDetailsBoldText(String text, [TextAlign textAlign = TextAlign.start]) {
+Widget getDetailsBoldText(String text,
+    {TextAlign textAlign = TextAlign.start,
+    Color color = Colors.black,
+    int maxLines = 30}) {
   return Text(
     text,
     style: detailsBoldTextStyle,

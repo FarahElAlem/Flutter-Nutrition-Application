@@ -15,11 +15,25 @@ firebase_admin.initialize_app(cred, {
 
 firestore = firestore.client()
 
-data = open('data/ABBREV.json').read()
+data = open('data/RECIPES2.json').read()
 parsed_json = json.loads(data)
 
 for item in parsed_json:
-    item['calories'] = item['calories'] = round(
-        float(item['Carbohydrt_(g)']) * 4 + float(item['Protein_(g)']) * 4 + float(
-            item['Lipid_Tot_(g)']) * 9)
-    firestore.collection(u'ABBREV').document().set(item)
+    print(item)
+    firestore.collection(u'RECIPES').document().set(item)
+
+# docs = firestore.collection(u'RECIPES').get()
+# cur = []
+# new = []
+#
+# for doc in docs:
+#     d = doc.to_dict()
+#     if d['name'] not in cur:
+#         cur.append(d['name'])
+#         new.append(d)
+#     else:
+#         print('{0} duped'.format(d['name']))
+#
+#
+# with open('data/RECIPES2.json', 'w') as outfile:
+#     json.dump(new, outfile)

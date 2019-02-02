@@ -9,16 +9,15 @@ import 'package:nutrition_app_flutter/pages/home.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 
+/// Main function. Gathers prerequisite information and starts the application.
 Future<void> main() async {
-
   SharedPreferences prefs = await SharedPreferences.getInstance();
   String _email = (prefs.getString('email') ?? '');
   String _password = (prefs.getString('password') ?? '');
-  FirebaseUser currentUser  =  await signInWithFirestore(_email, _password);
+  FirebaseUser currentUser = await signInWithFirestore(_email, _password);
 
   Firestore firestore = Firestore.instance;
   await firestore.settings(timestampsInSnapshotsEnabled: true);
-
 
   runApp(new MaterialApp(
     theme: ThemeData(
@@ -26,13 +25,17 @@ Future<void> main() async {
       cardColor: Colors.green,
       brightness: Brightness.light,
     ),
-    home: _getLandingPage(_email, _password, currentUser, firestore),
-  routes: <String, WidgetBuilder>{
+    home: new Home(
+      currentUser: currentUser,
+      firestore: firestore,
+    ),
+    routes: <String, WidgetBuilder>{
       '/Home': (BuildContext context) => new Home()
     },
   ));
 }
 
+/// Helper function that signs a user into Firestore on application start
 Future<FirebaseUser> signInWithFirestore(String email, String password) async {
   FirebaseUser user;
   print('Email: ' + email + ', Password: ' + password);
@@ -47,40 +50,21 @@ Future<FirebaseUser> signInWithFirestore(String email, String password) async {
   return user;
 }
 
-Widget _getLandingPage(String email, String password, FirebaseUser currentUser, Firestore firestore) {
-  int connected = 0;
-  return StreamBuilder<FirebaseUser>(
-    stream: FirebaseAuth.instance.onAuthStateChanged,
-    builder: (BuildContext context, snapshot) {
-      if (snapshot.connectionState == ConnectionState.waiting && connected <= 0) {
-        return new SplashScreenAuth();
-      } else {
-        if (snapshot.hasData) {
-          connected = 1;
-          return new Home(
-            currentUser: currentUser,
-            firestore: firestore,
-          );
-        } else if (connected <= 0) {
-          return new ErrorScreen();
-        }
-      }
-    },
-  );
-}
-
+/// Returns a splash screen
+/// TODO Turn this into a logo
 class SplashScreenAuth extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      appBar: AppBar(),
-      body: Center(
-        child: CircularProgressIndicator(),
-      )
-    );
+        appBar: AppBar(),
+        body: Center(
+          child: CircularProgressIndicator(),
+        ));
   }
 }
 
+/// Debug screen for error testing
+/// TODO Remove from final build
 class ErrorScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -92,5 +76,4 @@ class ErrorScreen extends StatelessWidget {
       ),
     );
   }
-
 }

@@ -28,17 +28,18 @@ class Validator {
     if (s.isEmpty) {
       return 'Please enter your name! We just want to get to know you!';
     }
+    return null;
   }
 
   String validatePassword(String s) {
     if (s.isEmpty) {
       return 'Please enter a password!';
     }
+    return null;
   }
 
-  Future<String> validateLoggedInUser(
-      String email, String password, Firestore firestore) async {
-    var query = await firestore
+  Future<String> validateLoggedInUser(String email, String password) async {
+    var query = await Firestore.instance
         .collection('USERS')
         .where('email', isEqualTo: email)
         .where('password', isEqualTo: password)
@@ -46,5 +47,6 @@ class Validator {
     if (query.documents.length == 0) {
       return 'We dont have any accounts with those credentials!';
     }
+    return null;
   }
 }

@@ -1,6 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:nutrition_app_flutter/globals.dart';
@@ -12,11 +9,8 @@ import 'foodgroupresult.dart';
 /// - Result Gathering
 ///     - Result of a query gathered from Firebase that users can interact with.
 class Search extends StatefulWidget {
-  Search({this.foodGroupNames, this.firestore, this.currentUser, this.foodGroupImages});
+  Search({this.foodGroupNames, this.foodGroupImages});
 
-  Firestore firestore;
-  FirebaseUser currentUser;
-  FirebaseStorage storage;
   List<List<String>> foodGroupNames;
   Map<String, Image> foodGroupImages;
 
@@ -29,7 +23,6 @@ class _SearchState extends State<Search> {
   void initState() {
     super.initState();
   }
-
 
   /// TODO make db images 256px or 128px
   @override
@@ -49,6 +42,7 @@ class _SearchState extends State<Search> {
               itemBuilder: (BuildContext context, int index) =>
               new InkWell(
                 onTap: () {
+                  /// onTap(): creates a results page full of different nutrient items from the food group selected
                   Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -56,13 +50,12 @@ class _SearchState extends State<Search> {
                               FoodGroupResult(
                                 foodInformation: widget.foodGroupNames[index],
                                 type: 0,
-                                currentUser: widget.currentUser,
-                                firestore: widget.firestore,
                                 foodImage: widget.foodGroupImages[widget.foodGroupNames[index][1]],
                               )));
                 },
                 splashColor: Colors.transparent,
                 child: new Card(
+                  elevation: 5.0,
                   shape:  RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15.0),
                   ),
@@ -89,7 +82,7 @@ class _SearchState extends State<Search> {
                           flex: 1,
                           child: SizedBox.expand(
                             child: Material(
-                              color: Colors.green,
+                              color: Colors.white,
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment:
@@ -100,7 +93,7 @@ class _SearchState extends State<Search> {
                                         12.0, 0.0, 12.0, 0.0),
                                     child: getIconText(
                                         widget.foodGroupNames[index][1],
-                                        TextAlign.center),
+                                        textAlign: TextAlign.center, color: Colors.black),
                                   )
                                 ],
                               ),
