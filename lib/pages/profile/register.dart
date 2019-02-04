@@ -6,8 +6,6 @@ import 'package:nutrition_app_flutter/pages/profile/profile.dart';
 import 'package:nutrition_app_flutter/structures/validator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:nutrition_app_flutter/globals.dart';
-
 /// class RegisterPage displays a page for the user to register with Firestore
 /// If registered, the user can save and store data.
 /// Can also navigate to a new 'login' page if the user already has an account.
@@ -82,14 +80,12 @@ class _RegisterPageState extends State<RegisterPage> {
             padding: EdgeInsets.all(20.0),
             shrinkWrap: true,
             children: <Widget>[
-              getHeadingText('Register With Us!', textAlign: TextAlign.center),
+              Text('Register With Us!', style: Theme.of(context).textTheme.headline,),
               Divider(
                 color: Colors.transparent,
                 height: 16.0,
               ),
-              getDetailsText(
-                  'Then you can save your favorite\nrecipes & nutrients on your phone!',
-                  textAlign: TextAlign.center),
+              Text('Then you can save your favorite\nrecipes & nutrients on your phone!', style: Theme.of(context).textTheme.body1,),
               Divider(
                 color: Colors.transparent,
                 height: 56.0,
@@ -154,7 +150,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             SnackBar(content: Text('Creating New Account')));
                       }
                     },
-                    child: getIconText('Register'),
+                    child: Text('Register', style: Theme.of(context).textTheme.caption,),
                     color: Colors.green,
                     shape: new RoundedRectangleBorder(
                         borderRadius: new BorderRadius.circular(30.0))),
@@ -168,7 +164,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         height: 36,
                       )),
                 ),
-                getDetailsText('OR'),
+                Text('OR', style: Theme.of(context).textTheme.body1,),
                 Expanded(
                   child: new Container(
                       margin: const EdgeInsets.only(left: 20.0, right: 10.0),
@@ -185,7 +181,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       Navigator.push(context,
                           MaterialPageRoute(builder: (context) => LoginPage()));
                     },
-                    child: getIconText('Already Have An Account?'),
+                    child: Text('Already Have An Account?', style: Theme.of(context).textTheme.caption,),
                     color: Colors.green,
                     shape: new RoundedRectangleBorder(
                         borderRadius: new BorderRadius.circular(30.0))),

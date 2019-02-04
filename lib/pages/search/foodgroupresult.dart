@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:nutrition_app_flutter/globals.dart';
 
 import 'package:nutrition_app_flutter/pages/search/details.dart';
 import 'package:nutrition_app_flutter/structures/fooditem.dart';
@@ -144,8 +143,7 @@ class _FoodGroupResultState extends State<FoodGroupResult> {
                   Padding(
                     padding: EdgeInsets.all(16.0),
                     child: Container(
-                      child: getHeadingText(
-                          widget.foodInformation[1], textAlign: TextAlign.start),
+                      child: Text(widget.foodInformation[1], style: Theme.of(context).textTheme.headline,),
                       decoration: BoxDecoration(
                           border:
                               Border(bottom: BorderSide(color: Colors.black))),
@@ -156,7 +154,7 @@ class _FoodGroupResultState extends State<FoodGroupResult> {
                         child: Padding(
                             padding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 4.0),
                             child: Center(
-                              child: getIconText(widget.foodInformation[2]),
+                              child: Text(widget.foodInformation[2], style: Theme.of(context).textTheme.caption,),
                             ))),
                   ),
                   Row(children: <Widget>[
@@ -169,7 +167,7 @@ class _FoodGroupResultState extends State<FoodGroupResult> {
                             height: 36,
                           )),
                     ),
-                    getDetailsBoldText('Browse Items'),
+                    Text('Browse Items', style: Theme.of(context).textTheme.body2,),
                     Expanded(
                       child: new Container(
                           margin:
@@ -268,8 +266,8 @@ class _ItemView extends State<ListItem> {
                     foodItem: widget.foodItem,
                   )));
         },
-        leading: getIconText(foodItem.detailItems['foodgroup']['value']),
-        title: getIconText(foodItem.detailItems['description']['value'], maxLines: 2),
+        leading: Text(foodItem.detailItems['foodgroup']['value'], style: Theme.of(context).textTheme.caption,),
+        title: Text(foodItem.detailItems['description']['value'], style: Theme.of(context).textTheme.caption,),
         trailing: new Column(
           mainAxisAlignment: MainAxisAlignment.end,
           mainAxisSize: MainAxisSize.max,
@@ -290,11 +288,7 @@ class _ItemView extends State<ListItem> {
                   /// If not, displays a snackbar
                   if (currentUser.isAnonymous) {
                     final snackbar = SnackBar(
-                      content: getDetailsText(
-                        'You must register before you can do that!',
-                        textAlign: TextAlign.center,
-                        color: Colors.white
-                      ),
+                      content: Text('You must register before you can do that!', style: Theme.of(context).textTheme.body1,),
                       duration: Duration(milliseconds: 1500),
                       backgroundColor: Colors.green,
                     );

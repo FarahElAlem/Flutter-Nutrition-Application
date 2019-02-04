@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:nutrition_app_flutter/globals.dart';
 import 'package:nutrition_app_flutter/pages/search/foodgroupresult.dart';
 import 'package:nutrition_app_flutter/structures/fooditem.dart';
 
@@ -18,7 +17,7 @@ class FoodGroupDetails extends StatelessWidget {
       appBar: AppBar(title: Text(foodItem.detailItems['description']['value'])),
       body: Container(
         padding: EdgeInsets.all(24.0),
-        child: foodItem.buildListView(),
+        child: foodItem.buildListView(context),
       ),
     );
   }
@@ -97,7 +96,7 @@ class _SearchDetailsState extends State<SearchDetails> {
                             );
                           })
                       : Center(
-                          child: getMainContentText('No Items Found'),
+                          child: Text('No Items Found', style: Theme.of(context).textTheme.title),
                         );
                 }
               },

@@ -4,12 +4,11 @@ import 'package:firebase_storage/firebase_storage.dart';
 
 import 'package:flutter/material.dart';
 
-import 'package:nutrition_app_flutter/demo/placeholder.dart';
 import 'package:nutrition_app_flutter/pages/dashboard/dashboard.dart';
 import 'package:nutrition_app_flutter/pages/profile/register.dart';
 import 'package:nutrition_app_flutter/pages/recipe/search.dart';
 import 'package:nutrition_app_flutter/pages/search/search.dart';
-import 'package:nutrition_app_flutter/globals.dart';
+import 'package:video_player/video_player.dart';
 
 class Home extends StatefulWidget {
   Home({this.currentUser, this.firestore});
@@ -53,7 +52,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
 
   /// A list of strings that represent the AppBar titles.
   /// Works nicely with the BottomNavigationBar
-  List<String> _appBarTitles = ['Dashboard', 'Nutrition', 'Recipes', 'Profile'];
+  List<String> _appBarTitles = ['Video Demo', 'Nutrition', 'Recipes', 'Profile'];
 
   /// A list of widgets to represent the leading icons of the AppBar.
   /// Works nicely with the BottomNavigationBar
@@ -117,7 +116,10 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   Widget _buildDashboardAppBar() {
     return new AppBar(
       leading: _leadingIcons[_currentIndex],
-      title: getHeadingText(_appBarTitles[_currentIndex], color: Colors.white),
+      title: Text(
+        _appBarTitles[_currentIndex],
+        style: Theme.of(context).textTheme.headline,
+      ),
       centerTitle: true,
     );
   }
@@ -147,11 +149,11 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   void initState() {
     super.initState();
 
-    controller = new TabController(length: 4, vsync: this);
+    controller = new TabController(length: 3, vsync: this);
 
     // Define the children to the tabbed body here
     _bodyChildren = [
-      Dashboard(firestore: widget.firestore),
+      VideoApp(),
       Search(foodGroupNames: foodGroupNames, foodGroupUrls: foodGroupUrls),
       ResultsSearchPage(),
       RegisterPage()
@@ -189,18 +191,16 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
               onTap: onTabTapped,
               currentIndex: _currentIndex,
               items: [
-                new BottomNavigationBarItem(
-                  icon: Icon(Icons.dashboard),
-                  title: getIconText('Dashboard'),
-                ),
-
                 /// Search Navigation Bar Item:
                 /// Navigates to a search page that allows users to
                 /// search for various food items and append it to
                 /// their personal list.
                 new BottomNavigationBarItem(
                   icon: Icon(Icons.fastfood),
-                  title: getIconText('Nutrition'),
+                  title: Text(
+                    'Nutrition',
+                    style: Theme.of(context).textTheme.caption,
+                  ),
                 ),
 
                 /// My Items Navigation Bar Item:
@@ -210,17 +210,76 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                 /// lists by name for future reference.
                 new BottomNavigationBarItem(
                   icon: Icon(Icons.receipt),
-                  title: getIconText('Recipes'),
+                  title: Text(
+                    'Recipes',
+                    style: Theme.of(context).textTheme.caption,
+                  ),
                 ),
 
                 /// Profile Navigation Bar Item:
                 /// TODO
                 new BottomNavigationBarItem(
                   icon: Icon(Icons.account_circle),
-                  title: getIconText('Profile'),
+                  title: Text(
+                    'Profile',
+                    style: Theme.of(context).textTheme.caption,
+                  ),
                 )
               ],
             ),
           );
+  }
+}
+
+class VideoApp extends StatefulWidget {
+  @override
+  _VideoAppState createState() => _VideoAppState();
+}
+
+class _VideoAppState extends State<VideoApp> {
+  VideoPlayerController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = VideoPlayerController.asset('videos/splash.mp4')
+      ..initialize().then((_) {
+        setState(() {});
+      });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Video Demo',
+      home: Scaffold(
+        body: Center(
+          child: _controller.value.initialized
+              ? AspectRatio(
+                  aspectRatio: _controller.value.aspectRatio,
+                  child: VideoPlayer(_controller),
+                )
+              : Container(),
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            setState(() {
+              _controller.value.isPlaying
+                  ? _controller.pause()
+                  : _controller.play();
+            });
+          },
+          child: Icon(
+            _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _controller.dispose();
   }
 }

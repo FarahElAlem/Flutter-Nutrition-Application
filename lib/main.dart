@@ -24,6 +24,14 @@ Future<void> main() async {
       primaryColor: Colors.green,
       cardColor: Colors.green,
       brightness: Brightness.light,
+      textTheme: TextTheme(
+        headline: TextStyle(fontSize: 32.0, fontFamily: 'Montserrat', color: Colors.white),
+        subhead: TextStyle(fontSize: 28.0, fontFamily: 'Montserrat', color: Colors.white),
+        title: TextStyle(fontSize: 24.0, fontFamily: 'Montserrat', color: Colors.white),
+        body1: TextStyle(fontSize: 18.0, fontFamily: 'OpenSans'),
+        body2: TextStyle(fontSize: 18.0, fontFamily: 'OpenSans', fontWeight: FontWeight.bold),
+        caption: TextStyle(fontSize: 14.0, fontFamily: 'OpenSans')
+      )
     ),
     home: new Home(
       currentUser: currentUser,
@@ -61,6 +69,7 @@ class SplashScreenAuth extends StatelessWidget {
         ));
   }
 }
+
 
 /// Debug screen for error testing
 /// TODO Remove from final build

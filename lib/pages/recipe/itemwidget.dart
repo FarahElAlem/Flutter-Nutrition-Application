@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:nutrition_app_flutter/globals.dart';
 import 'package:nutrition_app_flutter/pages/recipe/details.dart';
-
 
 class ItemWidget extends StatefulWidget {
   ItemWidget({this.ds});
@@ -13,7 +11,6 @@ class ItemWidget extends StatefulWidget {
 }
 
 class _ItemWidgetState extends State<ItemWidget> {
-
   Image _image;
   bool _loading;
 
@@ -44,27 +41,34 @@ class _ItemWidgetState extends State<ItemWidget> {
                 context,
                 MaterialPageRoute(
                     builder: (context) => Details(
-                      recipeItem: widget.ds,
-                    )));
+                          recipeItem: widget.ds,
+                        )));
           },
           leading: new ConstrainedBox(
-            constraints:
-            BoxConstraints(maxHeight: 128, maxWidth: 128),
+            constraints: BoxConstraints(maxHeight: 128, maxWidth: 128),
             child: AspectRatio(
               aspectRatio: 1,
-              child: (_loading) ? Center(child:
-              CircularProgressIndicator(),) : Hero(
-                  tag: _image,
-                  child: Image.network(
-                    widget.ds['image'],
-                    fit: BoxFit.cover,
-                    width: double.infinity,
-                    height: double.infinity,
-                  )),
+              child: (_loading)
+                  ? Center(
+                      child: CircularProgressIndicator(),
+                    )
+                  : Hero(
+                      tag: _image,
+                      child: Image.network(
+                        widget.ds['image'],
+                        fit: BoxFit.cover,
+                        width: double.infinity,
+                        height: double.infinity,
+                      )),
             ),
           ),
-          title: getSubHeadingText(widget.ds['name']),
-          subtitle: getIconText(widget.ds['subcategory'], maxLines: 3),
+          title: Text(widget.ds['name'],
+              style: Theme.of(context).textTheme.subhead),
+          subtitle: Text(
+            widget.ds['subcategory'],
+            style: Theme.of(context).textTheme.body1,
+            maxLines: 3,
+          ),
           contentPadding: EdgeInsets.all(8.0),
         ),
       ),

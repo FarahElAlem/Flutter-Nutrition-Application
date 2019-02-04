@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:nutrition_app_flutter/globals.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -51,7 +50,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 });
 
               },
-              child: getIconText('Logout'),
+              child: Text('Logout', style: Theme.of(context).textTheme.caption,),
               color: Colors.green,
               shape: new RoundedRectangleBorder(
                   borderRadius: new BorderRadius.circular(30.0)))

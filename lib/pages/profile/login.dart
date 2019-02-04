@@ -1,7 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:nutrition_app_flutter/globals.dart';
 import 'package:nutrition_app_flutter/structures/validator.dart';
 
 /// class LoginPage presents a form for a User
@@ -29,7 +27,7 @@ class _LoginPageState extends State<LoginPage> {
       resizeToAvoidBottomPadding: true,
       appBar: AppBar(
         centerTitle: true,
-        title: getHeadingText('Login', color: Colors.white)
+        title: Text('Login', style: Theme.of(context).textTheme.headline,)
       ),
       body: Form(
         key: _formKey,
@@ -38,7 +36,7 @@ class _LoginPageState extends State<LoginPage> {
             shrinkWrap: true,
             padding: EdgeInsets.all(32.0),
             children: <Widget>[
-              getHeadingText('Welcome Back!', textAlign: TextAlign.center),
+              Text('Welcome Back!', style: Theme.of(context).textTheme.headline,),
               Divider(
                 color: Colors.transparent,
                 height: 64.0,
@@ -92,7 +90,7 @@ class _LoginPageState extends State<LoginPage> {
                         }
                       }
                     },
-                    child: getIconText('Login'),
+                    child: Text('Login', style: Theme.of(context).textTheme.caption,),
                     color: Colors.green,
                     shape: new RoundedRectangleBorder(
                         borderRadius: new BorderRadius.circular(30.0))),

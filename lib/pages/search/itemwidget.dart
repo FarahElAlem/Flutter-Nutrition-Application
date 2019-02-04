@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:nutrition_app_flutter/globals.dart';
 import 'package:nutrition_app_flutter/pages/search/foodgroupresult.dart';
 
 
@@ -89,10 +88,7 @@ class _ItemWidgetState extends State<ItemWidget> {
                         Padding(
                           padding: EdgeInsets.fromLTRB(
                               12.0, 0.0, 12.0, 0.0),
-                          child: getIconText(
-                              widget.foodGroupNames[widget.index][1],
-                              textAlign: TextAlign.center,
-                              color: Colors.black),
+                          child: Text(widget.foodGroupNames[widget.index][1], style: Theme.of(context).textTheme.caption,),
                         )
                       ],
                     ),

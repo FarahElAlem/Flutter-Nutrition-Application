@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:nutrition_app_flutter/globals.dart';
 import 'package:nutrition_app_flutter/pages/recipe/details.dart';
 import 'package:nutrition_app_flutter/pages/recipe/itemwidget.dart';
 
@@ -13,21 +12,24 @@ class _ResultsSearchPageState extends State<ResultsSearchPage>
   TabController _tabController;
   TextEditingController _searchController;
 
-  List<Tab> _tabs = [
-    new Tab(
-      child: getDetailsText('Standard'),
-    ),
-    new Tab(
-      child: getDetailsText('Healthy'),
-    ),
-    new Tab(
-      child: getDetailsText('Desserts'),
-    )
-  ];
+  List<Tab> _tabs;
 
   @override
   void initState() {
     super.initState();
+
+    _tabs = [
+      new Tab(
+        child: Text('Standard', style: Theme.of(this.context).textTheme.body1,),
+      ),
+      new Tab(
+        child: Text('Healthy', style: Theme.of(this.context).textTheme.body1,),
+      ),
+      new Tab(
+        child: Text('Desserts', style: Theme.of(this.context).textTheme.body1,),
+      )
+    ];
+
     _tabController = new TabController(vsync: this, length: 3);
     _searchController = new TextEditingController();
   }
@@ -53,7 +55,7 @@ class _ResultsSearchPageState extends State<ResultsSearchPage>
             child: Padding(
               padding: EdgeInsets.fromLTRB(12.0, 8.0, 12.0, 8.0),
               child: TextField(
-                style: detailsTextStyleInput,
+//                style: detailsTextStyleInput,
                 controller: _searchController,
                 decoration: InputDecoration(
                     contentPadding: EdgeInsets.all(0.0),

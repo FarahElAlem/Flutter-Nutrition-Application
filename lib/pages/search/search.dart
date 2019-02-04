@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:nutrition_app_flutter/globals.dart';
 import 'package:nutrition_app_flutter/pages/search/details.dart';
 import 'package:nutrition_app_flutter/pages/search/itemwidget.dart';
 
@@ -51,7 +50,7 @@ class _SearchState extends State<Search> {
           child: Padding(
             padding: EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 8.0),
             child: TextField(
-              style: detailsTextStyleInput,
+//              style: Theme.of(context).textTheme.,
               controller: _searchController,
               decoration: InputDecoration(
                   contentPadding: EdgeInsets.all(0.0),
