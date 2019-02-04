@@ -20,6 +20,9 @@ TextStyle iconTextStyle = new TextStyle(
 TextStyle detailsTextStyle =
     new TextStyle(fontFamily: 'Montserrat', fontSize: 16.0);
 
+TextStyle detailsTextStyleInput =
+new TextStyle(fontFamily: 'Montserrat', fontSize: 16.0, color: Colors.black);
+
 TextStyle detailsBoldTextStyle = new TextStyle(
     fontFamily: 'Montserrat', fontSize: 16.0, fontWeight: FontWeight.w500);
 
@@ -29,8 +32,9 @@ Widget getHeadingText(String text,
     int maxLines = 30}) {
   return Text(
     text,
-    style: headingTextStyle,
+    style: new TextStyle(fontFamily: 'Montserrat', fontSize: 24.0, color: color),
     textAlign: textAlign,
+    maxLines: maxLines,
   );
 }
 

@@ -115,8 +115,8 @@ class _FoodGroupResultState extends State<FoodGroupResult> {
                 children: <Widget>[
                   Stack(
                     children: <Widget>[
-                      new Positioned(
-                          child: Hero(
+                      new Positioned (
+                          child: Hero (
                         tag: widget.foodInformation[0],
                         child: new AspectRatio(
                           aspectRatio: 16 / 8,
@@ -130,7 +130,7 @@ class _FoodGroupResultState extends State<FoodGroupResult> {
                           ),
                         ),
                       )),
-                      new AppBar(
+                      new AppBar (
                         iconTheme: IconThemeData(
                             color: (_darkgroups
                                     .contains(widget.foodInformation[1]))
@@ -180,7 +180,7 @@ class _FoodGroupResultState extends State<FoodGroupResult> {
                           )),
                     ),
                   ]),
-                  StreamBuilder<QuerySnapshot>(
+                  StreamBuilder<QuerySnapshot> (
                     stream: stream,
                     builder: (BuildContext context,
                         AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -264,8 +264,8 @@ class _ItemView extends State<ListItem> {
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => Details(
-                    foodItem: foodItem,
+                  builder: (context) => FoodGroupDetails(
+                    foodItem: widget.foodItem,
                   )));
         },
         leading: getIconText(foodItem.detailItems['foodgroup']['value']),

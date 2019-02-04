@@ -38,7 +38,6 @@ Future<void> main() async {
 /// Helper function that signs a user into Firestore on application start
 Future<FirebaseUser> signInWithFirestore(String email, String password) async {
   FirebaseUser user;
-  print('Email: ' + email + ', Password: ' + password);
   if (email == '' || password == '') {
     print('Signing in Anon');
     user = await _auth.signInAnonymously();

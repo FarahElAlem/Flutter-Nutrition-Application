@@ -38,9 +38,6 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   /// Image Links
   Map<String, String> foodGroupUrls = new Map();
 
-  /// Image Widgets
-  Map<String, Image> foodGroupImages = new Map();
-
   /// List of children that define the pages that a user sees. WIP.
   List<Widget> _bodyChildren = [];
 
@@ -56,12 +53,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
 
   /// A list of strings that represent the AppBar titles.
   /// Works nicely with the BottomNavigationBar
-  List<String> _appBarTitles = [
-    'Dashboard',
-    'Search Nutrition',
-    'Search Recipes',
-    'Profile'
-  ];
+  List<String> _appBarTitles = ['Dashboard', 'Nutrition', 'Recipes', 'Profile'];
 
   /// A list of widgets to represent the leading icons of the AppBar.
   /// Works nicely with the BottomNavigationBar
@@ -125,19 +117,8 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   Widget _buildDashboardAppBar() {
     return new AppBar(
       leading: _leadingIcons[_currentIndex],
-      title: (!_isSearching)
-          ? new Center(
-              child: getHeadingText(_appBarTitles[_currentIndex]),
-            )
-          : _appBarTitle,
-      actions: <Widget>[
-        (_currentIndex == 1 || _currentIndex == 2)
-            ? _buildSearchBar()
-            : new Container(
-                width: 0,
-                height: 0,
-              )
-      ],
+      title: getHeadingText(_appBarTitles[_currentIndex], color: Colors.white),
+      centerTitle: true,
     );
   }
 
@@ -160,13 +141,6 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
           .getDownloadURL();
       foodGroupUrls[foodGroup[1]] = url.toString();
     }
-
-    for (String key in foodGroupUrls.keys) {
-      foodGroupImages[key] = Image.network(
-        foodGroupUrls[key],
-        alignment: Alignment.center,
-      );
-    }
   }
 
   @override
@@ -178,9 +152,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
     // Define the children to the tabbed body here
     _bodyChildren = [
       Dashboard(firestore: widget.firestore),
-      Search(
-          foodGroupNames: foodGroupNames,
-          foodGroupImages: foodGroupImages),
+      Search(foodGroupNames: foodGroupNames, foodGroupUrls: foodGroupUrls),
       ResultsSearchPage(),
       RegisterPage()
     ];

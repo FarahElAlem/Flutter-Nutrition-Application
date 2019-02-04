@@ -29,7 +29,7 @@ class _LoginPageState extends State<LoginPage> {
       resizeToAvoidBottomPadding: true,
       appBar: AppBar(
         centerTitle: true,
-        title: getHeadingText('Login')
+        title: getHeadingText('Login', color: Colors.white)
       ),
       body: Form(
         key: _formKey,
@@ -85,7 +85,8 @@ class _LoginPageState extends State<LoginPage> {
                         if (s != null) {
                           print('Dobby is upset');
                         } else {
-                          await FirebaseAuth.instance.signOut();
+                          FirebaseUser user = await FirebaseAuth.instance.currentUser();
+                          await user.delete();
                           await FirebaseAuth.instance.signInWithEmailAndPassword(email: _emailTextFieldController.text, password: _passwordTextFieldController.text);
                           Navigator.pop(context);
                         }

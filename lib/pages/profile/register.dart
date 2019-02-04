@@ -34,6 +34,8 @@ class _RegisterPageState extends State<RegisterPage> {
   /// Creates an account with Firestore if it doesn't exist
   void _handleAccountCreation(String email, String password, String name) async {
     _onLoading();
+    FirebaseUser user = await FirebaseAuth.instance.currentUser();
+    await user.delete();
     await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: password);
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString('email', email);
