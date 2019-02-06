@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nutrition_app_flutter/pages/search/foodgroupresult.dart';
 
-
 class ItemWidget extends StatefulWidget {
   ItemWidget({this.foodGroupNames, this.index, this.foodGroupUrls});
 
@@ -14,14 +13,14 @@ class ItemWidget extends StatefulWidget {
 }
 
 class _ItemWidgetState extends State<ItemWidget> {
-
   Image _image;
   bool _loading;
 
   @override
   void initState() {
     super.initState();
-    _image = new Image.network(widget.foodGroupUrls[widget.foodGroupUrls.keys.toList()[widget.index]]);
+    _image = new Image.network(
+        widget.foodGroupUrls[widget.foodGroupUrls.keys.toList()[widget.index]]);
     _loading = true;
     _image.image.resolve(new ImageConfiguration()).addListener((_, __) async {
       _loading = false;
@@ -42,10 +41,10 @@ class _ItemWidgetState extends State<ItemWidget> {
             context,
             MaterialPageRoute(
                 builder: (context) => FoodGroupResult(
-                  foodInformation: widget.foodGroupNames[widget.index],
-                  type: 0,
-                  foodImage: _image,
-                )));
+                      foodInformation: widget.foodGroupNames[widget.index],
+                      type: 0,
+                      foodImage: _image,
+                    )));
       },
       splashColor: Colors.transparent,
       child: new Card(
@@ -60,21 +59,21 @@ class _ItemWidgetState extends State<ItemWidget> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Expanded(
-              flex: 4,
+              flex: 3,
               child: SizedBox(
-                  child: (_loading) ? Center(
-                    child: CircularProgressIndicator(),
-                  ) : Hero(
-                      tag: widget.foodGroupNames[widget.index][0],
-                      child: new Container(
-                        decoration: new BoxDecoration(
-                            image: new DecorationImage(
-                                fit: BoxFit.cover,
-                                alignment: FractionalOffset.topCenter,
-                                image: _image.image
-                            )),
-                      ))
-              ),
+                  child: (_loading)
+                      ? Center(
+                          child: CircularProgressIndicator(),
+                        )
+                      : Hero(
+                          tag: widget.foodGroupNames[widget.index][0],
+                          child: new Container(
+                            decoration: new BoxDecoration(
+                                image: new DecorationImage(
+                                    fit: BoxFit.cover,
+                                    alignment: FractionalOffset.topCenter,
+                                    image: _image.image)),
+                          ))),
             ),
             Expanded(
                 flex: 1,
@@ -86,9 +85,12 @@ class _ItemWidgetState extends State<ItemWidget> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
                         Padding(
-                          padding: EdgeInsets.fromLTRB(
-                              12.0, 0.0, 12.0, 0.0),
-                          child: Text(widget.foodGroupNames[widget.index][1], style: Theme.of(context).textTheme.caption,),
+                          padding: EdgeInsets.fromLTRB(12.0, 0.0, 12.0, 0.0),
+                          child: Text(
+                            widget.foodGroupNames[widget.index][1],
+                            style: Theme.of(context).textTheme.caption,
+                            textAlign: TextAlign.center,
+                          ),
                         )
                       ],
                     ),

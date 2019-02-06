@@ -25,12 +25,13 @@ Future<void> main() async {
       cardColor: Colors.green,
       brightness: Brightness.light,
       textTheme: TextTheme(
-        headline: TextStyle(fontSize: 32.0, fontFamily: 'Montserrat', color: Colors.white),
-        subhead: TextStyle(fontSize: 28.0, fontFamily: 'Montserrat', color: Colors.white),
-        title: TextStyle(fontSize: 24.0, fontFamily: 'Montserrat', color: Colors.white),
+        headline: TextStyle(fontSize: 32.0, fontFamily: 'Montserrat', color: Colors.white, fontWeight: FontWeight.w600),
+        display1: TextStyle(fontSize: 32.0, fontFamily: 'Montserrat', color: Colors.black, fontWeight: FontWeight.bold),
+        subhead: TextStyle(fontSize: 20.0, fontFamily: 'Montserrat', color: Colors.black, fontWeight: FontWeight.bold),
+        title: TextStyle(fontSize: 20.0, fontFamily: 'Montserrat', color: Colors.black),
         body1: TextStyle(fontSize: 18.0, fontFamily: 'OpenSans'),
         body2: TextStyle(fontSize: 18.0, fontFamily: 'OpenSans', fontWeight: FontWeight.bold),
-        caption: TextStyle(fontSize: 14.0, fontFamily: 'OpenSans')
+        caption: TextStyle(fontSize: 16.0, fontFamily: 'OpenSans', fontWeight: FontWeight.w600),
       )
     ),
     home: new Home(

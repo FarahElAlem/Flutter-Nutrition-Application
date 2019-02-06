@@ -19,7 +19,8 @@ dependencies:
   firebase_storage: ^1.0.0
 
   shared_preferences: ^0.5.0
-  video_player: ^0.10.0
+  video_player: ^0.8.0
+  chewie: 0.9.3
 
 dev_dependencies:
   flutter_test:
@@ -132,5 +133,7 @@ flutter:
       style: italic
 
   assets:
+    - assets/
+    - assets/images/
     - assets/videos/
 

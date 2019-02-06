@@ -12,23 +12,9 @@ class _ResultsSearchPageState extends State<ResultsSearchPage>
   TabController _tabController;
   TextEditingController _searchController;
 
-  List<Tab> _tabs;
-
   @override
   void initState() {
     super.initState();
-
-    _tabs = [
-      new Tab(
-        child: Text('Standard', style: Theme.of(this.context).textTheme.body1,),
-      ),
-      new Tab(
-        child: Text('Healthy', style: Theme.of(this.context).textTheme.body1,),
-      ),
-      new Tab(
-        child: Text('Desserts', style: Theme.of(this.context).textTheme.body1,),
-      )
-    ];
 
     _tabController = new TabController(vsync: this, length: 3);
     _searchController = new TextEditingController();
@@ -44,19 +30,43 @@ class _ResultsSearchPageState extends State<ResultsSearchPage>
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      appBar: new TabBar(
-        tabs: _tabs,
-        controller: _tabController,
-      ),
+      resizeToAvoidBottomPadding: false,
       body: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
+          Padding(
+            padding: EdgeInsets.only(top: 28.0),
+            child: new TabBar(
+              tabs: [
+                new Tab(
+                  child: Text(
+                    'Standard',
+                    style: Theme.of(context).textTheme.body1,
+                  ),
+                ),
+                new Tab(
+                  child: Text(
+                    'Healthy',
+                    style: Theme.of(context).textTheme.body1,
+                  ),
+                ),
+                new Tab(
+                  child: Text(
+                    'Desserts',
+                    style: Theme.of(context).textTheme.body1,
+                  ),
+                )
+              ],
+              controller: _tabController,
+            ),
+          ),
           Center(
             child: Padding(
               padding: EdgeInsets.fromLTRB(12.0, 8.0, 12.0, 8.0),
               child: TextField(
 //                style: detailsTextStyleInput,
                 controller: _searchController,
+                style: Theme.of(context).textTheme.body1,
                 decoration: InputDecoration(
                     contentPadding: EdgeInsets.all(0.0),
                     hintText: 'Search',

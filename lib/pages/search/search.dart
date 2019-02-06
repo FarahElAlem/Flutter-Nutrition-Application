@@ -19,7 +19,6 @@ class Search extends StatefulWidget {
 }
 
 class _SearchState extends State<Search> {
-  bool _built = false;
 
   TextEditingController _searchController;
 
@@ -35,61 +34,60 @@ class _SearchState extends State<Search> {
     _searchController.dispose();
   }
 
-  Future<void> executeAfterBuild() async {
-    _built = true;
-  }
-
   /// TODO make db images 256px or 128px
   @override
   Widget build(BuildContext context) {
-    executeAfterBuild();
-    return new Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: <Widget>[
-        Center(
-          child: Padding(
-            padding: EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 8.0),
-            child: TextField(
+    return new Container(
+      padding: EdgeInsets.only(top: 28.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Center(
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 8.0),
+              child: TextField(
 //              style: Theme.of(context).textTheme.,
-              controller: _searchController,
-              decoration: InputDecoration(
-                  contentPadding: EdgeInsets.all(0.0),
-                  hintText: 'Search',
-                  prefixIcon: Icon(Icons.search),
-                  border: new OutlineInputBorder(
-                      borderRadius: const BorderRadius.all(
-                    const Radius.circular(10.0),
-                  ))),
-              onSubmitted: (String text) {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => SearchDetails(query: text)));
-              },
+                controller: _searchController,
+                style: Theme.of(context).textTheme.body1,
+                decoration: InputDecoration(
+                    contentPadding: EdgeInsets.all(0.0),
+                    hintText: 'Search',
+                    prefixIcon: Icon(Icons.search),
+                    border: new OutlineInputBorder(
+                        borderRadius: const BorderRadius.all(
+                          const Radius.circular(10.0),
+                        ))),
+                onSubmitted: (String text) {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => SearchDetails(query: text)));
+                },
+              ),
             ),
           ),
-        ),
-        new Expanded(
-          child: new Container(
-            padding: new EdgeInsets.fromLTRB(4.0, 0.0, 4.0, 4.0),
-            child: new StaggeredGridView.countBuilder(
-              crossAxisCount: 2,
-              itemCount: widget.foodGroupNames.length,
-              itemBuilder: ((BuildContext context, int index) {
-                return ItemWidget(
-                  foodGroupNames: widget.foodGroupNames,
-                  foodGroupUrls: widget.foodGroupUrls,
-                  index: index,
-                );
-              }),
-              staggeredTileBuilder: (int index) =>
-                  new StaggeredTile.count(1, 1),
-              mainAxisSpacing: 1.0,
-              crossAxisSpacing: 1.0,
+          new Expanded(
+            child: new Container(
+              padding: new EdgeInsets.fromLTRB(4.0, 0.0, 4.0, 4.0),
+              child: new StaggeredGridView.countBuilder(
+                crossAxisCount: 2,
+                itemCount: widget.foodGroupNames.length,
+                itemBuilder: ((BuildContext context, int index) {
+                  return ItemWidget(
+                    foodGroupNames: widget.foodGroupNames,
+                    foodGroupUrls: widget.foodGroupUrls,
+                    index: index,
+                  );
+                }),
+                staggeredTileBuilder: (int index) =>
+                new StaggeredTile.count(1, 1),
+                mainAxisSpacing: 1.0,
+                crossAxisSpacing: 1.0,
+              ),
             ),
-          ),
-        )
-      ],
+          )
+        ],
+      ),
     );
   }
 }

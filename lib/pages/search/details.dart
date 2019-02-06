@@ -16,7 +16,6 @@ class FoodGroupDetails extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text(foodItem.detailItems['description']['value'])),
       body: Container(
-        padding: EdgeInsets.all(24.0),
         child: foodItem.buildListView(context),
       ),
     );

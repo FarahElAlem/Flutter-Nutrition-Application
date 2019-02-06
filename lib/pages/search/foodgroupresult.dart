@@ -102,7 +102,7 @@ class _FoodGroupResultState extends State<FoodGroupResult> {
       return new Scaffold(appBar: new AppBar(), body: _buildLoadingScreen());
     } else {
       return new Scaffold(
-        body: LayoutBuilder (
+        body: LayoutBuilder(
             builder: (BuildContext contest, BoxConstraints constraintss) {
           return SingleChildScrollView(
             child: ConstrainedBox(
@@ -114,8 +114,8 @@ class _FoodGroupResultState extends State<FoodGroupResult> {
                 children: <Widget>[
                   Stack(
                     children: <Widget>[
-                      new Positioned (
-                          child: Hero (
+                      new Positioned(
+                          child: Hero(
                         tag: widget.foodInformation[0],
                         child: new AspectRatio(
                           aspectRatio: 16 / 8,
@@ -129,7 +129,7 @@ class _FoodGroupResultState extends State<FoodGroupResult> {
                           ),
                         ),
                       )),
-                      new AppBar (
+                      new AppBar(
                         iconTheme: IconThemeData(
                             color: (_darkgroups
                                     .contains(widget.foodInformation[1]))
@@ -143,10 +143,14 @@ class _FoodGroupResultState extends State<FoodGroupResult> {
                   Padding(
                     padding: EdgeInsets.all(16.0),
                     child: Container(
-                      child: Text(widget.foodInformation[1], style: Theme.of(context).textTheme.headline,),
+                      padding: EdgeInsets.only(bottom: 8.0),
+                      child: Text(
+                        widget.foodInformation[1],
+                        style: Theme.of(context).textTheme.display1,
+                      ),
                       decoration: BoxDecoration(
-                          border:
-                              Border(bottom: BorderSide(color: Colors.black))),
+                        border: Border(bottom: BorderSide(color: Colors.black)),
+                      ),
                     ),
                   ),
                   Flexible(
@@ -154,7 +158,10 @@ class _FoodGroupResultState extends State<FoodGroupResult> {
                         child: Padding(
                             padding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 4.0),
                             child: Center(
-                              child: Text(widget.foodInformation[2], style: Theme.of(context).textTheme.caption,),
+                              child: Text(
+                                widget.foodInformation[2],
+                                style: Theme.of(context).textTheme.caption,
+                              ),
                             ))),
                   ),
                   Row(children: <Widget>[
@@ -167,7 +174,10 @@ class _FoodGroupResultState extends State<FoodGroupResult> {
                             height: 36,
                           )),
                     ),
-                    Text('Browse Items', style: Theme.of(context).textTheme.body2,),
+                    Text(
+                      'Browse Items',
+                      style: Theme.of(context).textTheme.body2,
+                    ),
                     Expanded(
                       child: new Container(
                           margin:
@@ -178,7 +188,7 @@ class _FoodGroupResultState extends State<FoodGroupResult> {
                           )),
                     ),
                   ]),
-                  StreamBuilder<QuerySnapshot> (
+                  StreamBuilder<QuerySnapshot>(
                     stream: stream,
                     builder: (BuildContext context,
                         AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -263,11 +273,19 @@ class _ItemView extends State<ListItem> {
               context,
               MaterialPageRoute(
                   builder: (context) => FoodGroupDetails(
-                    foodItem: widget.foodItem,
-                  )));
+                        foodItem: widget.foodItem,
+                      )));
         },
-        leading: Text(foodItem.detailItems['foodgroup']['value'], style: Theme.of(context).textTheme.caption,),
-        title: Text(foodItem.detailItems['description']['value'], style: Theme.of(context).textTheme.caption,),
+        leading: Text(
+          foodItem.detailItems['foodgroup']['value'],
+          style: Theme.of(context).textTheme.caption,
+        ),
+        title: Text(
+          foodItem.detailItems['description']['value'],
+          style: Theme.of(context).textTheme.caption,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+        ),
         trailing: new Column(
           mainAxisAlignment: MainAxisAlignment.end,
           mainAxisSize: MainAxisSize.max,
@@ -276,19 +294,22 @@ class _ItemView extends State<ListItem> {
                 splashColor: (!isFavorited) ? Colors.amber : Colors.black12,
                 icon: (!isFavorited)
                     ? Icon(
-                  Icons.star,
-                  color: Colors.grey,
-                )
+                        Icons.favorite_border,
+                        color: Colors.grey,
+                      )
                     : Icon(
-                  Icons.star,
-                  color: Colors.amber,
-                ),
+                        Icons.favorite,
+                        color: Colors.amber,
+                      ),
                 onPressed: () async {
                   /// Checking to see if a user can favorite an item or not
                   /// If not, displays a snackbar
                   if (currentUser.isAnonymous) {
                     final snackbar = SnackBar(
-                      content: Text('You must register before you can do that!', style: Theme.of(context).textTheme.body1,),
+                      content: Text(
+                        'You must register before you can do that!',
+                        style: Theme.of(context).textTheme.body1,
+                      ),
                       duration: Duration(milliseconds: 1500),
                       backgroundColor: Colors.green,
                     );
@@ -304,11 +325,16 @@ class _ItemView extends State<ListItem> {
                         .collection('USERS')
                         .document(currentUser.email)
                         .get();
-                    Map<String, dynamic> data = query.data;
-
-                    var nutrients = new List<String>.from(data['nutrients']);
-                    nutrients.remove(
-                        foodItem.detailItems['description']['value'].toString());
+                    Map<String, dynamic> data =
+                        (query.data == null) ? new Map() : query.data;
+                    var nutrients;
+                    if (data.keys.length > 0)
+                      nutrients = new List<String>.from(data['nutrients']);
+                    else
+                      nutrients = new List<String>();
+                    nutrients.remove(foodItem.detailItems['description']
+                            ['value']
+                        .toString());
 
                     data['nutrients'] = nutrients;
                     await Firestore.instance
@@ -323,11 +349,16 @@ class _ItemView extends State<ListItem> {
                         .collection('USERS')
                         .document(currentUser.email)
                         .get();
-                    Map<String, dynamic> data = query.data;
+                    Map<String, dynamic> data =
+                        (query.data == null) ? new Map() : query.data;
 
-                    var nutrients = new List<String>.from(data['nutrients']);
-                    nutrients.add(
-                        foodItem.detailItems['description']['value'].toString());
+                    var nutrients;
+                    if (data.keys.length > 0)
+                      nutrients = new List<String>.from(data['nutrients']);
+                    else
+                      nutrients = new List<String>();
+                    nutrients.add(foodItem.detailItems['description']['value']
+                        .toString());
 
                     data['nutrients'] = nutrients;
                     await Firestore.instance

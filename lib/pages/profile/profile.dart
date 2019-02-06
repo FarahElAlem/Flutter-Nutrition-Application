@@ -43,14 +43,17 @@ class _ProfilePageState extends State<ProfilePage> {
                 await FirebaseAuth.instance.signOut();
                 await FirebaseAuth.instance.signInAnonymously();
 
-                SharedPreferences.getInstance().then((SharedPreferences prefs) {
+                SharedPreferences.getInstance()
+                    .then((SharedPreferences prefs) {
                   prefs.setString('email', '');
                   prefs.setString('password', '');
                   prefs.setString('name', '');
                 });
-
               },
-              child: Text('Logout', style: Theme.of(context).textTheme.caption,),
+              child: Text(
+                'Logout',
+                style: Theme.of(context).textTheme.caption,
+              ),
               color: Colors.green,
               shape: new RoundedRectangleBorder(
                   borderRadius: new BorderRadius.circular(30.0)))

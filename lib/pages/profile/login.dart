@@ -27,7 +27,9 @@ class _LoginPageState extends State<LoginPage> {
       resizeToAvoidBottomPadding: true,
       appBar: AppBar(
         centerTitle: true,
-        title: Text('Login', style: Theme.of(context).textTheme.headline,)
+        backgroundColor: Colors.transparent,
+        elevation: 0.0,
+        iconTheme: IconThemeData(color: Colors.black),
       ),
       body: Form(
         key: _formKey,
@@ -36,7 +38,11 @@ class _LoginPageState extends State<LoginPage> {
             shrinkWrap: true,
             padding: EdgeInsets.all(32.0),
             children: <Widget>[
-              Text('Welcome Back!', style: Theme.of(context).textTheme.headline,),
+              Text(
+                'Welcome Back!',
+                style: Theme.of(context).textTheme.display1,
+                textAlign: TextAlign.center,
+              ),
               Divider(
                 color: Colors.transparent,
                 height: 64.0,
@@ -49,6 +55,7 @@ class _LoginPageState extends State<LoginPage> {
                   }
                 },
                 controller: _emailTextFieldController,
+                style: Theme.of(context).textTheme.body1,
                 decoration: InputDecoration(hintText: 'Email'),
                 keyboardType: TextInputType.emailAddress,
               ),
@@ -64,6 +71,7 @@ class _LoginPageState extends State<LoginPage> {
                   }
                 },
                 controller: _passwordTextFieldController,
+                style: Theme.of(context).textTheme.body1,
                 decoration: InputDecoration(hintText: 'Password'),
                 keyboardType: TextInputType.text,
                 obscureText: true,
@@ -83,14 +91,21 @@ class _LoginPageState extends State<LoginPage> {
                         if (s != null) {
                           print('Dobby is upset');
                         } else {
-                          FirebaseUser user = await FirebaseAuth.instance.currentUser();
+                          FirebaseUser user =
+                              await FirebaseAuth.instance.currentUser();
                           await user.delete();
-                          await FirebaseAuth.instance.signInWithEmailAndPassword(email: _emailTextFieldController.text, password: _passwordTextFieldController.text);
+                          await FirebaseAuth.instance
+                              .signInWithEmailAndPassword(
+                                  email: _emailTextFieldController.text,
+                                  password: _passwordTextFieldController.text);
                           Navigator.pop(context);
                         }
                       }
                     },
-                    child: Text('Login', style: Theme.of(context).textTheme.caption,),
+                    child: Text(
+                      'Login',
+                      style: Theme.of(context).textTheme.caption,
+                    ),
                     color: Colors.green,
                     shape: new RoundedRectangleBorder(
                         borderRadius: new BorderRadius.circular(30.0))),

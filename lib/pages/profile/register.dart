@@ -30,11 +30,13 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   /// Creates an account with Firestore if it doesn't exist
-  void _handleAccountCreation(String email, String password, String name) async {
-    _onLoading();
+  /// TODO CHECK IF ACCOUNT EXISTS AND THROW AN ERROR
+  void _handleAccountCreation(
+      String email, String password, String name) async {
     FirebaseUser user = await FirebaseAuth.instance.currentUser();
     await user.delete();
-    await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: password);
+    await FirebaseAuth.instance
+        .createUserWithEmailAndPassword(email: email, password: password);
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString('email', email);
     prefs.setString('password', password);
@@ -48,27 +50,6 @@ class _RegisterPageState extends State<RegisterPage> {
     data['recipes'] = new List();
 
     Firestore.instance.collection('USERS').document(email).setData(data);
-    Navigator.pop(context);
-  }
-
-  void _onLoading() {
-    showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return SimpleDialog(
-            children: <Widget>[
-              new Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  new CircularProgressIndicator(),
-                  new Text('Loading')
-                ],
-              )
-            ],
-          );
-        });
   }
 
   /// Builds the page for the user to register with
@@ -80,12 +61,20 @@ class _RegisterPageState extends State<RegisterPage> {
             padding: EdgeInsets.all(20.0),
             shrinkWrap: true,
             children: <Widget>[
-              Text('Register With Us!', style: Theme.of(context).textTheme.headline,),
+              Text(
+                'Register With Us!',
+                style: Theme.of(context).textTheme.display1,
+                textAlign: TextAlign.center,
+              ),
               Divider(
                 color: Colors.transparent,
                 height: 16.0,
               ),
-              Text('Then you can save your favorite\nrecipes & nutrients on your phone!', style: Theme.of(context).textTheme.body1,),
+              Text(
+                'Then you can save your favorite\nrecipes & nutrients on your phone!',
+                style: Theme.of(context).textTheme.body1,
+                textAlign: TextAlign.center,
+              ),
               Divider(
                 color: Colors.transparent,
                 height: 56.0,
@@ -98,6 +87,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   }
                 },
                 controller: _nameTextFieldController,
+                style: Theme.of(context).textTheme.body1,
                 decoration: InputDecoration(hintText: 'Name'),
                 keyboardType: TextInputType.text,
               ),
@@ -113,6 +103,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   }
                 },
                 controller: _emailTextFieldController,
+                style: Theme.of(context).textTheme.body1,
                 decoration: InputDecoration(hintText: 'Email'),
                 keyboardType: TextInputType.emailAddress,
               ),
@@ -128,6 +119,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   }
                 },
                 controller: _passwordTextFieldController,
+                style: Theme.of(context).textTheme.body1,
                 decoration: InputDecoration(hintText: 'Password'),
                 keyboardType: TextInputType.text,
                 obscureText: true,
@@ -143,14 +135,17 @@ class _RegisterPageState extends State<RegisterPage> {
                       /// onPressed(): If the form is valid, handle new user register
                       if (_formKey.currentState.validate()) {
                         _handleAccountCreation(
-                          _emailTextFieldController.text,
-                          _passwordTextFieldController.text,
-                          _nameTextFieldController.text);
+                            _emailTextFieldController.text,
+                            _passwordTextFieldController.text,
+                            _nameTextFieldController.text);
                         Scaffold.of(context).showSnackBar(
                             SnackBar(content: Text('Creating New Account')));
                       }
                     },
-                    child: Text('Register', style: Theme.of(context).textTheme.caption,),
+                    child: Text(
+                      'Register',
+                      style: Theme.of(context).textTheme.caption,
+                    ),
                     color: Colors.green,
                     shape: new RoundedRectangleBorder(
                         borderRadius: new BorderRadius.circular(30.0))),
@@ -164,7 +159,10 @@ class _RegisterPageState extends State<RegisterPage> {
                         height: 36,
                       )),
                 ),
-                Text('OR', style: Theme.of(context).textTheme.body1,),
+                Text(
+                  'OR',
+                  style: Theme.of(context).textTheme.title,
+                ),
                 Expanded(
                   child: new Container(
                       margin: const EdgeInsets.only(left: 20.0, right: 10.0),
@@ -181,7 +179,10 @@ class _RegisterPageState extends State<RegisterPage> {
                       Navigator.push(context,
                           MaterialPageRoute(builder: (context) => LoginPage()));
                     },
-                    child: Text('Already Have An Account?', style: Theme.of(context).textTheme.caption,),
+                    child: Text(
+                      'Already Have An Account?',
+                      style: Theme.of(context).textTheme.caption,
+                    ),
                     color: Colors.green,
                     shape: new RoundedRectangleBorder(
                         borderRadius: new BorderRadius.circular(30.0))),
@@ -208,8 +209,7 @@ class _RegisterPageState extends State<RegisterPage> {
             return _buildProfilePage();
           } else if (snapshot.hasData && snapshot.data.isAnonymous) {
             return _buildRegisterPage();
-          }
-          else {
+          } else {
             return Center(
               child: CircularProgressIndicator(),
             );

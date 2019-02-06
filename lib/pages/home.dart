@@ -3,12 +3,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 import 'package:flutter/material.dart';
+import 'package:nutrition_app_flutter/pages/dashboard/title.dart';
 
-import 'package:nutrition_app_flutter/pages/dashboard/dashboard.dart';
 import 'package:nutrition_app_flutter/pages/profile/register.dart';
 import 'package:nutrition_app_flutter/pages/recipe/search.dart';
 import 'package:nutrition_app_flutter/pages/search/search.dart';
-import 'package:video_player/video_player.dart';
 
 class Home extends StatefulWidget {
   Home({this.currentUser, this.firestore});
@@ -52,12 +51,15 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
 
   /// A list of strings that represent the AppBar titles.
   /// Works nicely with the BottomNavigationBar
-  List<String> _appBarTitles = ['Video Demo', 'Nutrition', 'Recipes', 'Profile'];
+  List<String> _appBarTitles = [
+    'Nutrition',
+    'Recipes',
+    'Profile'
+  ];
 
   /// A list of widgets to represent the leading icons of the AppBar.
   /// Works nicely with the BottomNavigationBar
   List<Widget> _leadingIcons = [
-    null,
     new Icon(Icons.fastfood),
     new Icon(Icons.receipt),
     null
@@ -153,7 +155,6 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
 
     // Define the children to the tabbed body here
     _bodyChildren = [
-      VideoApp(),
       Search(foodGroupNames: foodGroupNames, foodGroupUrls: foodGroupUrls),
       ResultsSearchPage(),
       RegisterPage()
@@ -174,13 +175,9 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return (!_ready)
-        ? new Scaffold(
-            body: new Center(
-              child: new CircularProgressIndicator(),
-            ),
-          )
+        ? new VideoApp()
         : new Scaffold(
-            appBar: _buildDashboardAppBar(),
+//            appBar: _buildDashboardAppBar(),
             body: new TabBarView(
               physics: new NeverScrollableScrollPhysics(),
               children: _bodyChildren,
@@ -231,55 +228,3 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   }
 }
 
-class VideoApp extends StatefulWidget {
-  @override
-  _VideoAppState createState() => _VideoAppState();
-}
-
-class _VideoAppState extends State<VideoApp> {
-  VideoPlayerController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = VideoPlayerController.asset('videos/splash.mp4')
-      ..initialize().then((_) {
-        setState(() {});
-      });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Video Demo',
-      home: Scaffold(
-        body: Center(
-          child: _controller.value.initialized
-              ? AspectRatio(
-                  aspectRatio: _controller.value.aspectRatio,
-                  child: VideoPlayer(_controller),
-                )
-              : Container(),
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            setState(() {
-              _controller.value.isPlaying
-                  ? _controller.pause()
-                  : _controller.play();
-            });
-          },
-          child: Icon(
-            _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
-          ),
-        ),
-      ),
-    );
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _controller.dispose();
-  }
-}

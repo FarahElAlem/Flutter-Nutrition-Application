@@ -24,7 +24,7 @@ class FoodItem {
               '%'
     };
     nutritionItems['cholesterol'] = {
-      'value': value['cholesterol)'].toString().trim(),
+      'value': value['cholesterol'].toString().trim(),
       'measurement': 'mg',
       'name': 'Cholesterol:',
       'daily': (double.parse(value['cholesterol']) * 100 / 300.0)
@@ -110,10 +110,13 @@ class FoodItem {
 
   Widget buildListView(BuildContext context) {
     return SingleChildScrollView(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: _buildBody(context),
+      child: Container(
+        padding: EdgeInsets.all(24.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: _buildBody(context),
+        ),
       ),
     );
   }
@@ -147,8 +150,8 @@ class FoodItem {
 
     /// General Information Adding to Body
     out.add(Text(
-      'General Information',
-      style: Theme.of(context).textTheme.headline,
+      'General\nInformation',
+      style: Theme.of(context).textTheme.display1,
     ));
     out.add(Divider(
       color: Colors.black,
@@ -191,8 +194,8 @@ class FoodItem {
 
     /// Nutrition Information Adding to Body
     out.add(Text(
-      'Nutrition Information',
-      style: Theme.of(context).textTheme.headline,
+      'Nutrition\nInformation',
+      style: Theme.of(context).textTheme.display1,
     ));
     out.add(Padding(
         padding: EdgeInsets.fromLTRB(0.0, 16.0, 0.0, 8.0),
@@ -216,7 +219,7 @@ class FoodItem {
             ),
             Expanded(
               child: Text(
-                'Daily %',
+                'Daily',
                 style: Theme.of(context).textTheme.body2,
               ),
             )
