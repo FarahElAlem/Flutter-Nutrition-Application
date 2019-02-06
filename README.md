@@ -79,6 +79,6 @@
 - ~~Hero buttons, 3/4ths image 1/4 text on item selection~~
 - ~~Clean up recipes and nutrition for better user experience~~
 - Create User Profile Page
-- Create Dashboard
+- ~~Create Dashboard
 - Redesign Details UI for nutrients
-- Design Details UI for recipes
+- ~~Design Details UI for recipes~~
