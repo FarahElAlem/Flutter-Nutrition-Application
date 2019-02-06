@@ -3,13 +3,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 import 'package:flutter/material.dart';
+import 'package:nutrition_app_flutter/pages/dashboard/title.dart';
 
-import 'package:nutrition_app_flutter/demo/placeholder.dart';
-import 'package:nutrition_app_flutter/pages/dashboard/dashboard.dart';
 import 'package:nutrition_app_flutter/pages/profile/register.dart';
 import 'package:nutrition_app_flutter/pages/recipe/search.dart';
 import 'package:nutrition_app_flutter/pages/search/search.dart';
-import 'package:nutrition_app_flutter/globals.dart';
 
 class Home extends StatefulWidget {
   Home({this.currentUser, this.firestore});
@@ -38,9 +36,6 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   /// Image Links
   Map<String, String> foodGroupUrls = new Map();
 
-  /// Image Widgets
-  Map<String, Image> foodGroupImages = new Map();
-
   /// List of children that define the pages that a user sees. WIP.
   List<Widget> _bodyChildren = [];
 
@@ -57,16 +52,14 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   /// A list of strings that represent the AppBar titles.
   /// Works nicely with the BottomNavigationBar
   List<String> _appBarTitles = [
-    'Dashboard',
-    'Search Nutrition',
-    'Search Recipes',
+    'Nutrition',
+    'Recipes',
     'Profile'
   ];
 
   /// A list of widgets to represent the leading icons of the AppBar.
   /// Works nicely with the BottomNavigationBar
   List<Widget> _leadingIcons = [
-    null,
     new Icon(Icons.fastfood),
     new Icon(Icons.receipt),
     null
@@ -125,19 +118,11 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   Widget _buildDashboardAppBar() {
     return new AppBar(
       leading: _leadingIcons[_currentIndex],
-      title: (!_isSearching)
-          ? new Center(
-              child: getHeadingText(_appBarTitles[_currentIndex]),
-            )
-          : _appBarTitle,
-      actions: <Widget>[
-        (_currentIndex == 1 || _currentIndex == 2)
-            ? _buildSearchBar()
-            : new Container(
-                width: 0,
-                height: 0,
-              )
-      ],
+      title: Text(
+        _appBarTitles[_currentIndex],
+        style: Theme.of(context).textTheme.headline,
+      ),
+      centerTitle: true,
     );
   }
 
@@ -160,27 +145,17 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
           .getDownloadURL();
       foodGroupUrls[foodGroup[1]] = url.toString();
     }
-
-    for (String key in foodGroupUrls.keys) {
-      foodGroupImages[key] = Image.network(
-        foodGroupUrls[key],
-        alignment: Alignment.center,
-      );
-    }
   }
 
   @override
   void initState() {
     super.initState();
 
-    controller = new TabController(length: 4, vsync: this);
+    controller = new TabController(length: 3, vsync: this);
 
     // Define the children to the tabbed body here
     _bodyChildren = [
-      Dashboard(firestore: widget.firestore),
-      Search(
-          foodGroupNames: foodGroupNames,
-          foodGroupImages: foodGroupImages),
+      Search(foodGroupNames: foodGroupNames, foodGroupUrls: foodGroupUrls),
       ResultsSearchPage(),
       RegisterPage()
     ];
@@ -200,13 +175,9 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return (!_ready)
-        ? new Scaffold(
-            body: new Center(
-              child: new CircularProgressIndicator(),
-            ),
-          )
+        ? new VideoApp()
         : new Scaffold(
-            appBar: _buildDashboardAppBar(),
+//            appBar: _buildDashboardAppBar(),
             body: new TabBarView(
               physics: new NeverScrollableScrollPhysics(),
               children: _bodyChildren,
@@ -217,18 +188,16 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
               onTap: onTabTapped,
               currentIndex: _currentIndex,
               items: [
-                new BottomNavigationBarItem(
-                  icon: Icon(Icons.dashboard),
-                  title: getIconText('Dashboard'),
-                ),
-
                 /// Search Navigation Bar Item:
                 /// Navigates to a search page that allows users to
                 /// search for various food items and append it to
                 /// their personal list.
                 new BottomNavigationBarItem(
                   icon: Icon(Icons.fastfood),
-                  title: getIconText('Nutrition'),
+                  title: Text(
+                    'Nutrition',
+                    style: Theme.of(context).textTheme.caption,
+                  ),
                 ),
 
                 /// My Items Navigation Bar Item:
@@ -238,17 +207,24 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                 /// lists by name for future reference.
                 new BottomNavigationBarItem(
                   icon: Icon(Icons.receipt),
-                  title: getIconText('Recipes'),
+                  title: Text(
+                    'Recipes',
+                    style: Theme.of(context).textTheme.caption,
+                  ),
                 ),
 
                 /// Profile Navigation Bar Item:
                 /// TODO
                 new BottomNavigationBarItem(
                   icon: Icon(Icons.account_circle),
-                  title: getIconText('Profile'),
+                  title: Text(
+                    'Profile',
+                    style: Theme.of(context).textTheme.caption,
+                  ),
                 )
               ],
             ),
           );
   }
 }
+

@@ -1,7 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:nutrition_app_flutter/globals.dart';
 import 'package:nutrition_app_flutter/structures/validator.dart';
 
 /// class LoginPage presents a form for a User
@@ -29,7 +27,9 @@ class _LoginPageState extends State<LoginPage> {
       resizeToAvoidBottomPadding: true,
       appBar: AppBar(
         centerTitle: true,
-        title: getHeadingText('Login')
+        backgroundColor: Colors.transparent,
+        elevation: 0.0,
+        iconTheme: IconThemeData(color: Colors.black),
       ),
       body: Form(
         key: _formKey,
@@ -38,7 +38,11 @@ class _LoginPageState extends State<LoginPage> {
             shrinkWrap: true,
             padding: EdgeInsets.all(32.0),
             children: <Widget>[
-              getHeadingText('Welcome Back!', textAlign: TextAlign.center),
+              Text(
+                'Welcome Back!',
+                style: Theme.of(context).textTheme.display1,
+                textAlign: TextAlign.center,
+              ),
               Divider(
                 color: Colors.transparent,
                 height: 64.0,
@@ -51,6 +55,7 @@ class _LoginPageState extends State<LoginPage> {
                   }
                 },
                 controller: _emailTextFieldController,
+                style: Theme.of(context).textTheme.body1,
                 decoration: InputDecoration(hintText: 'Email'),
                 keyboardType: TextInputType.emailAddress,
               ),
@@ -66,6 +71,7 @@ class _LoginPageState extends State<LoginPage> {
                   }
                 },
                 controller: _passwordTextFieldController,
+                style: Theme.of(context).textTheme.body1,
                 decoration: InputDecoration(hintText: 'Password'),
                 keyboardType: TextInputType.text,
                 obscureText: true,
@@ -85,13 +91,21 @@ class _LoginPageState extends State<LoginPage> {
                         if (s != null) {
                           print('Dobby is upset');
                         } else {
-                          await FirebaseAuth.instance.signOut();
-                          await FirebaseAuth.instance.signInWithEmailAndPassword(email: _emailTextFieldController.text, password: _passwordTextFieldController.text);
+                          FirebaseUser user =
+                              await FirebaseAuth.instance.currentUser();
+                          await user.delete();
+                          await FirebaseAuth.instance
+                              .signInWithEmailAndPassword(
+                                  email: _emailTextFieldController.text,
+                                  password: _passwordTextFieldController.text);
                           Navigator.pop(context);
                         }
                       }
                     },
-                    child: getIconText('Login'),
+                    child: Text(
+                      'Login',
+                      style: Theme.of(context).textTheme.caption,
+                    ),
                     color: Colors.green,
                     shape: new RoundedRectangleBorder(
                         borderRadius: new BorderRadius.circular(30.0))),

@@ -22,6 +22,17 @@ for item in parsed_json:
     print(item)
     firestore.collection(u'RECIPES').document().set(item)
 
+#
+# cur = []
+# new = []
+# for item in parsed_json:
+#     if item['name'] not in cur:
+#         cur.append(item['name'])
+#         new.append(item)
+#     else:
+#         print('{0} duped'.format(item['name']))
+
+#
 # docs = firestore.collection(u'RECIPES').get()
 # cur = []
 # new = []

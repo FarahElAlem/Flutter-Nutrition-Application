@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:nutrition_app_flutter/globals.dart';
 
 /// FoodItem class that stores information gathered from the
 /// Cloud Firestore Database. Contains a build function that formats
@@ -25,7 +24,7 @@ class FoodItem {
               '%'
     };
     nutritionItems['cholesterol'] = {
-      'value': value['cholesterol)'].toString().trim(),
+      'value': value['cholesterol'].toString().trim(),
       'measurement': 'mg',
       'name': 'Cholesterol:',
       'daily': (double.parse(value['cholesterol']) * 100 / 300.0)
@@ -109,17 +108,20 @@ class FoodItem {
     };
   }
 
-  Widget buildListView() {
+  Widget buildListView(BuildContext context) {
     return SingleChildScrollView(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: _buildBody(),
+      child: Container(
+        padding: EdgeInsets.all(24.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: _buildBody(context),
+        ),
       ),
     );
   }
 
-  List<Widget> _buildBody() {
+  List<Widget> _buildBody(BuildContext context) {
     Map<String, List<String>> names = {
       'lipid': [],
       'cholesterol': [],
@@ -147,16 +149,25 @@ class FoodItem {
     List<Widget> out = [];
 
     /// General Information Adding to Body
-    out.add(getHeadingText('General Information'));
+    out.add(Text(
+      'General\nInformation',
+      style: Theme.of(context).textTheme.display1,
+    ));
     out.add(Divider(
       color: Colors.black,
     ));
     out.add(Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
-        getMainContentText(this.nutritionItems['calorie']['name']),
-        getMainContentText(this.nutritionItems['calorie']['value'] +
-            this.nutritionItems['calorie']['measurement'])
+        Text(
+          this.nutritionItems['calorie']['name'],
+          style: Theme.of(context).textTheme.body1,
+        ),
+        Text(
+          this.nutritionItems['calorie']['value'] +
+              this.nutritionItems['calorie']['measurement'],
+          style: Theme.of(context).textTheme.body1,
+        )
       ],
     ));
     out.add(Divider(
@@ -166,8 +177,14 @@ class FoodItem {
     out.add(Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
-        getMainContentText('Serving Size:'),
-        getMainContentText('100g'),
+        Text(
+          'Serving Size:',
+          style: Theme.of(context).textTheme.body1,
+        ),
+        Text(
+          '100g',
+          style: Theme.of(context).textTheme.body1,
+        )
       ],
     ));
     out.add(Divider(
@@ -176,7 +193,10 @@ class FoodItem {
     ));
 
     /// Nutrition Information Adding to Body
-    out.add(getHeadingText('Nutrition Information'));
+    out.add(Text(
+      'Nutrition\nInformation',
+      style: Theme.of(context).textTheme.display1,
+    ));
     out.add(Padding(
         padding: EdgeInsets.fromLTRB(0.0, 16.0, 0.0, 8.0),
         child: Row(
@@ -185,14 +205,23 @@ class FoodItem {
           children: <Widget>[
             Expanded(
               flex: 3,
-              child: getDetailsBoldText('Name'),
+              child: Text(
+                'Name',
+                style: Theme.of(context).textTheme.body1,
+              ),
             ),
             Expanded(
               flex: 2,
-              child: getDetailsBoldText('Amount'),
+              child: Text(
+                'Amount',
+                style: Theme.of(context).textTheme.body2,
+              ),
             ),
             Expanded(
-              child: getDetailsBoldText('Daily %'),
+              child: Text(
+                'Daily',
+                style: Theme.of(context).textTheme.body2,
+              ),
             )
           ],
         )));
@@ -212,15 +241,15 @@ class FoodItem {
         children: <Widget>[
           Expanded(
             flex: 3,
-            child: getMainContentText(this.nutritionItems[key]['name']),
+            child: Text(this.nutritionItems[key]['name']),
           ),
           Expanded(
             flex: 2,
-            child: getMainContentText(this.nutritionItems[key]['value'] +
+            child: Text(this.nutritionItems[key]['value'] +
                 this.nutritionItems[key]['measurement']),
           ),
           Expanded(
-            child: getMainContentText(this.nutritionItems[key]['daily']),
+            child: Text(this.nutritionItems[key]['daily']),
           )
         ],
       ));
@@ -235,16 +264,21 @@ class FoodItem {
             children: <Widget>[
               Expanded(
                 flex: 3,
-                child: getMainContentText(
-                    '\t\t' + this.nutritionItems[key]['name']),
+                child: Text(
+                  '\t\t' + this.nutritionItems[key]['name'],
+                  style: Theme.of(context).textTheme.body1,
+                ),
               ),
               Expanded(
                 flex: 2,
-                child: getMainContentText(this.nutritionItems[key]['value'] +
-                    this.nutritionItems[key]['measurement']),
+                child: Text(
+                    this.nutritionItems[key]['value'] +
+                        this.nutritionItems[key]['measurement'],
+                    style: Theme.of(context).textTheme.body1),
               ),
               Expanded(
-                child: getMainContentText(this.nutritionItems[key]['daily']),
+                child: Text(this.nutritionItems[key]['daily'],
+                    style: Theme.of(context).textTheme.body1),
               )
             ],
           ));

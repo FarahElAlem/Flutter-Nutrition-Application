@@ -24,6 +24,15 @@ Future<void> main() async {
       primaryColor: Colors.green,
       cardColor: Colors.green,
       brightness: Brightness.light,
+      textTheme: TextTheme(
+        headline: TextStyle(fontSize: 32.0, fontFamily: 'Montserrat', color: Colors.white, fontWeight: FontWeight.w600),
+        display1: TextStyle(fontSize: 32.0, fontFamily: 'Montserrat', color: Colors.black, fontWeight: FontWeight.bold),
+        subhead: TextStyle(fontSize: 20.0, fontFamily: 'Montserrat', color: Colors.black, fontWeight: FontWeight.bold),
+        title: TextStyle(fontSize: 20.0, fontFamily: 'Montserrat', color: Colors.black),
+        body1: TextStyle(fontSize: 18.0, fontFamily: 'OpenSans'),
+        body2: TextStyle(fontSize: 18.0, fontFamily: 'OpenSans', fontWeight: FontWeight.bold),
+        caption: TextStyle(fontSize: 16.0, fontFamily: 'OpenSans', fontWeight: FontWeight.w600),
+      )
     ),
     home: new Home(
       currentUser: currentUser,
@@ -38,7 +47,6 @@ Future<void> main() async {
 /// Helper function that signs a user into Firestore on application start
 Future<FirebaseUser> signInWithFirestore(String email, String password) async {
   FirebaseUser user;
-  print('Email: ' + email + ', Password: ' + password);
   if (email == '' || password == '') {
     print('Signing in Anon');
     user = await _auth.signInAnonymously();
@@ -62,6 +70,7 @@ class SplashScreenAuth extends StatelessWidget {
         ));
   }
 }
+
 
 /// Debug screen for error testing
 /// TODO Remove from final build

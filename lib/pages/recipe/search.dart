@@ -1,98 +1,162 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:nutrition_app_flutter/globals.dart';
+import 'package:nutrition_app_flutter/pages/recipe/details.dart';
+import 'package:nutrition_app_flutter/pages/recipe/itemwidget.dart';
 
 class ResultsSearchPage extends StatefulWidget {
   _ResultsSearchPageState createState() => new _ResultsSearchPageState();
 }
 
-Widget _buildFirebaseStream(String category) {
-  return new StreamBuilder(
-    stream: Firestore.instance
-        .collection('RECIPES')
-        .where('category', isEqualTo: category)
-        .snapshots(),
-    builder: (context, snapshot) {
-      if (!snapshot.hasData) {
-        return SplashScreenAuth();
-      } else {
-        return new ListView.builder(
-          itemExtent: 130.0,
-            padding: EdgeInsets.all(8.0),
-            itemCount: snapshot.data.documents.length,
-            itemBuilder: (context, index) {
-              DocumentSnapshot ds = snapshot.data.documents[index];
-              return new Card(
-                elevation: 5.0,
-                color: Colors.white,
-                child: Center(
-                  child: new ListTile(
-                    onTap: (){},
-                    leading: new ConstrainedBox(
-                      constraints: BoxConstraints(maxHeight: 96, maxWidth: 96),
-                      child: AspectRatio(
-                        aspectRatio: 1,
-                        child: Image.network(
-                          ds['image'],
-                          fit: BoxFit.cover,
-                          width: double.infinity,
-                          height: double.infinity,
-                        ),
-                      ),
-                    ),
-                    title: getSubHeadingText(ds['name']),
-                    subtitle: getIconText(ds['description'], maxLines: 3),
-                    contentPadding: EdgeInsets.all(8.0),
-                  ),
-                ),
-              );
-            });
-      }
-    },
-  );
-}
-
 class _ResultsSearchPageState extends State<ResultsSearchPage>
     with SingleTickerProviderStateMixin {
   TabController _tabController;
-
-  List<Tab> _tabs = [
-    new Tab(
-      child: getDetailsText('Standard'),
-    ),
-    new Tab(
-      child: getDetailsText('Healthy'),
-    ),
-    new Tab(
-      child: getDetailsText('Desserts'),
-    )
-  ];
+  TextEditingController _searchController;
 
   @override
   void initState() {
     super.initState();
+
     _tabController = new TabController(vsync: this, length: 3);
+    _searchController = new TextEditingController();
   }
 
   @override
   void dispose() {
     super.dispose();
     _tabController.dispose();
+    _searchController.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      appBar: new TabBar(
-        tabs: _tabs,
-        controller: _tabController,
-      ),
-      body: new TabBarView(
-        controller: _tabController,
+      resizeToAvoidBottomPadding: false,
+      body: Column(
+        mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          _buildFirebaseStream('Standard'),
-          _buildFirebaseStream('Healthy'),
-          _buildFirebaseStream('Desserts'),
+          Padding(
+            padding: EdgeInsets.only(top: 28.0),
+            child: new TabBar(
+              tabs: [
+                new Tab(
+                  child: Text(
+                    'Standard',
+                    style: Theme.of(context).textTheme.body1,
+                  ),
+                ),
+                new Tab(
+                  child: Text(
+                    'Healthy',
+                    style: Theme.of(context).textTheme.body1,
+                  ),
+                ),
+                new Tab(
+                  child: Text(
+                    'Desserts',
+                    style: Theme.of(context).textTheme.body1,
+                  ),
+                )
+              ],
+              controller: _tabController,
+            ),
+          ),
+          Center(
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(12.0, 8.0, 12.0, 8.0),
+              child: TextField(
+//                style: detailsTextStyleInput,
+                controller: _searchController,
+                style: Theme.of(context).textTheme.body1,
+                decoration: InputDecoration(
+                    contentPadding: EdgeInsets.all(0.0),
+                    hintText: 'Search',
+                    prefixIcon: Icon(Icons.search),
+                    border: new OutlineInputBorder(
+                        borderRadius: const BorderRadius.all(
+                      const Radius.circular(10.0),
+                    ))),
+                onSubmitted: (String text) {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => SearchDetails(query: text)));
+                },
+              ),
+            ),
+          ),
+          Expanded(
+            child: new TabBarView(
+              controller: _tabController,
+              children: <Widget>[
+                new StreamBuilder(
+                  stream: Firestore.instance
+                      .collection('RECIPES')
+                      .where('category', isEqualTo: 'Standard')
+                      .orderBy('name')
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) {
+                      return SplashScreenAuth();
+                    } else {
+                      return new ListView.builder(
+                          itemExtent: 130.0,
+                          padding: EdgeInsets.all(8.0),
+                          itemCount: snapshot.data.documents.length,
+                          itemBuilder: (context, index) {
+                            DocumentSnapshot ds =
+                                snapshot.data.documents[index];
+                            return ItemWidget(ds: ds);
+                          });
+                    }
+                  },
+                ),
+                new StreamBuilder(
+                  stream: Firestore.instance
+                      .collection('RECIPES')
+                      .where('category', isEqualTo: 'Healthy')
+                      .orderBy('name')
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) {
+                      return SplashScreenAuth();
+                    } else {
+                      return new ListView.builder(
+                          itemExtent: 130.0,
+                          padding: EdgeInsets.all(8.0),
+                          itemCount: snapshot.data.documents.length,
+                          itemBuilder: (context, index) {
+                            DocumentSnapshot ds =
+                                snapshot.data.documents[index];
+                            return ItemWidget(ds: ds);
+                          });
+                    }
+                  },
+                ),
+                new StreamBuilder(
+                  stream: Firestore.instance
+                      .collection('RECIPES')
+                      .where('category', isEqualTo: 'Desserts')
+                      .orderBy('name')
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) {
+                      return SplashScreenAuth();
+                    } else {
+                      return new ListView.builder(
+                          itemExtent: 130.0,
+                          padding: EdgeInsets.all(8.0),
+                          itemCount: snapshot.data.documents.length,
+                          itemBuilder: (context, index) {
+                            DocumentSnapshot ds =
+                                snapshot.data.documents[index];
+                            return ItemWidget(ds: ds);
+                          });
+                    }
+                  },
+                )
+              ],
+            ),
+          )
         ],
       ),
     );
