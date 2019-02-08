@@ -4,15 +4,23 @@ description: A new Flutter project.
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.0.0-dev.68.0 <3.0.0"
+  sdk: ">=2.1.0-dev.9.4.flutter-f9ebf21297 <3.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
-  firebase_core: ^0.2.5
-  firebase_analytics: ^1.0.4
-  english_words: ^3.1.0
-  cupertino_icons: ^0.1.2
+  flutter_staggered_grid_view: ^0.2.7
+
+  path_provider: ^0.5.0
+
+  cloud_firestore: ^0.8.2+3
+  firebase_core: ^0.2.5+1
+  firebase_auth: ^0.6.6
+  firebase_storage: ^1.0.0
+
+  shared_preferences: ^0.5.0
+  video_player: ^0.8.0
+  chewie: 0.9.3
 
 dev_dependencies:
   flutter_test:
@@ -21,3 +29,111 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  fonts:
+  - family: Montserrat
+    fonts:
+    - asset: fonts/Montserrat-Thin.ttf
+      weight: 100
+
+    - asset: fonts/Montserrat-Thin.ttf
+      weight: 100
+      style: italic
+
+    - asset: fonts/Montserrat-ExtraLight.ttf
+      weight: 200
+
+    - asset: fonts/Montserrat-ExtraLightItalic.ttf
+      weight: 200
+      style: italic
+
+    - asset: fonts/Montserrat-Light.ttf
+      weight: 300
+
+    - asset: fonts/Montserrat-Light.ttf
+      weight: 300
+      style: italic
+
+    - asset: fonts/Montserrat-Regular.ttf
+      weight: 400
+
+    - asset: fonts/Montserrat-Italic.ttf
+      weight: 400
+      style: italic
+
+    - asset: fonts/Montserrat-Medium.ttf
+      weight: 500
+
+    - asset: fonts/Montserrat-MediumItalic.ttf
+      weight: 500
+      style: italic
+
+    - asset: fonts/Montserrat-SemiBold.ttf
+      weight: 600
+
+    - asset: fonts/Montserrat-SemiBoldItalic.ttf
+      weight: 600
+      style: italic
+
+    - asset: fonts/Montserrat-Bold.ttf
+      weight: 700
+
+    - asset: fonts/Montserrat-BoldItalic.ttf
+      weight: 700
+      style: italic
+
+    - asset: fonts/Montserrat-ExtraBold.ttf
+      weight: 800
+
+    - asset: fonts/Montserrat-ExtraBoldItalic.ttf
+      weight: 800
+      style: italic
+
+    - asset: fonts/Montserrat-Black.ttf
+      weight: 900
+
+    - asset: fonts/Montserrat-BlackItalic.ttf
+      weight: 900
+      style: italic
+
+  - family: OpenSans
+    fonts:
+    - asset: fonts/OpenSans-Light.ttf
+      weight: 300
+
+    - asset: fonts/OpenSans-Light.ttf
+      weight: 300
+      style: italic
+
+    - asset: fonts/OpenSans-Regular.ttf
+      weight: 400
+
+    - asset: fonts/OpenSans-Italic.ttf
+      weight: 400
+      style: italic
+
+    - asset: fonts/OpenSans-SemiBold.ttf
+      weight: 600
+
+    - asset: fonts/OpenSans-SemiBoldItalic.ttf
+      weight: 600
+      style: italic
+
+    - asset: fonts/OpenSans-Bold.ttf
+      weight: 700
+
+    - asset: fonts/OpenSans-BoldItalic.ttf
+      weight: 700
+      style: italic
+
+    - asset: fonts/OpenSans-ExtraBold.ttf
+      weight: 800
+
+    - asset: fonts/OpenSans-ExtraBoldItalic.ttf
+      weight: 800
+      style: italic
+
+  assets:
+    - assets/
+    - assets/images/
+    - assets/videos/
+

@@ -1,0 +1,35 @@
+Total Fat
+    Saturated Fat
+    Trans Fat
+Cholesterol
+Sodium
+Total Carbohydrates
+    Fiber
+    Sugars
+Protein
+
+--------
+Vitamin D
+Calcium
+Iron
+Potassium
+Vitamin C
+Vitamin B6
+
+
+List<String> _exceptionKeys = [
+    'Lipid_Tot_(g)',
+    'FA_Sat_(g)',
+    'Cholestrl_(mg)',
+    'Sodium_(mg)',
+    'Carbohydrt_(g)',
+    'Fiber_TD_(g)',
+    'Sugar_Tot_(g)',
+    'Protein_(g)',
+    'Vit_D_µg',
+    'Calcium_(mg)',
+    'Iron_(mg)',
+    'Potassium_(mg)',
+    'Vit_C_(mg)',
+    'Vit_B6_(mg)',
+];
