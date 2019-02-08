@@ -46,7 +46,6 @@ class _SearchState extends State<Search> {
             child: Padding(
               padding: EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 8.0),
               child: TextField(
-//              style: Theme.of(context).textTheme.,
                 controller: _searchController,
                 style: Theme.of(context).textTheme.body1,
                 decoration: InputDecoration(

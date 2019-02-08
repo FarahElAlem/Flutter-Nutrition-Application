@@ -10,6 +10,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 /// If registered, the user can save and store data.
 /// Can also navigate to a new 'login' page if the user already has an account.
 class RegisterPage extends StatefulWidget {
+  RegisterPage({this.foodGroupUrls});
+
+  Map<String, String> foodGroupUrls;
+
   @override
   _RegisterPageState createState() => new _RegisterPageState();
 }
@@ -40,14 +44,11 @@ class _RegisterPageState extends State<RegisterPage> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString('email', email);
     prefs.setString('password', password);
-    prefs.setString('name', name);
 
     Map<String, Object> data = Map();
     data['email'] = email;
     data['password'] = password;
     data['name'] = name;
-    data['nutrients'] = new List();
-    data['recipes'] = new List();
 
     Firestore.instance.collection('USERS').document(email).setData(data);
   }
@@ -194,7 +195,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   /// Builds the person's profile page
   Widget _buildProfilePage() {
-    return ProfilePage();
+    return ProfilePage(foodGroupUrls: widget.foodGroupUrls);
   }
 
   @override

@@ -20,7 +20,7 @@ class _ItemWidgetState extends State<ItemWidget> {
   void initState() {
     super.initState();
     _image = new Image.network(
-        widget.foodGroupUrls[widget.foodGroupUrls.keys.toList()[widget.index]]);
+        widget.foodGroupUrls[widget.foodGroupUrls.keys.toList()[widget.index*2]]);
     _loading = true;
     _image.image.resolve(new ImageConfiguration()).addListener((_, __) async {
       _loading = false;

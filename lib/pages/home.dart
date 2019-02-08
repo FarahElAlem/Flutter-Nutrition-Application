@@ -143,6 +143,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
           .ref()
           .child(foodGroup[1].replaceAll(' ', '').replaceAll('/', '') + '.png')
           .getDownloadURL();
+      foodGroupUrls[foodGroup[0]] = url.toString();
       foodGroupUrls[foodGroup[1]] = url.toString();
     }
   }
@@ -157,7 +158,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
     _bodyChildren = [
       Search(foodGroupNames: foodGroupNames, foodGroupUrls: foodGroupUrls),
       ResultsSearchPage(),
-      RegisterPage()
+      RegisterPage(foodGroupUrls: foodGroupUrls)
     ];
 
     _gatherData().whenComplete(() {
