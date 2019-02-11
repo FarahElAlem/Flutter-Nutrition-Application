@@ -67,7 +67,7 @@
     - ~~Allow users to search by recipe type~~
     - ~~Allow users to search by recipe name~~
     - ~~Allow users to search by ingredient(s)~~
-- Find or write a ML model, or find an easy way to map the nutrient values to the recipe ingredient values to identify similarity of words for recipie / nutrient db links
+- ~~Find or write a ML model, or find an easy way to map the nutrient values to the recipe ingredient values to identify similarity of words for recipie / nutrient db links~~
 - ~~Add profile page, holding user information and saved nutrient lists / favorited recipes~~
 - ~~Allow users to save lists of nutrients and/ favorite recipes~~
 - ~~Allow users to build a profile and share their recipes and nutrition lists~~
@@ -78,7 +78,7 @@
 - ~~Login Button for users who got logged out but already have an account~~
 - ~~Hero buttons, 3/4ths image 1/4 text on item selection~~
 - ~~Clean up recipes and nutrition for better user experience~~
-- Create User Profile Page
+- ~~Create User Profile Page~~
 - ~~Create Dashboard~~
-- Redesign Details UI for nutrients
+- ~~Redesign Details UI for nutrients~~
 - ~~Design Details UI for recipes~~
