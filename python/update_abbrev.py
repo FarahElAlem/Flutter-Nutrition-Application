@@ -35,5 +35,4 @@ for item in parsed_json:
             altered[parsed_keys[key]] = item[key]
     altered['calorie'] = str(float(altered['calorie']) / 1000)
     altered['ndbno'] = int(round(float(altered['ndbno'])))
-    print(altered)
     # firestore.collection(u'ABBREV').document().set(altered)

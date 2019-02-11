@@ -1,6 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:nutrition_app_flutter/structures/encrypt.dart';
 import 'package:nutrition_app_flutter/structures/validator.dart';
+
+import 'package:shared_preferences/shared_preferences.dart';
+
 
 /// class LoginPage presents a form for a User
 /// to log into Cloud Firestore, giving them the
@@ -89,7 +93,7 @@ class _LoginPageState extends State<LoginPage> {
                             _emailTextFieldController.text,
                             _passwordTextFieldController.text);
                         if (s != null) {
-                          print('Dobby is upset');
+//                          print('Dobby is upset');
                         } else {
                           FirebaseUser user =
                               await FirebaseAuth.instance.currentUser();
@@ -98,6 +102,11 @@ class _LoginPageState extends State<LoginPage> {
                               .signInWithEmailAndPassword(
                                   email: _emailTextFieldController.text,
                                   password: _passwordTextFieldController.text);
+
+                          SharedPreferences prefs = await SharedPreferences.getInstance();
+                          prefs.setString('email', Encrypt().encrypt(_emailTextFieldController.text));
+                          prefs.setString('password', Encrypt().encrypt(_passwordTextFieldController.text));
+
                           Navigator.pop(context);
                         }
                       }

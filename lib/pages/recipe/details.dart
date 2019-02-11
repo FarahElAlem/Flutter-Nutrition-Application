@@ -2,14 +2,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:nutrition_app_flutter/pages/recipe/itemwidget.dart';
+import 'package:nutrition_app_flutter/structures/encrypt.dart';
 
 /// UI incomplete, details attempts to show nutrition details of some FoodItem
 /// as a Dialog
+/// TODO Look at how the 'nutrients' and 'recipes' are being created
 class Details extends StatefulWidget {
   Details({this.recipeItem});
 
   var recipeItem;
-  List<dynamic> userRecipes;
 
   @override
   _DetailsState createState() => _DetailsState();
@@ -21,52 +22,36 @@ class _DetailsState extends State<Details> {
   FirebaseUser currentUser;
   var stream;
 
+  Map<String, dynamic> data;
+
   /// Gathers the data needed to be displayed on this page before
   /// the page is 'ready'
   void doGathering() async {
     currentUser = await FirebaseAuth.instance.currentUser();
-
-    if (!currentUser.isAnonymous) {
-      DocumentSnapshot documentSnapshot = await Firestore.instance
-          .collection('USERS')
-          .document(currentUser.email)
-          .get();
-
-      if (documentSnapshot.data != null) {
-        widget.userRecipes =
-            new List<dynamic>.from(documentSnapshot.data['recipes']);
-      } else {
-        widget.userRecipes = new List();
-      }
-    } else {
-      widget.userRecipes = new List();
-    }
-    stream = Firestore.instance
-        .collection('RECIPES')
-        .where('name', isEqualTo: widget.recipeItem['name'])
-        .snapshots();
-
-    FirebaseAuth.instance.currentUser().then((FirebaseUser user) {
-      currentUser = user;
-    });
-
-    if (currentUser == null) {
+    if (currentUser.isAnonymous) {
       isFavorited = false;
     } else {
-      if (widget.userRecipes != null &&
-          widget.userRecipes.contains(widget.recipeItem['name'])) {
-        isFavorited = true;
-      } else {
+      QuerySnapshot item = await Firestore.instance
+          .collection('USERS')
+          .document(Encrypt().encrypt(currentUser.email))
+          .collection('RECIPES')
+          .where('name', isEqualTo: widget.recipeItem['name'])
+          .getDocuments();
+      if (item.documents.length == 0) {
         isFavorited = false;
+      } else {
+        isFavorited = true;
       }
     }
     _ready = true;
-    setState(() {
-    });
+    if(mounted) {
+      setState(() {});
+    }
   }
 
   @override
   void initState() {
+    data = widget.recipeItem.data;
     super.initState();
     doGathering();
   }
@@ -94,67 +79,45 @@ class _DetailsState extends State<Details> {
                   /// Checking to see if a user can favorite an item or not
                   /// If not, displays a snackbar
                   if (currentUser.isAnonymous) {
-//                    final snackbar = SnackBar(
-//                      content: Text(
-//                        'You must register before you can do that!',
-//                        style: Theme.of(context).textTheme.body1,
-//                      ),
-//                      duration: Duration(milliseconds: 1500),
-//                      backgroundColor: Colors.green,
-//                    );
-//                    Scaffold.of(context).showSnackBar(snackbar);
-//                    Scaffold.of() called with a context that does not contain a Scaffold.
-//                    E/flutter (15381): No Scaffold ancestor could be found starting from the context that was passed to Scaffold.of(). This usually happens when the context provided is from the same StatefulWidget as that whose build function actually creates the Scaffold widget being sought.
-//                  E/flutter (15381): There are several ways to avoid this problem. The simplest is to use a Builder to get a context that is "under" the Scaffold. For an example of this, please see the documentation for Scaffold.of():
-//                  E/flutter (15381):   https://docs.flutter.io/flutter/material/Scaffold/of.html
-//                  E/flutter (15381): A more efficient solution is to split your build function into several widgets. This introduces a new context from which you can obtain the Scaffold. In this solution, you would have an outer widget that creates the Scaffold populated by instances of your new inner widgets, and then in these inner widgets you would use Scaffold.of().
-//                  E/flutter (15381): A less elegant but more expedient solution is assign a GlobalKey to the Scaffold, then use the key.currentState property to obtain the ScaffoldState rather than using the Scaffold.of() function.
+                    final snackbar = SnackBar(
+                      content: Text(
+                        'You must register before you can do that!',
+                        style: Theme.of(context).textTheme.body1,
+                      ),
+                      duration: Duration(milliseconds: 1500),
+                      backgroundColor: Colors.green,
+                    );
+                    Scaffold.of(context).showSnackBar(snackbar);
                   }
 
                   /// If applicable, update the user's data in Cloud Firestore.
+                  ///
+                  /// Remove from Firestore
                   if (isFavorited && !currentUser.isAnonymous) {
                     isFavorited = false;
-                    setState(() {});
-
-                    var query = await Firestore.instance
-                        .collection('USERS')
-                        .document(currentUser.email)
-                        .get();
-                    Map<String, dynamic> data = (query.data == null) ? new Map() : query.data;
-                    var recipes;
-                    if(data.keys.length > 0)
-                      recipes = new List<String>.from(data['recipes']);
-                    else
-                      recipes = new List<String>();
-                    recipes.remove(widget.recipeItem['name']);
-
-                    data['recipes'] = recipes;
+                    if(mounted) {
+                      setState(() {});
+                    }
                     await Firestore.instance
-                        .collection('USERS')
-                        .document(currentUser.email)
-                        .updateData(data);
-                  } else if (!isFavorited && !currentUser.isAnonymous) {
+                        .collection("USERS")
+                        .document(Encrypt().encrypt(currentUser.email))
+                        .collection('RECIPES')
+                        .document(widget.recipeItem['name'])
+                        .delete();
+                  }
+
+                  /// Add to Firestore
+                  else if (!isFavorited && !currentUser.isAnonymous) {
                     isFavorited = true;
-                    setState(() {});
-
-                    var query = await Firestore.instance
-                        .collection('USERS')
-                        .document(currentUser.email)
-                        .get();
-                    Map<String, dynamic> data = (query.data == null) ? new Map() : query.data;
-
-                    var recipes;
-                    if(data.keys.length > 0)
-                      recipes = new List<String>.from(data['recipes']);
-                    else
-                      recipes = new List<String>();
-                    recipes.add(widget.recipeItem['name']);
-
-                    data['recipes'] = recipes;
+                    if(mounted) {
+                      setState(() {});
+                    }
                     await Firestore.instance
-                        .collection('USERS')
-                        .document(currentUser.email)
-                        .updateData(data);
+                        .collection("USERS")
+                        .document(Encrypt().encrypt(currentUser.email))
+                        .collection('RECIPES')
+                        .document(widget.recipeItem['name'])
+                        .setData(data);
                   }
                 })
           ],
@@ -190,7 +153,7 @@ class _DetailsState extends State<Details> {
                           height: 25.0,
                         ),
                         Hero(
-                          tag: widget.recipeItem['image'],
+                          tag: widget.recipeItem['name'],
                           child: AspectRatio(
                             aspectRatio: 16 / 9,
                             child: Image.network(
@@ -246,7 +209,7 @@ class _DetailsState extends State<Details> {
                               );
                             }),
                         Container(
-                          color: Color.fromRGBO(76, 175, 80, 0.2),
+                          color: Theme.of(context).primaryColor,
                           alignment: Alignment.centerLeft,
                           child: Padding(
                             padding: EdgeInsets.all(8.0),
@@ -336,7 +299,9 @@ class _SearchDetailsState extends State<SearchDetails> {
       }
     });
     _loading = false;
-    setState(() {});
+    if(mounted) {
+      setState(() {});
+    }
   }
 
   bool listContains(List<dynamic> list, var query) {

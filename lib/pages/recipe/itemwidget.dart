@@ -53,7 +53,7 @@ class _ItemWidgetState extends State<ItemWidget> {
                       child: CircularProgressIndicator(),
                     )
                   : Hero(
-                      tag: _image,
+                      tag: widget.ds['name'],
                       child: Image.network(
                         widget.ds['image'],
                         fit: BoxFit.cover,

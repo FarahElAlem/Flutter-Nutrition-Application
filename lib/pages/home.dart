@@ -30,11 +30,11 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   /// Controller for tabview
   TabController controller;
 
-  /// List of foodgroupnames for subpages
-  List<List<String>> foodGroupNames = [];
-
-  /// Image Links
-  Map<String, String> foodGroupUrls = new Map();
+  /// foodGroupDetails[key][0] = Number
+  /// foodGroupDetails[key][1] = Name
+  /// foodGroupDetails[key][2] = Description
+  /// foodGroupDetails[key][3] = URL
+  Map<String, dynamic> foodGroupDetails = new Map();
 
   /// List of children that define the pages that a user sees. WIP.
   List<Widget> _bodyChildren = [];
@@ -51,11 +51,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
 
   /// A list of strings that represent the AppBar titles.
   /// Works nicely with the BottomNavigationBar
-  List<String> _appBarTitles = [
-    'Nutrition',
-    'Recipes',
-    'Profile'
-  ];
+  List<String> _appBarTitles = ['Nutrition', 'Recipes', 'Profile'];
 
   /// A list of widgets to represent the leading icons of the AppBar.
   /// Works nicely with the BottomNavigationBar
@@ -78,72 +74,25 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
     });
   }
 
-  /// Builds the search bar inside of the view's appbar. Acts dynamically.
-  Widget _buildSearchBar() {
-    return new IconButton(
-        icon: _searchIcon,
-        onPressed: () {
-          setState(() {
-            if (this._searchIcon.icon == Icons.search) {
-              this._isSearching = true;
-              this._searchIcon = new Icon(Icons.close);
-              this._appBarTitle = new TextField(
-                  onSubmitted: (token) {
-                    this._isSearching = false;
-                    this._searchIcon = new Icon(Icons.search);
-                    this._appBarTitle = new Center(
-                      child: new Text(_appBarTitles[_currentIndex]),
-                    );
-//                    Navigator.push(
-//                        context,
-//                        MaterialPageRoute(
-//                            builder: (context) =>
-//                                Result(token: token.toString(), type: 1)));
-                  },
-                  decoration: new InputDecoration(hintText: 'Search...'));
-            } else {
-              this._isSearching = false;
-              this._searchIcon = new Icon(Icons.search);
-              this._appBarTitle = new Center(
-                child: new Text(_appBarTitles[_currentIndex]),
-              );
-            }
-          });
-        });
-  }
-
-  /// Returns the correct AppBar depending on which page the user has
-  /// navigated to through the BottomNavigationBar. Contains a icon button
-  /// that displays a search bar on the correct search pages inside the AppBar.
-  Widget _buildDashboardAppBar() {
-    return new AppBar(
-      leading: _leadingIcons[_currentIndex],
-      title: Text(
-        _appBarTitles[_currentIndex],
-        style: Theme.of(context).textTheme.headline,
-      ),
-      centerTitle: true,
-    );
-  }
-
   /// Gathers prerequisite data from the Cloud Firestore Database.
   Future<void> _gatherData() async {
-    // Gather our information from Firestore here
-    var data = await Firestore.instance
+    /// Gather our NUTRITION information from Firestore here
+    QuerySnapshot foodGroupSnapshot = await Firestore.instance
         .collection('FOODGROUP')
         .orderBy('FdGrp_Desc')
         .getDocuments();
 
-    for (DocumentSnapshot doc in data.documents) {
-      foodGroupNames.add([doc['Fd_Grp'], doc['FdGrp_Desc'], doc['Paragraph']]);
-    }
-
-    for (List<String> foodGroup in foodGroupNames) {
+    for (DocumentSnapshot doc in foodGroupSnapshot.documents) {
       var url = await widget.storage
           .ref()
-          .child(foodGroup[1].replaceAll(' ', '').replaceAll('/', '') + '.png')
+          .child(doc['FdGrp_Desc'].replaceAll(' ', '').replaceAll('/', '') + '.png')
           .getDownloadURL();
-      foodGroupUrls[foodGroup[1]] = url.toString();
+      foodGroupDetails[doc['Fd_Grp']] = {
+        'name': doc['FdGrp_Desc'],
+        'foodgroup': doc['Fd_Grp'],
+        'description': doc['Paragraph'],
+        'url': url.toString()
+      };
     }
   }
 
@@ -155,14 +104,19 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
 
     // Define the children to the tabbed body here
     _bodyChildren = [
-      Search(foodGroupNames: foodGroupNames, foodGroupUrls: foodGroupUrls),
+      Search(foodGroupDetails: foodGroupDetails),
       ResultsSearchPage(),
-      RegisterPage()
+      RegisterPage(
+        foodGroupDetails: foodGroupDetails,
+      )
     ];
 
     _gatherData().whenComplete(() {
+      print(foodGroupDetails.toString());
       _ready = true;
-      setState(() {});
+      if (mounted) {
+        setState(() {});
+      }
     });
   }
 
@@ -227,4 +181,3 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
           );
   }
 }
-

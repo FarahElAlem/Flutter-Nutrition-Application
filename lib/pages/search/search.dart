@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:nutrition_app_flutter/pages/search/details.dart';
-import 'package:nutrition_app_flutter/pages/search/itemwidget.dart';
+import 'package:nutrition_app_flutter/pages/search/foodgroupcard.dart';
 
 /// class Search represents a Stateful widget that can have multiple states:
 /// - Seeking / Searching:
@@ -9,16 +9,19 @@ import 'package:nutrition_app_flutter/pages/search/itemwidget.dart';
 /// - Result Gathering
 ///     - Result of a query gathered from Firebase that users can interact with.
 class Search extends StatefulWidget {
-  Search({this.foodGroupNames, this.foodGroupUrls});
+  Search({this.foodGroupDetails});
 
-  List<List<String>> foodGroupNames;
-  Map<String, String> foodGroupUrls;
+  Map<String, dynamic> foodGroupDetails;
 
   @override
-  _SearchState createState() => _SearchState();
+  _SearchState createState() =>
+      _SearchState(foodGroupDetails: foodGroupDetails);
 }
 
 class _SearchState extends State<Search> {
+  _SearchState({this.foodGroupDetails});
+
+  Map<String, dynamic> foodGroupDetails;
 
   TextEditingController _searchController;
 
@@ -38,6 +41,7 @@ class _SearchState extends State<Search> {
   @override
   Widget build(BuildContext context) {
     return new Container(
+      color: Theme.of(context).backgroundColor,
       padding: EdgeInsets.only(top: 28.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -46,16 +50,30 @@ class _SearchState extends State<Search> {
             child: Padding(
               padding: EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 8.0),
               child: TextField(
-//              style: Theme.of(context).textTheme.,
                 controller: _searchController,
                 style: Theme.of(context).textTheme.body1,
                 decoration: InputDecoration(
+                    hintStyle: Theme.of(context).textTheme.caption,
                     contentPadding: EdgeInsets.all(0.0),
                     hintText: 'Search',
-                    prefixIcon: Icon(Icons.search),
-                    border: new OutlineInputBorder(
+                    prefixIcon: Icon(Icons.search, color: Colors.grey,),
+                    focusedBorder: new OutlineInputBorder(
+                        borderSide: BorderSide(
+                            color: Colors.grey),
                         borderRadius: const BorderRadius.all(
-                          const Radius.circular(10.0),
+                          const Radius.circular(40.0),
+                        )),
+                    enabledBorder: new OutlineInputBorder(
+                        borderSide: BorderSide(
+                            color: Colors.grey),
+                        borderRadius: const BorderRadius.all(
+                          const Radius.circular(40.0),
+                        )),
+                    border: new OutlineInputBorder(
+                        borderSide: BorderSide(
+                            color: Colors.grey),
+                        borderRadius: const BorderRadius.all(
+                          const Radius.circular(40.0),
                         ))),
                 onSubmitted: (String text) {
                   Navigator.push(
@@ -71,16 +89,15 @@ class _SearchState extends State<Search> {
               padding: new EdgeInsets.fromLTRB(4.0, 0.0, 4.0, 4.0),
               child: new StaggeredGridView.countBuilder(
                 crossAxisCount: 2,
-                itemCount: widget.foodGroupNames.length,
+                itemCount: widget.foodGroupDetails.keys.length,
                 itemBuilder: ((BuildContext context, int index) {
-                  return ItemWidget(
-                    foodGroupNames: widget.foodGroupNames,
-                    foodGroupUrls: widget.foodGroupUrls,
-                    index: index,
+                  return FoodGroupCard(
+                    foodItemInformation:
+                        foodGroupDetails[foodGroupDetails.keys.toList()[index]],
                   );
                 }),
                 staggeredTileBuilder: (int index) =>
-                new StaggeredTile.count(1, 1),
+                    new StaggeredTile.count(1, 1),
                 mainAxisSpacing: 1.0,
                 crossAxisSpacing: 1.0,
               ),

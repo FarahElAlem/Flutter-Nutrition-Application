@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 /// Cloud Firestore Database. Contains a build function that formats
 /// the nutrition data on request.
 class FoodItem {
-  Map nutritionItems = new Map();
-  Map detailItems = new Map();
+  Map<String, dynamic> nutritionItems = new Map();
+  Map<String, dynamic> detailItems = new Map();
 
   FoodItem(var value) {
     nutritionItems['carbohydrate'] = {
@@ -111,9 +111,8 @@ class FoodItem {
   Widget buildListView(BuildContext context) {
     return SingleChildScrollView(
       child: Container(
-        padding: EdgeInsets.all(24.0),
+        padding: EdgeInsets.all(8.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: _buildBody(context),
         ),
@@ -133,81 +132,95 @@ class FoodItem {
       'potassium': []
     };
 
-    var tKeys = [
-      'lipid',
-      'cholesterol',
-      'sodium',
-      'carbohydrate',
-      'protein',
-      'calcium',
-      'iron',
-      'potassium',
-      'fiber',
-      'sugar'
-    ];
-
     List<Widget> out = [];
 
     /// General Information Adding to Body
-    out.add(Text(
-      'General\nInformation',
-      style: Theme.of(context).textTheme.display1,
+
+    out.add(Padding(
+      padding: EdgeInsets.all(16.0),
+      child: Text(
+        this.detailItems['description']['value'],
+        style: Theme.of(context).textTheme.display1,
+        maxLines: 3,
+        overflow: TextOverflow.ellipsis,
+      ),
     ));
     out.add(Divider(
-      color: Colors.black,
+      height: 12.0,
     ));
-    out.add(Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: <Widget>[
-        Text(
-          this.nutritionItems['calorie']['name'],
-          style: Theme.of(context).textTheme.body1,
+    out.add(Card(
+      elevation: 6.0,
+      color: Theme.of(context).primaryColor,
+      child: Padding(
+        padding: EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Text(
+              'General\nInformation',
+              style: Theme.of(context).textTheme.display2,
+            ),
+            Divider(
+              color: Colors.black,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Text(
+                  this.nutritionItems['calorie']['name'],
+                  style: Theme.of(context).textTheme.body1,
+                ),
+                Text(
+                  this.nutritionItems['calorie']['value'] +
+                      this.nutritionItems['calorie']['measurement'],
+                  style: Theme.of(context).textTheme.body1,
+                )
+              ],
+            ),
+            Divider(
+              height: 8.0,
+              color: Colors.transparent,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Text(
+                  'Serving Size:',
+                  style: Theme.of(context).textTheme.body1,
+                ),
+                Text(
+                  '100g',
+                  style: Theme.of(context).textTheme.body1,
+                )
+              ],
+            ),
+          ],
         ),
-        Text(
-          this.nutritionItems['calorie']['value'] +
-              this.nutritionItems['calorie']['measurement'],
-          style: Theme.of(context).textTheme.body1,
-        )
-      ],
+      ),
     ));
     out.add(Divider(
-      height: 8.0,
-      color: Colors.transparent,
-    ));
-    out.add(Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: <Widget>[
-        Text(
-          'Serving Size:',
-          style: Theme.of(context).textTheme.body1,
-        ),
-        Text(
-          '100g',
-          style: Theme.of(context).textTheme.body1,
-        )
-      ],
-    ));
-    out.add(Divider(
-      height: 48.0,
-      color: Colors.transparent,
+      height: 12.0,
     ));
 
     /// Nutrition Information Adding to Body
-    out.add(Text(
+    List<Widget> temp = new List();
+    temp.add(Text(
       'Nutrition\nInformation',
-      style: Theme.of(context).textTheme.display1,
+      style: Theme.of(context).textTheme.display2,
     ));
-    out.add(Padding(
+    temp.add(Padding(
         padding: EdgeInsets.fromLTRB(0.0, 16.0, 0.0, 8.0),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          crossAxisAlignment: CrossAxisAlignment.end,
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Expanded(
               flex: 3,
               child: Text(
                 'Name',
-                style: Theme.of(context).textTheme.body1,
+                style: Theme.of(context).textTheme.body2,
               ),
             ),
             Expanded(
@@ -225,16 +238,16 @@ class FoodItem {
             )
           ],
         )));
-    out.add(Divider(
+    temp.add(Divider(
       color: Colors.black,
       height: 0,
     ));
-    out.add(Divider(
+    temp.add(Divider(
       height: 8.0,
       color: Colors.transparent,
     ));
     for (String key in names.keys) {
-      out.add(Row(
+      temp.add(Row(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.max,
@@ -245,52 +258,106 @@ class FoodItem {
           ),
           Expanded(
             flex: 2,
-            child: Text(this.nutritionItems[key]['value'] +
+            child: Text(double.parse(this.nutritionItems[key]['value'])
+                    .toStringAsFixed(0) +
                 this.nutritionItems[key]['measurement']),
           ),
           Expanded(
-            child: Text(this.nutritionItems[key]['daily']),
+            child: Text((double.parse(this
+                        .nutritionItems[key]['daily']
+                        .toString()
+                        .replaceAll('%', '')) >
+                    100.0
+                ? double.parse(nutritionItems[key]['daily']
+                            .toString()
+                            .replaceAll('%', ''))
+                        .toStringAsFixed(0) +
+                    "%"
+                : double.parse(this
+                            .nutritionItems[key]['daily']
+                            .replaceAll('%', ''))
+                        .toStringAsFixed(0) +
+                    "%")),
           )
         ],
       ));
-      out.add(Divider(
+      temp.add(Divider(
+        height: 20.0,
         color: Colors.transparent,
       ));
       if (names[key].length > 0) {
         for (String key in names[key]) {
-          out.add(Row(
+          temp.add(Row(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Expanded(
                 flex: 3,
                 child: Text(
-                  '\t\t' + this.nutritionItems[key]['name'],
+                  this.nutritionItems[key]['name'],
                   style: Theme.of(context).textTheme.body1,
                 ),
               ),
               Expanded(
                 flex: 2,
-                child: Text(
-                    this.nutritionItems[key]['value'] +
-                        this.nutritionItems[key]['measurement'],
-                    style: Theme.of(context).textTheme.body1),
+                child: Text(double.parse(this.nutritionItems[key]['value'])
+                        .toStringAsFixed(0) +
+                    this.nutritionItems[key]['measurement']),
               ),
               Expanded(
-                child: Text(this.nutritionItems[key]['daily'],
-                    style: Theme.of(context).textTheme.body1),
+                child: Text((double.parse(this
+                            .nutritionItems[key]['daily']
+                            .toString()
+                            .replaceAll('%', '')) >
+                        100.0
+                    ? double.parse(nutritionItems[key]['daily']
+                                .toString()
+                                .replaceAll('%', ''))
+                            .toStringAsFixed(0) +
+                        "%"
+                    : double.parse(this
+                                .nutritionItems[key]['daily']
+                                .replaceAll('%', ''))
+                            .toStringAsFixed(0) +
+                        "%")),
               )
             ],
           ));
-          out.add(Divider(
+          temp.add(Divider(
+            height: 20.0,
             color: Colors.transparent,
           ));
         }
       }
     }
-    out.removeLast();
+    temp.removeLast();
+    out.add(Card(
+        elevation: 6.0,
+        color: Theme.of(context).primaryColor,
+        child: Padding(
+          padding: EdgeInsets.all(16.0),
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: temp),
+        )));
 
     return out;
+  }
+
+  Map<String, dynamic> toFirestore() {
+    Map<String, dynamic> firestoreMap = new Map();
+
+    nutritionItems.keys.forEach((String key) {
+      firestoreMap[key] = nutritionItems[key]['value'];
+    });
+
+    detailItems.keys.forEach((String key) {
+      firestoreMap[key] = detailItems[key]['value'];
+    });
+
+    return firestoreMap;
   }
 
   @override
