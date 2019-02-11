@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:nutrition_app_flutter/structures/encrypt.dart';
 import 'package:nutrition_app_flutter/structures/validator.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
@@ -103,8 +104,8 @@ class _LoginPageState extends State<LoginPage> {
                                   password: _passwordTextFieldController.text);
 
                           SharedPreferences prefs = await SharedPreferences.getInstance();
-                          prefs.setString('email', _emailTextFieldController.text);
-                          prefs.setString('password', _passwordTextFieldController.text);
+                          prefs.setString('email', Encrypt().encrypt(_emailTextFieldController.text));
+                          prefs.setString('password', Encrypt().encrypt(_passwordTextFieldController.text));
 
                           Navigator.pop(context);
                         }

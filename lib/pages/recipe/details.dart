@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:nutrition_app_flutter/pages/recipe/itemwidget.dart';
+import 'package:nutrition_app_flutter/structures/encrypt.dart';
 
 /// UI incomplete, details attempts to show nutrition details of some FoodItem
 /// as a Dialog
@@ -32,7 +33,7 @@ class _DetailsState extends State<Details> {
     } else {
       QuerySnapshot item = await Firestore.instance
           .collection('USERS')
-          .document(currentUser.email)
+          .document(Encrypt().encrypt(currentUser.email))
           .collection('RECIPES')
           .where('name', isEqualTo: widget.recipeItem['name'])
           .getDocuments();
@@ -43,7 +44,9 @@ class _DetailsState extends State<Details> {
       }
     }
     _ready = true;
-    setState(() {});
+    if(mounted) {
+      setState(() {});
+    }
   }
 
   @override
@@ -92,10 +95,12 @@ class _DetailsState extends State<Details> {
                   /// Remove from Firestore
                   if (isFavorited && !currentUser.isAnonymous) {
                     isFavorited = false;
-                    setState(() {});
+                    if(mounted) {
+                      setState(() {});
+                    }
                     await Firestore.instance
                         .collection("USERS")
-                        .document(currentUser.email)
+                        .document(Encrypt().encrypt(currentUser.email))
                         .collection('RECIPES')
                         .document(widget.recipeItem['name'])
                         .delete();
@@ -104,10 +109,12 @@ class _DetailsState extends State<Details> {
                   /// Add to Firestore
                   else if (!isFavorited && !currentUser.isAnonymous) {
                     isFavorited = true;
-                    setState(() {});
+                    if(mounted) {
+                      setState(() {});
+                    }
                     await Firestore.instance
                         .collection("USERS")
-                        .document(currentUser.email)
+                        .document(Encrypt().encrypt(currentUser.email))
                         .collection('RECIPES')
                         .document(widget.recipeItem['name'])
                         .setData(data);
@@ -202,7 +209,7 @@ class _DetailsState extends State<Details> {
                               );
                             }),
                         Container(
-                          color: Color.fromRGBO(76, 175, 80, 0.2),
+                          color: Theme.of(context).primaryColor,
                           alignment: Alignment.centerLeft,
                           child: Padding(
                             padding: EdgeInsets.all(8.0),
@@ -292,7 +299,9 @@ class _SearchDetailsState extends State<SearchDetails> {
       }
     });
     _loading = false;
-    setState(() {});
+    if(mounted) {
+      setState(() {});
+    }
   }
 
   bool listContains(List<dynamic> list, var query) {

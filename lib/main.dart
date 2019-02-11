@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter/material.dart';
+import 'package:nutrition_app_flutter/structures/encrypt.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:nutrition_app_flutter/pages/home.dart';
 
@@ -12,8 +13,8 @@ final FirebaseAuth _auth = FirebaseAuth.instance;
 /// Main function. Gathers prerequisite information and starts the application.
 Future<void> main() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  String _email = (prefs.getString('email') ?? '');
-  String _password = (prefs.getString('password') ?? '');
+  String _email = (Encrypt().decrypt(prefs.getString('email')) ?? '');
+  String _password = (Encrypt().decrypt(prefs.getString('password')) ?? '');
   FirebaseUser currentUser = await signInWithFirestore(_email, _password);
 
   Firestore firestore = Firestore.instance;
@@ -21,12 +22,14 @@ Future<void> main() async {
 
   runApp(new MaterialApp(
     theme: ThemeData(
-      primaryColor: Colors.green,
-      cardColor: Colors.green,
-      brightness: Brightness.light,
+      primaryColorDark: Color.fromRGBO(153, 204, 96, 1.0),
+      primaryColorLight: Color.fromRGBO(255, 255, 194, 1.0),
+      primaryColor: Color.fromRGBO(204, 255, 144, 1.0),
+      backgroundColor: Color.fromRGBO(245, 245, 246, 1.0),
       textTheme: TextTheme(
         headline: TextStyle(fontSize: 32.0, fontFamily: 'Montserrat', color: Colors.white, fontWeight: FontWeight.w600),
         display1: TextStyle(fontSize: 32.0, fontFamily: 'Montserrat', color: Colors.black, fontWeight: FontWeight.bold),
+        display2: TextStyle(fontSize: 28.0, fontFamily: 'Montserrat', color: Colors.black, fontWeight: FontWeight.bold),
         subhead: TextStyle(fontSize: 20.0, fontFamily: 'Montserrat', color: Colors.black, fontWeight: FontWeight.bold),
         title: TextStyle(fontSize: 20.0, fontFamily: 'Montserrat', color: Colors.black),
         body1: TextStyle(fontSize: 18.0, fontFamily: 'OpenSans'),
@@ -56,19 +59,6 @@ Future<FirebaseUser> signInWithFirestore(String email, String password) async {
         email: email, password: password);
   }
   return user;
-}
-
-/// Returns a splash screen
-/// TODO Turn this into a logo
-class SplashScreenAuth extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return new Scaffold(
-        appBar: AppBar(),
-        body: Center(
-          child: CircularProgressIndicator(),
-        ));
-  }
 }
 
 

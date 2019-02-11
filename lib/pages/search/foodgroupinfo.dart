@@ -3,23 +3,26 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:nutrition_app_flutter/pages/search/details.dart';
+import 'package:nutrition_app_flutter/structures/encrypt.dart';
 import 'package:nutrition_app_flutter/structures/fooditem.dart';
 
 /// FoodGroupResult displays information regarding Cloud Firestore queries in a list like fashion.
 /// FoodGroupResult has a token that specifics the search key, and a type that dictates the type of
 /// ListItem displayed.
 class FoodGroupResult extends StatefulWidget {
-  FoodGroupResult({this.foodInformation, this.type, this.foodImage});
+  FoodGroupResult({this.foodItemInformation});
 
-  int type;
-  List<String> foodInformation;
-  Image foodImage;
+  Map<String, dynamic> foodItemInformation;
 
   @override
-  _FoodGroupResultState createState() => _FoodGroupResultState();
+  _FoodGroupResultState createState() => _FoodGroupResultState(foodItemInformation: foodItemInformation);
 }
 
 class _FoodGroupResultState extends State<FoodGroupResult> {
+  _FoodGroupResultState({this.foodItemInformation});
+
+  Map<String, dynamic> foodItemInformation;
+
   bool _ready = false;
   var stream;
   FirebaseUser currentUser;
@@ -47,11 +50,13 @@ class _FoodGroupResultState extends State<FoodGroupResult> {
     currentUser = await FirebaseAuth.instance.currentUser();
     stream = Firestore.instance
         .collection('ABBREV')
-        .where('foodgroup', isEqualTo: widget.foodInformation[0])
+        .where('foodgroup', isEqualTo: foodItemInformation['foodgroup'])
         .limit(50)
         .snapshots();
     _ready = true;
-    setState(() {});
+    if(mounted) {
+      setState(() {});
+    }
   }
 
   /// Returns a loading screen widget
@@ -97,7 +102,7 @@ class _FoodGroupResultState extends State<FoodGroupResult> {
                     children: <Widget>[
                       new Positioned(
                           child: Hero(
-                        tag: widget.foodInformation[0],
+                        tag: foodItemInformation,
                         child: new AspectRatio(
                           aspectRatio: 16 / 8,
                           child: new Container(
@@ -105,7 +110,7 @@ class _FoodGroupResultState extends State<FoodGroupResult> {
                                 image: new DecorationImage(
                               fit: BoxFit.cover,
                               alignment: FractionalOffset.center,
-                              image: widget.foodImage.image,
+                              image: Image.network(foodItemInformation['url']).image,
                             )),
                           ),
                         ),
@@ -113,7 +118,7 @@ class _FoodGroupResultState extends State<FoodGroupResult> {
                       new AppBar(
                         iconTheme: IconThemeData(
                             color: (_darkgroups
-                                    .contains(widget.foodInformation[1]))
+                                    .contains(foodItemInformation['name']))
                                 ? Colors.black
                                 : Colors.white),
                         backgroundColor: Colors.transparent,
@@ -126,7 +131,7 @@ class _FoodGroupResultState extends State<FoodGroupResult> {
                     child: Container(
                       padding: EdgeInsets.only(bottom: 8.0),
                       child: Text(
-                        widget.foodInformation[1],
+                        foodItemInformation['name'],
                         style: Theme.of(context).textTheme.display1,
                       ),
                       decoration: BoxDecoration(
@@ -140,7 +145,7 @@ class _FoodGroupResultState extends State<FoodGroupResult> {
                             padding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 4.0),
                             child: Center(
                               child: Text(
-                                widget.foodInformation[2],
+                               foodItemInformation['description'],
                                 style: Theme.of(context).textTheme.caption,
                               ),
                             ))),
@@ -238,7 +243,7 @@ class _ItemView extends State<ListItem> {
     } else {
       QuerySnapshot item = await Firestore.instance
           .collection('USERS')
-          .document(currentUser.email)
+          .document(Encrypt().encrypt(currentUser.email))
           .collection('NUTRIENTS')
           .where('description',
               isEqualTo: foodItem.detailItems['description']['value'])
@@ -250,95 +255,101 @@ class _ItemView extends State<ListItem> {
       }
     }
     _ready = true;
-    this.setState(() {});
+    if(mounted) {
+      this.setState(() {});
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return (_ready)
-        ? new Card(
-            elevation: 3.0,
-            color: Colors.white,
-            child: new ListTile(
-              onTap: () async {
-                /// onTap(): Navigate to a new Details page
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => FoodGroupDetails(
-                              foodItem: widget.foodItem,
-                            )));
-              },
+        ? Container(
+      height: 80.0,
+      child: new Card(
+        elevation: 3.0,
+        color: Colors.white,
+        child: new ListTile(
+          onTap: () async {
+            /// onTap(): Navigate to a new Details page
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => FoodGroupDetails(
+                      foodItem: widget.foodItem,
+                    )));
+          },
 
-              title: Text(
-                foodItem.detailItems['description']['value'],
-                style: Theme.of(context).textTheme.caption,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-              trailing: new Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                mainAxisSize: MainAxisSize.max,
-                children: <Widget>[
-                  new IconButton(
-                      splashColor:
-                          (!isFavorited) ? Colors.amber : Colors.black12,
-                      icon: (!isFavorited)
-                          ? Icon(
-                              Icons.favorite_border,
-                              color: Colors.grey,
-                            )
-                          : Icon(
-                              Icons.favorite,
-                              color: Colors.amber,
-                            ),
-                      onPressed: () async {
-                        /// Checking to see if a user can favorite an item or not
-                        /// If not, displays a snackbar
-                        if (currentUser.isAnonymous) {
-                          final snackbar = SnackBar(
-                            content: Text(
-                              'You must register before you can do that!',
-                              style: Theme.of(context).textTheme.body1,
-                            ),
-                            duration: Duration(milliseconds: 1500),
-                            backgroundColor: Colors.green,
-                          );
-                          Scaffold.of(context).showSnackBar(snackbar);
-                        }
-
-                        /// If applicable, update the user's data in Cloud Firestore.
-                        ///
-                        /// Remove from Firestore
-                        if (isFavorited && !currentUser.isAnonymous) {
-                          isFavorited = false;
-                          setState(() {});
-                          await Firestore.instance
-                              .collection("USERS")
-                              .document(currentUser.email)
-                              .collection('NUTRIENTS')
-                              .document(
-                                  foodItem.detailItems['description']['value'])
-                              .delete();
-                        }
-
-                        /// Add to Firestore
-                        else if (!isFavorited && !currentUser.isAnonymous) {
-                          isFavorited = true;
-                          setState(() {});
-                          await Firestore.instance
-                              .collection("USERS")
-                              .document(currentUser.email)
-                              .collection('NUTRIENTS')
-                              .document(
-                                  foodItem.detailItems['description']['value'])
-                              .setData(foodItem.toFirestore());
-                        }
-                      })
-                ],
-              ),
+          title: Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              foodItem.detailItems['description']['value'],
+              style: Theme.of(context).textTheme.caption,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
-          )
+          ),
+          trailing: new IconButton(
+              splashColor:
+              (!isFavorited) ? Colors.amber : Colors.black12,
+              icon: (!isFavorited)
+                  ? Icon(
+                Icons.favorite_border,
+                color: Colors.grey,
+              )
+                  : Icon(
+                Icons.favorite,
+                color: Colors.amber,
+              ),
+              onPressed: () async {
+                /// Checking to see if a user can favorite an item or not
+                /// If not, displays a snackbar
+                if (currentUser.isAnonymous) {
+                  final snackbar = SnackBar(
+                    content: Text(
+                      'You must register before you can do that!',
+                      style: Theme.of(context).textTheme.body1,
+                    ),
+                    duration: Duration(milliseconds: 1500),
+                    backgroundColor: Colors.green,
+                  );
+                  Scaffold.of(context).showSnackBar(snackbar);
+                }
+
+                /// If applicable, update the user's data in Cloud Firestore.
+                ///
+                /// Remove from Firestore
+                if (isFavorited && !currentUser.isAnonymous) {
+                  isFavorited = false;
+                  if(mounted) {
+                    setState(() {});
+                  }
+                  await Firestore.instance
+                      .collection("USERS")
+                      .document(Encrypt().encrypt(currentUser.email))
+                      .collection('NUTRIENTS')
+                      .document(
+                      foodItem.detailItems['description']['value'])
+                      .delete();
+                }
+
+                /// Add to Firestore
+                else if (!isFavorited && !currentUser.isAnonymous) {
+                  isFavorited = true;
+                  if(mounted) {
+                    setState(() {});
+                  }
+                  await Firestore.instance
+                      .collection("USERS")
+                      .document(Encrypt().encrypt(currentUser.email))
+                      .collection('NUTRIENTS')
+                      .document(
+                      foodItem.detailItems['description']['value'])
+                      .setData(foodItem.toFirestore());
+                }
+              }),
+        ),
+      ),
+    )
         : Text('');
   }
 }

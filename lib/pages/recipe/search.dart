@@ -31,133 +31,139 @@ class _ResultsSearchPageState extends State<ResultsSearchPage>
   Widget build(BuildContext context) {
     return new Scaffold(
       resizeToAvoidBottomPadding: false,
-      body: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          Padding(
-            padding: EdgeInsets.only(top: 28.0),
-            child: new TabBar(
-              tabs: [
-                new Tab(
-                  child: Text(
-                    'Standard',
-                    style: Theme.of(context).textTheme.body1,
-                  ),
+      body: Container(
+        color: Theme.of(context).backgroundColor,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Container(
+              child: Padding(
+                padding: EdgeInsets.only(top: 28.0),
+                child: new TabBar(
+                  tabs: [
+                    new Tab(
+                      child: Text(
+                        'Standard',
+                        style: Theme.of(context).textTheme.body1,
+                      ),
+                    ),
+                    new Tab(
+                      child: Text(
+                        'Healthy',
+                        style: Theme.of(context).textTheme.body1,
+                      ),
+                    ),
+                    new Tab(
+                      child: Text(
+                        'Desserts',
+                        style: Theme.of(context).textTheme.body1,
+                      ),
+                    )
+                  ],
+                  controller: _tabController,
                 ),
-                new Tab(
-                  child: Text(
-                    'Healthy',
-                    style: Theme.of(context).textTheme.body1,
-                  ),
-                ),
-                new Tab(
-                  child: Text(
-                    'Desserts',
-                    style: Theme.of(context).textTheme.body1,
-                  ),
-                )
-              ],
-              controller: _tabController,
-            ),
-          ),
-          Center(
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(12.0, 8.0, 12.0, 8.0),
-              child: TextField(
-//                style: detailsTextStyleInput,
-                controller: _searchController,
-                style: Theme.of(context).textTheme.body1,
-                decoration: InputDecoration(
-                    contentPadding: EdgeInsets.all(0.0),
-                    hintText: 'Search',
-                    prefixIcon: Icon(Icons.search),
-                    border: new OutlineInputBorder(
-                        borderRadius: const BorderRadius.all(
-                      const Radius.circular(10.0),
-                    ))),
-                onSubmitted: (String text) {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => SearchDetails(query: text)));
-                },
               ),
             ),
-          ),
-          Expanded(
-            child: new TabBarView(
-              controller: _tabController,
-              children: <Widget>[
-                new StreamBuilder(
-                  stream: Firestore.instance
-                      .collection('RECIPES')
-                      .where('category', isEqualTo: 'Standard')
-                      .orderBy('name')
-                      .snapshots(),
-                  builder: (context, snapshot) {
-                    if (!snapshot.hasData) {
-                      return SplashScreenAuth();
-                    } else {
-                      return new ListView.builder(
-                          itemExtent: 130.0,
-                          padding: EdgeInsets.all(8.0),
-                          itemCount: snapshot.data.documents.length,
-                          itemBuilder: (context, index) {
-                            DocumentSnapshot ds =
-                                snapshot.data.documents[index];
-                            return ItemWidget(ds: ds);
-                          });
-                    }
+            Center(
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(12.0, 8.0, 12.0, 8.0),
+                child: TextField(
+//                style: detailsTextStyleInput,
+                  controller: _searchController,
+                  style: Theme.of(context).textTheme.body1,
+                  decoration: InputDecoration(
+                      hintStyle: Theme.of(context).textTheme.caption,
+                      contentPadding: EdgeInsets.all(0.0),
+                      hintText: 'Search',
+                      prefixIcon: Icon(Icons.search),
+                      border: new OutlineInputBorder(
+                          borderRadius: const BorderRadius.all(
+                        const Radius.circular(40.0),
+                      ))),
+                  onSubmitted: (String text) {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => SearchDetails(query: text)));
                   },
                 ),
-                new StreamBuilder(
-                  stream: Firestore.instance
-                      .collection('RECIPES')
-                      .where('category', isEqualTo: 'Healthy')
-                      .orderBy('name')
-                      .snapshots(),
-                  builder: (context, snapshot) {
-                    if (!snapshot.hasData) {
-                      return SplashScreenAuth();
-                    } else {
-                      return new ListView.builder(
-                          itemExtent: 130.0,
-                          padding: EdgeInsets.all(8.0),
-                          itemCount: snapshot.data.documents.length,
-                          itemBuilder: (context, index) {
-                            DocumentSnapshot ds =
-                                snapshot.data.documents[index];
-                            return ItemWidget(ds: ds);
-                          });
-                    }
-                  },
-                ),
-                new StreamBuilder(
-                  stream: Firestore.instance
-                      .collection('RECIPES')
-                      .where('category', isEqualTo: 'Desserts')
-                      .orderBy('name')
-                      .snapshots(),
-                  builder: (context, snapshot) {
-                    if (!snapshot.hasData) {
-                      return SplashScreenAuth();
-                    } else {
-                      return new ListView.builder(
-                          itemExtent: 130.0,
-                          padding: EdgeInsets.all(8.0),
-                          itemCount: snapshot.data.documents.length,
-                          itemBuilder: (context, index) {
-                            DocumentSnapshot ds =
-                                snapshot.data.documents[index];
-                            return ItemWidget(ds: ds);
-                          });
-                    }
-                  },
-                )
-              ],
+              ),
             ),
-          )
-        ],
+            Expanded(
+              child: new TabBarView(
+                controller: _tabController,
+                children: <Widget>[
+                  new StreamBuilder(
+                    stream: Firestore.instance
+                        .collection('RECIPES')
+                        .where('category', isEqualTo: 'Standard')
+                        .orderBy('name')
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) {
+                        return SplashScreenAuth();
+                      } else {
+                        return new ListView.builder(
+                            itemExtent: 130.0,
+                            padding: EdgeInsets.all(8.0),
+                            itemCount: snapshot.data.documents.length,
+                            itemBuilder: (context, index) {
+                              DocumentSnapshot ds =
+                                  snapshot.data.documents[index];
+                              return ItemWidget(ds: ds);
+                            });
+                      }
+                    },
+                  ),
+                  new StreamBuilder(
+                    stream: Firestore.instance
+                        .collection('RECIPES')
+                        .where('category', isEqualTo: 'Healthy')
+                        .orderBy('name')
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) {
+                        return SplashScreenAuth();
+                      } else {
+                        return new ListView.builder(
+                            itemExtent: 130.0,
+                            padding: EdgeInsets.all(8.0),
+                            itemCount: snapshot.data.documents.length,
+                            itemBuilder: (context, index) {
+                              DocumentSnapshot ds =
+                                  snapshot.data.documents[index];
+                              return ItemWidget(ds: ds);
+                            });
+                      }
+                    },
+                  ),
+                  new StreamBuilder(
+                    stream: Firestore.instance
+                        .collection('RECIPES')
+                        .where('category', isEqualTo: 'Desserts')
+                        .orderBy('name')
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) {
+                        return SplashScreenAuth();
+                      } else {
+                        return new ListView.builder(
+                            itemExtent: 130.0,
+                            padding: EdgeInsets.all(8.0),
+                            itemCount: snapshot.data.documents.length,
+                            itemBuilder: (context, index) {
+                              DocumentSnapshot ds =
+                                  snapshot.data.documents[index];
+                              return ItemWidget(ds: ds);
+                            });
+                      }
+                    },
+                  )
+                ],
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

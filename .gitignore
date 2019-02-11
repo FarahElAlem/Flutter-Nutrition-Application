@@ -80,3 +80,6 @@ assets/config.json
 assets/userdata.json
 python/configs/
 python/data/
+
+lib/structures/encrypt.dart
+

@@ -1,26 +1,30 @@
 import 'package:flutter/material.dart';
-import 'package:nutrition_app_flutter/pages/search/foodgroupresult.dart';
+import 'package:nutrition_app_flutter/pages/search/foodgroupinfo.dart';
 
-class ItemWidget extends StatefulWidget {
-  ItemWidget({this.foodGroupNames, this.index, this.foodGroupUrls});
+class FoodGroupCard extends StatefulWidget {
+  FoodGroupCard({this.foodItemInformation});
 
-  var foodGroupNames;
-  var foodGroupUrls;
-  int index;
+  Map<String, dynamic> foodItemInformation;
+  String foodKey;
 
   @override
-  _ItemWidgetState createState() => _ItemWidgetState();
+  _FoodGroupCardState createState() =>
+      _FoodGroupCardState(foodItemInformation: foodItemInformation);
 }
 
-class _ItemWidgetState extends State<ItemWidget> {
+class _FoodGroupCardState extends State<FoodGroupCard> {
+  _FoodGroupCardState({this.foodItemInformation});
+
+
+  Map<String, dynamic> foodItemInformation;
+
   Image _image;
   bool _loading;
 
   @override
   void initState() {
     super.initState();
-    _image = new Image.network(
-        widget.foodGroupUrls[widget.foodGroupUrls.keys.toList()[widget.index*2]]);
+    _image = new Image.network(foodItemInformation['url']);
     _loading = true;
     _image.image.resolve(new ImageConfiguration()).addListener((_, __) async {
       _loading = false;
@@ -41,9 +45,7 @@ class _ItemWidgetState extends State<ItemWidget> {
             context,
             MaterialPageRoute(
                 builder: (context) => FoodGroupResult(
-                      foodInformation: widget.foodGroupNames[widget.index],
-                      type: 0,
-                      foodImage: _image,
+                      foodItemInformation: foodItemInformation,
                     )));
       },
       splashColor: Colors.transparent,
@@ -66,7 +68,7 @@ class _ItemWidgetState extends State<ItemWidget> {
                           child: CircularProgressIndicator(),
                         )
                       : Hero(
-                          tag: widget.foodGroupNames[widget.index][0],
+                          tag: foodItemInformation,
                           child: new Container(
                             decoration: new BoxDecoration(
                                 image: new DecorationImage(
@@ -87,7 +89,7 @@ class _ItemWidgetState extends State<ItemWidget> {
                         Padding(
                           padding: EdgeInsets.fromLTRB(12.0, 0.0, 12.0, 0.0),
                           child: Text(
-                            widget.foodGroupNames[widget.index][1],
+                            foodItemInformation['name'],
                             style: Theme.of(context).textTheme.caption,
                             textAlign: TextAlign.center,
                           ),

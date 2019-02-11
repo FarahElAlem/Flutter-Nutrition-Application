@@ -1,7 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:nutrition_app_flutter/pages/search/foodgroupresult.dart';
+import 'package:nutrition_app_flutter/pages/search/foodgroupinfo.dart';
+import 'package:nutrition_app_flutter/structures/encrypt.dart';
 import 'package:nutrition_app_flutter/structures/fooditem.dart';
 
 /// UI incomplete, details attempts to show nutrition details of some FoodItem
@@ -30,7 +31,7 @@ class _FoodGroupDetailsState extends State<FoodGroupDetails> {
     } else {
       QuerySnapshot item = await Firestore.instance
           .collection('USERS')
-          .document(currentUser.email)
+          .document(Encrypt().encrypt(currentUser.email))
           .collection('NUTRIENTS')
           .where('description',
           isEqualTo: widget.foodItem.detailItems['description']['value'])
@@ -42,7 +43,9 @@ class _FoodGroupDetailsState extends State<FoodGroupDetails> {
       }
     }
     _ready = true;
-    setState(() {});
+    if(mounted) {
+      setState(() {});
+    }
   }
 
   @override
@@ -90,10 +93,12 @@ class _FoodGroupDetailsState extends State<FoodGroupDetails> {
                   /// Remove from Firestore
                   if (isFavorited && !currentUser.isAnonymous) {
                     isFavorited = false;
-                    setState(() {});
+                    if(mounted) {
+                      setState(() {});
+                    }
                     await Firestore.instance
                         .collection("USERS")
-                        .document(currentUser.email)
+                        .document(Encrypt().encrypt(currentUser.email))
                         .collection('NUTRIENTS')
                         .document(widget.foodItem.detailItems['description']['value'])
                         .delete();
@@ -102,10 +107,12 @@ class _FoodGroupDetailsState extends State<FoodGroupDetails> {
                   /// Add to Firestore
                   else if (!isFavorited && !currentUser.isAnonymous) {
                     isFavorited = true;
-                    setState(() {});
+                    if(mounted) {
+                      setState(() {});
+                    }
                     await Firestore.instance
                         .collection("USERS")
-                        .document(currentUser.email)
+                        .document(Encrypt().encrypt(currentUser.email))
                         .collection('NUTRIENTS')
                         .document(widget.foodItem.detailItems['description']['value'])
                         .setData(widget.foodItem.toFirestore());
@@ -132,7 +139,7 @@ class SearchDetails extends StatefulWidget {
     userNutrients = (!currentUser.isAnonymous)
         ? await Firestore.instance
         .collection('USERS')
-        .document(currentUser.email)
+        .document(Encrypt().encrypt(currentUser.email))
         .collection('NUTRIENTS')
         .getDocuments()
         : null;
