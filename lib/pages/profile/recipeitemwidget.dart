@@ -90,7 +90,7 @@ class _RecipeItemWidgetState extends State<RecipeItemWidget> {
           ),
         ),
       ),
-      height: 256.0,
+      height: 144.0,
       width: 256.0,
     );
   }

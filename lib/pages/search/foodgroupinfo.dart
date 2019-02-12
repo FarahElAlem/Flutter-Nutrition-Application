@@ -88,118 +88,121 @@ class _FoodGroupResultState extends State<FoodGroupResult> {
       return new Scaffold(appBar: new AppBar(), body: _buildLoadingScreen());
     } else {
       return new Scaffold(
-        body: LayoutBuilder(
-            builder: (BuildContext contest, BoxConstraints constraintss) {
-          return SingleChildScrollView(
-            child: ConstrainedBox(
-              constraints: BoxConstraints(minHeight: constraintss.maxHeight),
-              child: new Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Stack(
-                    children: <Widget>[
-                      new Positioned(
-                          child: Hero(
-                        tag: foodItemInformation,
-                        child: new AspectRatio(
-                          aspectRatio: 16 / 8,
-                          child: new Container(
-                            decoration: new BoxDecoration(
-                                image: new DecorationImage(
-                              fit: BoxFit.cover,
-                              alignment: FractionalOffset.center,
-                              image: Image.network(foodItemInformation['url']).image,
-                            )),
+        body: Container(
+          color: Colors.white,
+          child: LayoutBuilder(
+              builder: (BuildContext contest, BoxConstraints constraintss) {
+                return SingleChildScrollView(
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(minHeight: constraintss.maxHeight),
+                    child: new Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        Stack(
+                          children: <Widget>[
+                            new Positioned(
+                                child: Hero(
+                                  tag: foodItemInformation,
+                                  child: new AspectRatio(
+                                    aspectRatio: 16 / 8,
+                                    child: new Container(
+                                      decoration: new BoxDecoration(
+                                          image: new DecorationImage(
+                                            fit: BoxFit.cover,
+                                            alignment: FractionalOffset.center,
+                                            image: Image.network(foodItemInformation['url']).image,
+                                          )),
+                                    ),
+                                  ),
+                                )),
+                            new AppBar(
+                              iconTheme: IconThemeData(
+                                  color: (_darkgroups
+                                      .contains(foodItemInformation['name']))
+                                      ? Colors.black
+                                      : Colors.white),
+                              backgroundColor: Colors.transparent,
+                              elevation: 0.0,
+                            ),
+                          ],
+                        ),
+                        Padding(
+                          padding: EdgeInsets.all(16.0),
+                          child: Container(
+                            padding: EdgeInsets.only(bottom: 8.0),
+                            child: Text(
+                              foodItemInformation['name'],
+                              style: Theme.of(context).textTheme.display1,
+                            ),
+                            decoration: BoxDecoration(
+                              border: Border(bottom: BorderSide(color: Colors.black)),
+                            ),
                           ),
                         ),
-                      )),
-                      new AppBar(
-                        iconTheme: IconThemeData(
-                            color: (_darkgroups
-                                    .contains(foodItemInformation['name']))
-                                ? Colors.black
-                                : Colors.white),
-                        backgroundColor: Colors.transparent,
-                        elevation: 0.0,
-                      ),
-                    ],
-                  ),
-                  Padding(
-                    padding: EdgeInsets.all(16.0),
-                    child: Container(
-                      padding: EdgeInsets.only(bottom: 8.0),
-                      child: Text(
-                        foodItemInformation['name'],
-                        style: Theme.of(context).textTheme.display1,
-                      ),
-                      decoration: BoxDecoration(
-                        border: Border(bottom: BorderSide(color: Colors.black)),
-                      ),
+                        Flexible(
+                          child: SizedBox(
+                              child: Padding(
+                                  padding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 4.0),
+                                  child: Center(
+                                    child: Text(
+                                      foodItemInformation['description'],
+                                      style: Theme.of(context).textTheme.caption,
+                                    ),
+                                  ))),
+                        ),
+                        Row(children: <Widget>[
+                          Expanded(
+                            child: new Container(
+                                margin:
+                                const EdgeInsets.only(left: 20.0, right: 10.0),
+                                child: Divider(
+                                  color: Colors.black,
+                                  height: 36,
+                                )),
+                          ),
+                          Text(
+                            'Browse Items',
+                            style: Theme.of(context).textTheme.body2,
+                          ),
+                          Expanded(
+                            child: new Container(
+                                margin:
+                                const EdgeInsets.only(left: 20.0, right: 10.0),
+                                child: Divider(
+                                  color: Colors.black,
+                                  height: 36,
+                                )),
+                          ),
+                        ]),
+                        StreamBuilder<QuerySnapshot>(
+                          stream: stream,
+                          builder: (BuildContext context,
+                              AsyncSnapshot<QuerySnapshot> snapshot) {
+                            if (snapshot.hasError)
+                              return new Text('Error: ${snapshot.error}');
+                            switch (snapshot.connectionState) {
+                              case ConnectionState.waiting:
+                                return _buildLoadingScreen();
+                              default:
+                                return Column(
+                                  children: snapshot.data.documents
+                                      .map((DocumentSnapshot document) {
+                                    return new ListItem(
+                                      foodItem: new FoodItem(document),
+                                    );
+                                  }).toList(),
+                                );
+                            }
+                          },
+                        )
+                      ],
                     ),
                   ),
-                  Flexible(
-                    child: SizedBox(
-                        child: Padding(
-                            padding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 4.0),
-                            child: Center(
-                              child: Text(
-                               foodItemInformation['description'],
-                                style: Theme.of(context).textTheme.caption,
-                              ),
-                            ))),
-                  ),
-                  Row(children: <Widget>[
-                    Expanded(
-                      child: new Container(
-                          margin:
-                              const EdgeInsets.only(left: 20.0, right: 10.0),
-                          child: Divider(
-                            color: Colors.black,
-                            height: 36,
-                          )),
-                    ),
-                    Text(
-                      'Browse Items',
-                      style: Theme.of(context).textTheme.body2,
-                    ),
-                    Expanded(
-                      child: new Container(
-                          margin:
-                              const EdgeInsets.only(left: 20.0, right: 10.0),
-                          child: Divider(
-                            color: Colors.black,
-                            height: 36,
-                          )),
-                    ),
-                  ]),
-                  StreamBuilder<QuerySnapshot>(
-                    stream: stream,
-                    builder: (BuildContext context,
-                        AsyncSnapshot<QuerySnapshot> snapshot) {
-                      if (snapshot.hasError)
-                        return new Text('Error: ${snapshot.error}');
-                      switch (snapshot.connectionState) {
-                        case ConnectionState.waiting:
-                          return _buildLoadingScreen();
-                        default:
-                          return Column(
-                            children: snapshot.data.documents
-                                .map((DocumentSnapshot document) {
-                              return new ListItem(
-                                foodItem: new FoodItem(document),
-                              );
-                            }).toList(),
-                          );
-                      }
-                    },
-                  )
-                ],
-              ),
-            ),
-          );
-        }),
+                );
+              }),
+        ),
       );
     }
   }

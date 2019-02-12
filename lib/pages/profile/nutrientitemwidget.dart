@@ -71,7 +71,7 @@ class _NutrientItemWidgetState extends State<NutrientItemWidget> {
           ),
         ),
       ),
-      height: 256.0,
+      height: 144.0,
       width: 256.0,
     );
   }

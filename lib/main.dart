@@ -22,21 +22,44 @@ Future<void> main() async {
 
   runApp(new MaterialApp(
     theme: ThemeData(
-      primaryColorDark: Color.fromRGBO(153, 204, 96, 1.0),
-      primaryColorLight: Color.fromRGBO(255, 255, 194, 1.0),
-      primaryColor: Color.fromRGBO(204, 255, 144, 1.0),
-      backgroundColor: Color.fromRGBO(245, 245, 246, 1.0),
-      textTheme: TextTheme(
-        headline: TextStyle(fontSize: 32.0, fontFamily: 'Montserrat', color: Colors.white, fontWeight: FontWeight.w600),
-        display1: TextStyle(fontSize: 32.0, fontFamily: 'Montserrat', color: Colors.black, fontWeight: FontWeight.bold),
-        display2: TextStyle(fontSize: 28.0, fontFamily: 'Montserrat', color: Colors.black, fontWeight: FontWeight.bold),
-        subhead: TextStyle(fontSize: 20.0, fontFamily: 'Montserrat', color: Colors.black, fontWeight: FontWeight.bold),
-        title: TextStyle(fontSize: 20.0, fontFamily: 'Montserrat', color: Colors.black),
-        body1: TextStyle(fontSize: 18.0, fontFamily: 'OpenSans'),
-        body2: TextStyle(fontSize: 18.0, fontFamily: 'OpenSans', fontWeight: FontWeight.bold),
-        caption: TextStyle(fontSize: 16.0, fontFamily: 'OpenSans', fontWeight: FontWeight.w600),
-      )
-    ),
+        primaryColor: Color.fromRGBO(102, 187, 106, 1.0),
+        primaryColorDark: Color.fromRGBO(51, 138, 62, 1.0),
+        primaryColorLight: Color.fromRGBO(152, 238, 153, 1.0),
+        secondaryHeaderColor: Color.fromRGBO(178, 235, 242, 1.0),
+        backgroundColor: Color.fromRGBO(245, 245, 246, 1.0),
+        textTheme: TextTheme(
+          headline: TextStyle(
+              fontSize: 32.0,
+              fontFamily: 'Montserrat',
+              color: Colors.white,
+              fontWeight: FontWeight.w600),
+          display1: TextStyle(
+              fontSize: 32.0,
+              fontFamily: 'Montserrat',
+              color: Colors.black,
+              fontWeight: FontWeight.bold),
+          display2: TextStyle(
+              fontSize: 28.0,
+              fontFamily: 'Montserrat',
+              color: Colors.black,
+              fontWeight: FontWeight.bold),
+          subhead: TextStyle(
+              fontSize: 20.0,
+              fontFamily: 'Montserrat',
+              color: Colors.black,
+              fontWeight: FontWeight.bold),
+          title: TextStyle(
+              fontSize: 20.0, fontFamily: 'Montserrat', color: Colors.black),
+          body1: TextStyle(fontSize: 18.0, fontFamily: 'OpenSans'),
+          body2: TextStyle(
+              fontSize: 18.0,
+              fontFamily: 'OpenSans',
+              fontWeight: FontWeight.bold),
+          caption: TextStyle(
+              fontSize: 16.0,
+              fontFamily: 'OpenSans',
+              fontWeight: FontWeight.w600),
+        )),
     home: new Home(
       currentUser: currentUser,
       firestore: firestore,
@@ -60,7 +83,6 @@ Future<FirebaseUser> signInWithFirestore(String email, String password) async {
   }
   return user;
 }
-
 
 /// Debug screen for error testing
 /// TODO Remove from final build

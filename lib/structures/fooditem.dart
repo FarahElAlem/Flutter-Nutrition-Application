@@ -150,7 +150,7 @@ class FoodItem {
     ));
     out.add(Card(
       elevation: 6.0,
-      color: Theme.of(context).primaryColor,
+      color: Colors.white,
       child: Padding(
         padding: EdgeInsets.all(16.0),
         child: Column(
@@ -333,7 +333,7 @@ class FoodItem {
     temp.removeLast();
     out.add(Card(
         elevation: 6.0,
-        color: Theme.of(context).primaryColor,
+        color: Colors.white,
         child: Padding(
           padding: EdgeInsets.all(16.0),
           child: Column(
