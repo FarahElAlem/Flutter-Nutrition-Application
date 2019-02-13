@@ -49,8 +49,9 @@ class _FoodGroupCardState extends State<FoodGroupCard> {
       },
       splashColor: Colors.transparent,
       child: new Card(
-        color: Colors.white,
-        elevation: 5.0,
+//        color: Colors.white,
+      color: Theme.of(context).primaryColor,
+        elevation: 1.0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15.0),
         ),
@@ -65,8 +66,8 @@ class _FoodGroupCardState extends State<FoodGroupCard> {
                   child: (_loading)
                       ? Material(
 //                          color: Theme.of(context).primaryColorLight,
-                          color: Colors.white,
-                          child: Center(
+                    color: Theme.of(context).primaryColor,
+                    child: Center(
                             child: CircularProgressIndicator(),
                           ),
                         )
@@ -85,7 +86,7 @@ class _FoodGroupCardState extends State<FoodGroupCard> {
                 child: SizedBox.expand(
                   child: Material(
 //                    color: Theme.of(context).primaryColorLight,
-                    color: Colors.white,
+                    color: Theme.of(context).primaryColor,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,

@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 import 'package:flutter/material.dart';
+import 'package:nutrition_app_flutter/demo/placeholder.dart';
 import 'package:nutrition_app_flutter/pages/dashboard/title.dart';
 
 import 'package:nutrition_app_flutter/pages/profile/register.dart';
@@ -194,6 +195,29 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
         foodGroupDetails: foodGroupDetails,
       )
     ];
+//    _bodyChildren = [
+//      Container(
+//        decoration: BoxDecoration(
+//            gradient: LinearGradient(colors: [
+//              Color.fromRGBO(8, 177, 139, 1.0),
+//              Color.fromRGBO(0, 91, 71, 1.0)
+//            ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
+//      ),
+//      Container(
+//        decoration: BoxDecoration(
+//            gradient: LinearGradient(colors: [
+//              Color.fromRGBO(8, 177, 139, 1.0),
+//              Color.fromRGBO(0, 91, 71, 1.0)
+//            ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
+//      ),
+//      Container(
+//        decoration: BoxDecoration(
+//            gradient: LinearGradient(colors: [
+//          Color.fromRGBO(8, 177, 139, 1.0),
+//          Color.fromRGBO(0, 91, 71, 1.0)
+//        ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
+//      )
+//    ];
 
     _gatherData().whenComplete(() {
       print(foodGroupDetails.toString());
@@ -225,7 +249,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
             bottomNavigationBar: new Material(
               child: Theme(
                 data: Theme.of(context).copyWith(
-                  canvasColor: Theme.of(context).primaryColor,
+                  canvasColor:  Color.fromRGBO(0, 91, 71, 1.0),
                 ),
                 child: new BottomNavigationBar(
                   type: BottomNavigationBarType.fixed,

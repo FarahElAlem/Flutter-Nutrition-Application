@@ -42,7 +42,6 @@ class _SearchState extends State<Search> {
   Widget build(BuildContext context) {
     return new Container(
       padding: EdgeInsets.all(8.0),
-      color: Theme.of(context).backgroundColor,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[

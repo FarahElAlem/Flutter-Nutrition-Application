@@ -22,53 +22,99 @@ Future<void> main() async {
 
   runApp(new MaterialApp(
     theme: ThemeData(
-        primaryColor: Color.fromRGBO(0, 147, 118, 1.0),
-        primaryColorLight: Color.fromRGBO(79, 196, 165, 1.0),
-        primaryColorDark: Color.fromRGBO(0, 100, 74, 1.0),
-        secondaryHeaderColor: Color.fromRGBO(178, 235, 242, 1.0),
-        backgroundColor: Color.fromRGBO(245, 245, 246, 1.0),
-        cardColor: Color.fromRGBO(235, 254, 245, 1.0),
-        textTheme: TextTheme(
+      primaryColor: Color(0xFF4CAF50),
+      primaryColorLight: Color(0xFFC8E6C9),
+      primaryColorDark: Color(0xFF388E3C),
+      backgroundColor: Color(0xFF000000),
+      accentColor: Color(0xFFFFC107),
+      dividerColor: Color(0xFFBDBDBD),
+      textTheme: TextTheme(
           headline: TextStyle(
-              fontSize: 32.0, fontFamily: 'Roboto', color: Colors.white),
-          display3: TextStyle(
-            fontSize: 32.0, fontFamily: 'Roboto', color: Colors.black, fontWeight: FontWeight.w600),
-          display1: TextStyle(
-            fontSize: 24.0,
-            fontFamily: 'Roboto',
-            color: Colors.black,
-            fontWeight: FontWeight.w600
-          ),
-          display2: TextStyle(
-            fontSize: 20.0,
-            fontFamily: 'Roboto',
-            color: Colors.black,
-          ),
+              fontFamily: 'Roboto',
+              color: Color(0xFFFFFFFF),
+              fontSize: 48.0,
+              fontWeight: FontWeight.w400,
+              letterSpacing: 0.0),
           subhead: TextStyle(
-            fontSize: 20.0,
-            fontFamily: 'Roboto',
-            color: Colors.white,
-          ),
-          title: TextStyle(
-              fontSize: 20.0, fontFamily: 'Roboto', color: Colors.white),
-          body1: TextStyle(fontSize: 16.0, fontFamily: 'OpenSans'),
-          body2: TextStyle(fontSize: 18.0, fontFamily: 'OpenSans'),
-          caption: TextStyle(
-              fontSize: 14.0,
-              fontFamily: 'OpenSans',
-              fontWeight: FontWeight.w600,
-              color: Colors.white),
-          button: TextStyle(
-              fontSize: 16.0,
-              fontFamily: 'OpenSans',
-              color: Colors.white,
-          fontWeight: FontWeight.w400),
+              fontFamily: 'Roboto',
+              color: Color(0xFFFFFFFF),
+              fontSize: 34.0,
+              fontWeight: FontWeight.w400,
+              letterSpacing: 0.25),
           subtitle: TextStyle(
-            fontSize: 16.0,
-            fontFamily: 'OpenSans',
-            color: Colors.black,
-            fontWeight: FontWeight.w600),
-        )),
+              fontFamily: 'Roboto',
+              color: Color(0xFFFFFFFF),
+              fontSize: 16.0,
+              fontWeight: FontWeight.w400,
+              letterSpacing: 0.15),
+          body1: TextStyle(
+              fontFamily: 'Open Sans',
+              color: Color(0xFFFFFFFF),
+              fontSize: 16.0,
+              fontWeight: FontWeight.w400,
+              letterSpacing: 0.5),
+          body2: TextStyle(
+              fontFamily: 'Open Sans',
+              color: Color(0xFFFFFFFF),
+              fontSize: 14.0,
+              fontWeight: FontWeight.w400,
+              letterSpacing: 0.25),
+          button: TextStyle(
+              fontFamily: 'Open Sans',
+              color: Color(0xFFFFFFFF),
+              fontSize: 14.0,
+              fontWeight: FontWeight.w500,
+              letterSpacing: 1.25),
+          caption: TextStyle(
+              fontFamily: 'Open Sans',
+              color: Color(0xFFFFFFFF),
+              fontSize: 12.0,
+              fontWeight: FontWeight.w400,
+              letterSpacing: 0.4)),
+      primaryTextTheme: TextTheme(
+          headline: TextStyle(
+              fontFamily: 'Roboto',
+              color: Color(0xFF212121),
+              fontSize: 48.0,
+              fontWeight: FontWeight.w400,
+              letterSpacing: 0.0),
+          subhead: TextStyle(
+              fontFamily: 'Roboto',
+              color: Color(0xFF212121),
+              fontSize: 34.0,
+              fontWeight: FontWeight.w400,
+              letterSpacing: 0.25),
+          subtitle: TextStyle(
+              fontFamily: 'Roboto',
+              color: Color(0xFF212121),
+              fontSize: 16.0,
+              fontWeight: FontWeight.w400,
+              letterSpacing: 0.15),
+          body1: TextStyle(
+              fontFamily: 'Open Sans',
+              color: Color(0xFF212121),
+              fontSize: 16.0,
+              fontWeight: FontWeight.w400,
+              letterSpacing: 0.5),
+          body2: TextStyle(
+              fontFamily: 'Open Sans',
+              color: Color(0xFF757575),
+              fontSize: 14.0,
+              fontWeight: FontWeight.w400,
+              letterSpacing: 0.25),
+          button: TextStyle(
+              fontFamily: 'Open Sans',
+              color: Color(0xFF212121),
+              fontSize: 14.0,
+              fontWeight: FontWeight.w500,
+              letterSpacing: 1.25),
+          caption: TextStyle(
+              fontFamily: 'Open Sans',
+              color: Color(0xFF757575),
+              fontSize: 12.0,
+              fontWeight: FontWeight.w400,
+              letterSpacing: 0.4)),
+    ),
     home: new Home(
       currentUser: currentUser,
       firestore: firestore,
