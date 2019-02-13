@@ -22,43 +22,52 @@ Future<void> main() async {
 
   runApp(new MaterialApp(
     theme: ThemeData(
-        primaryColor: Color.fromRGBO(102, 187, 106, 1.0),
-        primaryColorDark: Color.fromRGBO(51, 138, 62, 1.0),
-        primaryColorLight: Color.fromRGBO(152, 238, 153, 1.0),
+        primaryColor: Color.fromRGBO(0, 147, 118, 1.0),
+        primaryColorLight: Color.fromRGBO(79, 196, 165, 1.0),
+        primaryColorDark: Color.fromRGBO(0, 100, 74, 1.0),
         secondaryHeaderColor: Color.fromRGBO(178, 235, 242, 1.0),
         backgroundColor: Color.fromRGBO(245, 245, 246, 1.0),
+        cardColor: Color.fromRGBO(235, 254, 245, 1.0),
         textTheme: TextTheme(
           headline: TextStyle(
-              fontSize: 32.0,
-              fontFamily: 'Montserrat',
-              color: Colors.white,
-              fontWeight: FontWeight.w600),
+              fontSize: 32.0, fontFamily: 'Roboto', color: Colors.white),
+          display3: TextStyle(
+            fontSize: 32.0, fontFamily: 'Roboto', color: Colors.black, fontWeight: FontWeight.w600),
           display1: TextStyle(
-              fontSize: 32.0,
-              fontFamily: 'Montserrat',
-              color: Colors.black,
-              fontWeight: FontWeight.bold),
+            fontSize: 24.0,
+            fontFamily: 'Roboto',
+            color: Colors.black,
+            fontWeight: FontWeight.w600
+          ),
           display2: TextStyle(
-              fontSize: 28.0,
-              fontFamily: 'Montserrat',
-              color: Colors.black,
-              fontWeight: FontWeight.bold),
+            fontSize: 20.0,
+            fontFamily: 'Roboto',
+            color: Colors.black,
+          ),
           subhead: TextStyle(
-              fontSize: 20.0,
-              fontFamily: 'Montserrat',
-              color: Colors.black,
-              fontWeight: FontWeight.bold),
+            fontSize: 20.0,
+            fontFamily: 'Roboto',
+            color: Colors.white,
+          ),
           title: TextStyle(
-              fontSize: 20.0, fontFamily: 'Montserrat', color: Colors.black),
-          body1: TextStyle(fontSize: 18.0, fontFamily: 'OpenSans'),
-          body2: TextStyle(
-              fontSize: 18.0,
-              fontFamily: 'OpenSans',
-              fontWeight: FontWeight.bold),
+              fontSize: 20.0, fontFamily: 'Roboto', color: Colors.white),
+          body1: TextStyle(fontSize: 16.0, fontFamily: 'OpenSans'),
+          body2: TextStyle(fontSize: 18.0, fontFamily: 'OpenSans'),
           caption: TextStyle(
+              fontSize: 14.0,
+              fontFamily: 'OpenSans',
+              fontWeight: FontWeight.w600,
+              color: Colors.white),
+          button: TextStyle(
               fontSize: 16.0,
               fontFamily: 'OpenSans',
-              fontWeight: FontWeight.w600),
+              color: Colors.white,
+          fontWeight: FontWeight.w400),
+          subtitle: TextStyle(
+            fontSize: 16.0,
+            fontFamily: 'OpenSans',
+            color: Colors.black,
+            fontWeight: FontWeight.w600),
         )),
     home: new Home(
       currentUser: currentUser,

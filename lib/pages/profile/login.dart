@@ -5,7 +5,6 @@ import 'package:nutrition_app_flutter/structures/validator.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
-
 /// class LoginPage presents a form for a User
 /// to log into Cloud Firestore, giving them the
 /// ability to store and retrieve data from their personal
@@ -35,91 +34,107 @@ class _LoginPageState extends State<LoginPage> {
         elevation: 0.0,
         iconTheme: IconThemeData(color: Colors.black),
       ),
-      body: Form(
-        key: _formKey,
-        child: Center(
-          child: ListView(
-            shrinkWrap: true,
-            padding: EdgeInsets.all(32.0),
-            children: <Widget>[
-              Text(
-                'Welcome Back!',
-                style: Theme.of(context).textTheme.display1,
-                textAlign: TextAlign.center,
-              ),
-              Divider(
-                color: Colors.transparent,
-                height: 64.0,
-              ),
-              TextFormField(
-                validator: (value) {
-                  String s = Validator().validateEmail(value);
-                  if (s != null) {
-                    return s;
-                  }
-                },
-                controller: _emailTextFieldController,
-                style: Theme.of(context).textTheme.body1,
-                decoration: InputDecoration(hintText: 'Email'),
-                keyboardType: TextInputType.emailAddress,
-              ),
-              Divider(
-                color: Colors.transparent,
-                height: 64.0,
-              ),
-              TextFormField(
-                validator: (value) {
-                  String s = Validator().validatePassword(value);
-                  if (s != null) {
-                    return s;
-                  }
-                },
-                controller: _passwordTextFieldController,
-                style: Theme.of(context).textTheme.body1,
-                decoration: InputDecoration(hintText: 'Password'),
-                keyboardType: TextInputType.text,
-                obscureText: true,
-              ),
-              Divider(
-                color: Colors.transparent,
-                height: 64.0,
-              ),
-              SizedBox(
-                width: double.infinity,
-                child: OutlineButton(
-                    onPressed: () async {
-                      if (_formKey.currentState.validate()) {
-                        String s = await Validator().validateLoggedInUser(
-                            _emailTextFieldController.text,
-                            _passwordTextFieldController.text);
+      body: Container(
+        color: Theme.of(context).primaryColor,
+        padding: EdgeInsets.all(16.0),
+        child: Form(
+          key: _formKey,
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Text(
+                  'Welcome Back!',
+                  style: Theme.of(context).textTheme.display3,
+                  textAlign: TextAlign.center,
+                ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    TextFormField(
+                      validator: (value) {
+                        String s = Validator().validateEmail(value);
                         if (s != null) {
-//                          print('Dobby is upset');
-                        } else {
-                          FirebaseUser user =
-                              await FirebaseAuth.instance.currentUser();
-                          await user.delete();
-                          await FirebaseAuth.instance
-                              .signInWithEmailAndPassword(
-                                  email: _emailTextFieldController.text,
-                                  password: _passwordTextFieldController.text);
-
-                          SharedPreferences prefs = await SharedPreferences.getInstance();
-                          prefs.setString('email', Encrypt().encrypt(_emailTextFieldController.text));
-                          prefs.setString('password', Encrypt().encrypt(_passwordTextFieldController.text));
-
-                          Navigator.pop(context);
+                          return s;
                         }
-                      }
-                    },
-                    child: Text(
-                      'Login',
-                      style: Theme.of(context).textTheme.caption,
+                      },
+                      controller: _emailTextFieldController,
+                      style: Theme.of(context).textTheme.body1,
+                      decoration: InputDecoration(
+                          hintText: 'Email',
+                          border: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.grey))),
+                      keyboardType: TextInputType.emailAddress,
                     ),
-                    color: Colors.green,
-                    shape: new RoundedRectangleBorder(
-                        borderRadius: new BorderRadius.circular(30.0))),
-              )
-            ],
+                    Divider(
+                      height: 28.0,
+                      color: Colors.transparent,
+                    ),
+                    TextFormField(
+                      validator: (value) {
+                        String s = Validator().validatePassword(value);
+                        if (s != null) {
+                          return s;
+                        }
+                      },
+                      controller: _passwordTextFieldController,
+                      style: Theme.of(context).textTheme.body1,
+                      decoration: InputDecoration(
+                          hintText: 'Password',
+                          border: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.grey))),
+                      keyboardType: TextInputType.text,
+                      obscureText: true,
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  width: double.infinity,
+                  child: MaterialButton(
+                    color: Theme.of(context).primaryColorLight,
+                      onPressed: () async {
+                        if (_formKey.currentState.validate()) {
+                          String s = await Validator().validateLoggedInUser(
+                              _emailTextFieldController.text,
+                              _passwordTextFieldController.text);
+                          if (s != null) {
+                          print('Dobby is upset');
+                          } else {
+                            FirebaseUser user =
+                                await FirebaseAuth.instance.currentUser();
+                            await user.delete();
+                            await FirebaseAuth.instance
+                                .signInWithEmailAndPassword(
+                                    email: _emailTextFieldController.text,
+                                    password:
+                                        _passwordTextFieldController.text);
+
+                            SharedPreferences prefs =
+                                await SharedPreferences.getInstance();
+                            prefs.setString(
+                                'email',
+                                Encrypt()
+                                    .encrypt(_emailTextFieldController.text));
+                            prefs.setString(
+                                'password',
+                                Encrypt().encrypt(
+                                    _passwordTextFieldController.text));
+
+                            Navigator.pop(context);
+                          }
+                        }
+                      },
+                      child: Text(
+                        'Login',
+                        style: Theme.of(context).textTheme.subtitle,
+                      ),
+                      shape: new RoundedRectangleBorder(
+                          borderRadius: new BorderRadius.circular(5.0))),
+                )
+              ],
+            ),
           ),
         ),
       ),

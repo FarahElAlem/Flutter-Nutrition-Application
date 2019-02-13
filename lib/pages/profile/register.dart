@@ -65,144 +65,163 @@ class _RegisterPageState extends State<RegisterPage> {
   /// Builds the page for the user to register with
   Widget _buildRegisterPage() {
     return Container(
-      color: Theme.of(context).backgroundColor,
+      padding: EdgeInsets.only(left: 16.0, right: 16.0),
+      color: Theme.of(context).primaryColor,
       child: Form(
           key: _formKey,
-          child: Center(
-            child: ListView(
-              padding: EdgeInsets.all(20.0),
-              shrinkWrap: true,
-              children: <Widget>[
-                Text(
-                  'Register With Us!',
-                  style: Theme.of(context).textTheme.display1,
-                  textAlign: TextAlign.center,
-                ),
-                Divider(
-                  color: Colors.transparent,
-                  height: 16.0,
-                ),
-                Text(
-                  'Then you can save your favorite\nrecipes & nutrients on your phone!',
-                  style: Theme.of(context).textTheme.body1,
-                  textAlign: TextAlign.center,
-                ),
-                Divider(
-                  color: Colors.transparent,
-                  height: 56.0,
-                ),
-                TextFormField(
-                  validator: (value) {
-                    String s = Validator().validateName(value);
-                    if (s != null) {
-                      return s;
-                    }
-                  },
-                  controller: _nameTextFieldController,
-                  style: Theme.of(context).textTheme.body1,
-                  decoration: InputDecoration(hintText: 'Name'),
-                  keyboardType: TextInputType.text,
-                ),
-                Divider(
-                  color: Colors.transparent,
-                  height: 12.0,
-                ),
-                TextFormField(
-                  validator: (value) {
-                    String s = Validator().validateEmail(value);
-                    if (s != null) {
-                      return s;
-                    }
-                  },
-                  controller: _emailTextFieldController,
-                  style: Theme.of(context).textTheme.body1,
-                  decoration: InputDecoration(hintText: 'Email'),
-                  keyboardType: TextInputType.emailAddress,
-                ),
-                Divider(
-                  color: Colors.transparent,
-                  height: 12.0,
-                ),
-                TextFormField(
-                  validator: (value) {
-                    String s = Validator().validatePassword(value);
-                    if (s != null) {
-                      return s;
-                    }
-                  },
-                  controller: _passwordTextFieldController,
-                  style: Theme.of(context).textTheme.body1,
-                  decoration: InputDecoration(hintText: 'Password'),
-                  keyboardType: TextInputType.text,
-                  obscureText: true,
-                ),
-                Divider(
-                  color: Colors.transparent,
-                  height: 36.0,
-                ),
-                SizedBox(
-                  width: double.infinity,
-                  child: OutlineButton(
-                      onPressed: () {
-                        /// onPressed(): If the form is valid, handle new user register
-                        if (_formKey.currentState.validate()) {
-                          _handleAccountCreation(
-                              _emailTextFieldController.text,
-                              _passwordTextFieldController.text,
-                              _nameTextFieldController.text);
-                          Scaffold.of(context).showSnackBar(
-                              SnackBar(content: Text('Creating New Account')));
-                        }
-                      },
-                      child: Text(
-                        'Register',
-                        style: Theme.of(context).textTheme.caption,
-                      ),
-                      color: Colors.green,
-                      shape: new RoundedRectangleBorder(
-                          borderRadius: new BorderRadius.circular(30.0))),
-                ),
-                Row(children: <Widget>[
-                  Expanded(
-                    child: new Container(
-                        margin: const EdgeInsets.only(left: 20.0, right: 10.0),
-                        child: Divider(
-                          color: Colors.black,
-                          height: 36,
-                        )),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                'Register With Us!',
+                style: Theme.of(context).textTheme.display3,
+                textAlign: TextAlign.center,
+              ),
+              Divider(
+                color: Colors.transparent,
+                height: 0.0,
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  TextFormField(
+                    validator: (value) {
+                      String s = Validator().validateName(value);
+                      if (s != null) {
+                        return s;
+                      }
+                    },
+                    controller: _nameTextFieldController,
+                    style: Theme.of(context).textTheme.body2,
+                    decoration: InputDecoration(
+                        hintText: 'Name',
+                        hintStyle: Theme.of(context).textTheme.body2,
+                        fillColor: Theme.of(context).primaryColorDark,
+                        filled: true,
+                        border: OutlineInputBorder(borderSide: BorderSide())),
+                    keyboardType: TextInputType.text,
                   ),
-                  Text(
-                    'OR',
-                    style: Theme.of(context).textTheme.title,
+                  Divider(
+                    height: 28.0,
+                    color: Colors.transparent,
                   ),
-                  Expanded(
-                    child: new Container(
-                        margin: const EdgeInsets.only(left: 20.0, right: 10.0),
-                        child: Divider(
-                          color: Colors.black,
-                          height: 36,
-                        )),
+                  TextFormField(
+                    validator: (value) {
+                      String s = Validator().validateEmail(value);
+                      if (s != null) {
+                        return s;
+                      }
+                    },
+                    controller: _emailTextFieldController,
+                    style: Theme.of(context).textTheme.body2,
+                    decoration: InputDecoration(
+                        hintText: 'Email',
+                        hintStyle: Theme.of(context).textTheme.body2,
+                        fillColor: Theme.of(context).primaryColorLight,
+                        filled: true,
+                        border: OutlineInputBorder(borderSide: BorderSide())),
+                    keyboardType: TextInputType.emailAddress,
                   ),
-                ]),
-                SizedBox(
-                  width: double.infinity,
-                  child: OutlineButton(
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => LoginPage()));
-                      },
-                      child: Text(
-                        'Already Have An Account?',
-                        style: Theme.of(context).textTheme.caption,
-                      ),
-                      color: Colors.green,
-                      shape: new RoundedRectangleBorder(
-                          borderRadius: new BorderRadius.circular(30.0))),
-                )
-              ],
-            ),
+                  Divider(
+                    height: 28.0,
+                    color: Colors.transparent,
+                  ),
+                  TextFormField(
+                    validator: (value) {
+                      String s = Validator().validatePassword(value);
+                      if (s != null) {
+                        return s;
+                      }
+                    },
+                    controller: _passwordTextFieldController,
+                    style: Theme.of(context).textTheme.body2,
+                    decoration: InputDecoration(
+                        hintText: 'Password',
+                        hintStyle: Theme.of(context).textTheme.body2,
+                        fillColor: Theme.of(context).primaryColorLight,
+                        filled: true,
+                        border: OutlineInputBorder(borderSide: BorderSide())),
+                    keyboardType: TextInputType.text,
+                    obscureText: true,
+                  ),
+                ],
+              ),
+              Divider(
+                color: Colors.transparent,
+                height: 0.0,
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  SizedBox(
+                    width: double.infinity,
+                    child: MaterialButton(
+                        color: Theme.of(context).primaryColorLight,
+                        onPressed: () {
+                          /// onPressed(): If the form is valid, handle new user register
+                          if (_formKey.currentState.validate()) {
+                            _handleAccountCreation(
+                                _emailTextFieldController.text,
+                                _passwordTextFieldController.text,
+                                _nameTextFieldController.text);
+                            Scaffold.of(context).showSnackBar(SnackBar(
+                                content: Text('Creating New Account')));
+                          }
+                        },
+                        child: Text(
+                          'Register',
+                          style: Theme.of(context).textTheme.subtitle,
+                        ),
+                        shape: new RoundedRectangleBorder(
+                            borderRadius: new BorderRadius.circular(5.0))),
+                  ),
+                  Row(children: <Widget>[
+                    Expanded(
+                      child: new Container(
+                          margin:
+                              const EdgeInsets.only(left: 20.0, right: 10.0),
+                          child: Divider(
+                            color: Colors.white,
+                            height: 36,
+                          )),
+                    ),
+                    Text(
+                      'OR',
+                      style: Theme.of(context).textTheme.title,
+                    ),
+                    Expanded(
+                      child: new Container(
+                          margin:
+                              const EdgeInsets.only(left: 10.0, right: 20.0),
+                          child: Divider(
+                            color: Colors.white,
+                            height: 36,
+                          )),
+                    ),
+                  ]),
+                  SizedBox(
+                    width: double.infinity,
+                    child: OutlineButton(
+//                        color: Theme.of(context).primaryColorLight,
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => LoginPage()));
+                        },
+                        child: Text(
+                          'Already Have An Account?',
+                          style: Theme.of(context).textTheme.subtitle,
+                        ),
+                        shape: new RoundedRectangleBorder(
+                            borderRadius: new BorderRadius.circular(5.0))),
+                  )
+                ],
+              )
+            ],
           )),
     );
   }

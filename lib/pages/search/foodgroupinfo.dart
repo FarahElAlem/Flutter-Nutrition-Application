@@ -129,16 +129,26 @@ class _FoodGroupResultState extends State<FoodGroupResult> {
                           ],
                         ),
                         Padding(
-                          padding: EdgeInsets.all(16.0),
-                          child: Container(
-                            padding: EdgeInsets.only(bottom: 8.0),
-                            child: Text(
-                              foodItemInformation['name'],
-                              style: Theme.of(context).textTheme.display1,
-                            ),
-                            decoration: BoxDecoration(
-                              border: Border(bottom: BorderSide(color: Colors.black)),
-                            ),
+                          padding: EdgeInsets.only(left: 16.0, top: 8.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Text(
+                                foodItemInformation['name'],
+                                style: Theme.of(context).textTheme.headline,
+                              ),
+                              Row(children: <Widget>[
+                                Expanded(
+                                  child: new Container(
+                                      margin: const EdgeInsets.only(left: 0.0, right: 0.0, top: 6.0),
+                                      child: Divider(
+                                        color: Colors.black,
+                                        height: 6.0,
+                                      )),
+                                ),
+                              ]),
+                            ],
                           ),
                         ),
                         Flexible(
@@ -148,31 +158,25 @@ class _FoodGroupResultState extends State<FoodGroupResult> {
                                   child: Center(
                                     child: Text(
                                       foodItemInformation['description'],
-                                      style: Theme.of(context).textTheme.caption,
+                                      style: Theme.of(context).textTheme.body1,
                                     ),
                                   ))),
+                        ),
+                        Container(
+                          margin: const EdgeInsets.only(left: 20.0, top: 6.0),
+                          child: Text(
+                            'Browse Items',
+                            style: Theme.of(context).textTheme.display1,
+                          ),
                         ),
                         Row(children: <Widget>[
                           Expanded(
                             child: new Container(
                                 margin:
-                                const EdgeInsets.only(left: 20.0, right: 10.0),
+                                const EdgeInsets.only(left: 20.0, right: 10.0, top: 6.0),
                                 child: Divider(
                                   color: Colors.black,
-                                  height: 36,
-                                )),
-                          ),
-                          Text(
-                            'Browse Items',
-                            style: Theme.of(context).textTheme.body2,
-                          ),
-                          Expanded(
-                            child: new Container(
-                                margin:
-                                const EdgeInsets.only(left: 20.0, right: 10.0),
-                                child: Divider(
-                                  color: Colors.black,
-                                  height: 36,
+                                  height: 10,
                                 )),
                           ),
                         ]),
@@ -267,9 +271,9 @@ class _ItemView extends State<ListItem> {
   Widget build(BuildContext context) {
     return (_ready)
         ? Container(
-      height: 80.0,
+      height: 70.0,
       child: new Card(
-        elevation: 3.0,
+        elevation: 1.0,
         color: Colors.white,
         child: new ListTile(
           onTap: () async {

@@ -142,7 +142,7 @@ class _DetailsState extends State<Details> {
                               child: Center(
                                 child: Text(
                                   widget.recipeItem['name'],
-                                  style: Theme.of(context).textTheme.display1,
+                                  style: Theme.of(context).textTheme.headline,
                                 ),
                               ),
                             ),
@@ -181,7 +181,7 @@ class _DetailsState extends State<Details> {
                           padding: EdgeInsets.all(16.0),
                           child: Text(
                             'Ingredients',
-                            style: Theme.of(context).textTheme.subhead,
+                            style: Theme.of(context).textTheme.display2,
                           ),
                         ),
                         Padding(
@@ -247,6 +247,7 @@ class _DetailsState extends State<Details> {
                                                 .body2,
                                           ),
                                           title: Align(
+                                            alignment: Alignment.centerLeft,
                                             child: Text(
                                               widget.recipeItem['directions']
                                                   [index],

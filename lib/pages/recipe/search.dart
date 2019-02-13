@@ -36,130 +36,80 @@ class _ResultsSearchPageState extends State<ResultsSearchPage>
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            Container(
-              child: Padding(
-                padding: EdgeInsets.only(top: 28.0),
-                child: new TabBar(
-                  tabs: [
-                    new Tab(
-                      child: Text(
-                        'Standard',
-                        style: Theme.of(context).textTheme.body1,
-                      ),
-                    ),
-                    new Tab(
-                      child: Text(
-                        'Healthy',
-                        style: Theme.of(context).textTheme.body1,
-                      ),
-                    ),
-                    new Tab(
-                      child: Text(
-                        'Desserts',
-                        style: Theme.of(context).textTheme.body1,
-                      ),
-                    )
-                  ],
-                  controller: _tabController,
-                ),
-              ),
-            ),
-            Center(
-              child: Padding(
-                padding: EdgeInsets.fromLTRB(12.0, 8.0, 12.0, 8.0),
-                child: TextField(
+//            Container(
+//              child: Padding(
+//                padding: EdgeInsets.only(top: 28.0),
+//                child: new TabBar(
+//                  tabs: [
+//                    new Tab(
+//                      child: Text(
+//                        'Standard',
+//                        style: Theme.of(context).textTheme.body1,
+//                      ),
+//                    ),
+//                    new Tab(
+//                      child: Text(
+//                        'Healthy',
+//                        style: Theme.of(context).textTheme.body1,
+//                      ),
+//                    ),
+//                    new Tab(
+//                      child: Text(
+//                        'Desserts',
+//                        style: Theme.of(context).textTheme.body1,
+//                      ),
+//                    )
+//                  ],
+//                  controller: _tabController,
+//                ),
+//              ),
+//            ),
+//            Center(
+//              child: Padding(
+//                padding: EdgeInsets.fromLTRB(12.0, 8.0, 12.0, 8.0),
+//                child: TextField(
 //                style: detailsTextStyleInput,
-                  controller: _searchController,
-                  style: Theme.of(context).textTheme.body1,
-                  decoration: InputDecoration(
-                      hintStyle: Theme.of(context).textTheme.caption,
-                      contentPadding: EdgeInsets.all(0.0),
-                      hintText: 'Search',
-                      prefixIcon: Icon(Icons.search),
-                      border: new OutlineInputBorder(
-                          borderRadius: const BorderRadius.all(
-                        const Radius.circular(40.0),
-                      ))),
-                  onSubmitted: (String text) {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => SearchDetails(query: text)));
-                  },
-                ),
-              ),
-            ),
+//                  controller: _searchController,
+//                  style: Theme.of(context).textTheme.body1,
+//                  decoration: InputDecoration(
+//                      hintStyle: Theme.of(context).textTheme.caption,
+//                      contentPadding: EdgeInsets.all(0.0),
+//                      hintText: 'Search',
+//                      prefixIcon: Icon(Icons.search),
+//                      border: new OutlineInputBorder(
+//                          borderRadius: const BorderRadius.all(
+//                        const Radius.circular(40.0),
+//                      ))),
+//                  onSubmitted: (String text) {
+//                    Navigator.push(
+//                        context,
+//                        MaterialPageRoute(
+//                            builder: (context) => SearchDetails(query: text)));
+//                  },
+//                ),
+//              ),
+//            ),
             Expanded(
-              child: new TabBarView(
-                controller: _tabController,
-                children: <Widget>[
-                  new StreamBuilder(
-                    stream: Firestore.instance
-                        .collection('RECIPES')
-                        .where('category', isEqualTo: 'Standard')
-                        .orderBy('name')
-                        .snapshots(),
-                    builder: (context, snapshot) {
-                      if (!snapshot.hasData) {
-                        return SplashScreenAuth();
-                      } else {
-                        return new ListView.builder(
-                            itemExtent: 130.0,
-                            padding: EdgeInsets.all(8.0),
-                            itemCount: snapshot.data.documents.length,
-                            itemBuilder: (context, index) {
-                              DocumentSnapshot ds =
-                                  snapshot.data.documents[index];
-                              return ItemWidget(ds: ds);
-                            });
-                      }
-                    },
-                  ),
-                  new StreamBuilder(
-                    stream: Firestore.instance
-                        .collection('RECIPES')
-                        .where('category', isEqualTo: 'Healthy')
-                        .orderBy('name')
-                        .snapshots(),
-                    builder: (context, snapshot) {
-                      if (!snapshot.hasData) {
-                        return SplashScreenAuth();
-                      } else {
-                        return new ListView.builder(
-                            itemExtent: 130.0,
-                            padding: EdgeInsets.all(8.0),
-                            itemCount: snapshot.data.documents.length,
-                            itemBuilder: (context, index) {
-                              DocumentSnapshot ds =
-                                  snapshot.data.documents[index];
-                              return ItemWidget(ds: ds);
-                            });
-                      }
-                    },
-                  ),
-                  new StreamBuilder(
-                    stream: Firestore.instance
-                        .collection('RECIPES')
-                        .where('category', isEqualTo: 'Desserts')
-                        .orderBy('name')
-                        .snapshots(),
-                    builder: (context, snapshot) {
-                      if (!snapshot.hasData) {
-                        return SplashScreenAuth();
-                      } else {
-                        return new ListView.builder(
-                            itemExtent: 130.0,
-                            padding: EdgeInsets.all(8.0),
-                            itemCount: snapshot.data.documents.length,
-                            itemBuilder: (context, index) {
-                              DocumentSnapshot ds =
-                                  snapshot.data.documents[index];
-                              return ItemWidget(ds: ds);
-                            });
-                      }
-                    },
-                  )
-                ],
+              child: new StreamBuilder(
+                stream: Firestore.instance
+                    .collection('RECIPES')
+                    .orderBy('name')
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return SplashScreenAuth();
+                  } else {
+                    return new ListView.builder(
+                        itemExtent: 160.0,
+                        padding: EdgeInsets.all(8.0),
+                        itemCount: snapshot.data.documents.length,
+                        itemBuilder: (context, index) {
+                          DocumentSnapshot ds =
+                          snapshot.data.documents[index];
+                          return ItemWidget(ds: ds);
+                        });
+                  }
+                },
               ),
             )
           ],
