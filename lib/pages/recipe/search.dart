@@ -32,7 +32,6 @@ class _ResultsSearchPageState extends State<ResultsSearchPage>
     return new Scaffold(
       resizeToAvoidBottomPadding: false,
       body: Container(
-        color: Theme.of(context).backgroundColor,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
@@ -44,19 +43,16 @@ class _ResultsSearchPageState extends State<ResultsSearchPage>
 //                    new Tab(
 //                      child: Text(
 //                        'Standard',
-//                        style: Theme.of(context).textTheme.body1,
 //                      ),
 //                    ),
 //                    new Tab(
 //                      child: Text(
 //                        'Healthy',
-//                        style: Theme.of(context).textTheme.body1,
 //                      ),
 //                    ),
 //                    new Tab(
 //                      child: Text(
 //                        'Desserts',
-//                        style: Theme.of(context).textTheme.body1,
 //                      ),
 //                    )
 //                  ],
@@ -68,11 +64,8 @@ class _ResultsSearchPageState extends State<ResultsSearchPage>
 //              child: Padding(
 //                padding: EdgeInsets.fromLTRB(12.0, 8.0, 12.0, 8.0),
 //                child: TextField(
-//                style: detailsTextStyleInput,
 //                  controller: _searchController,
-//                  style: Theme.of(context).textTheme.body1,
 //                  decoration: InputDecoration(
-//                      hintStyle: Theme.of(context).textTheme.caption,
 //                      contentPadding: EdgeInsets.all(0.0),
 //                      hintText: 'Search',
 //                      prefixIcon: Icon(Icons.search),
@@ -100,7 +93,7 @@ class _ResultsSearchPageState extends State<ResultsSearchPage>
                     return SplashScreenAuth();
                   } else {
                     return new ListView.builder(
-                        itemExtent: 160.0,
+                        itemExtent: 130.0,
                         padding: EdgeInsets.all(8.0),
                         itemCount: snapshot.data.documents.length,
                         itemBuilder: (context, index) {

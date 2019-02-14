@@ -65,8 +65,7 @@ class _RegisterPageState extends State<RegisterPage> {
   /// Builds the page for the user to register with
   Widget _buildRegisterPage() {
     return Container(
-      padding: EdgeInsets.only(left: 16.0, right: 16.0),
-      color: Theme.of(context).primaryColor,
+      padding: EdgeInsets.only(left: 32.0, right: 32.0),
       child: Form(
           key: _formKey,
           child: Column(
@@ -75,12 +74,11 @@ class _RegisterPageState extends State<RegisterPage> {
             children: <Widget>[
               Text(
                 'Register With Us!',
-                style: Theme.of(context).textTheme.display3,
                 textAlign: TextAlign.center,
+                style: Theme.of(context).accentTextTheme.headline,
               ),
               Divider(
                 color: Colors.transparent,
-                height: 0.0,
               ),
               Column(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -94,13 +92,15 @@ class _RegisterPageState extends State<RegisterPage> {
                       }
                     },
                     controller: _nameTextFieldController,
-                    style: Theme.of(context).textTheme.body2,
+                    style: Theme.of(context).accentTextTheme.body1,
                     decoration: InputDecoration(
-                        hintText: 'Name',
-                        hintStyle: Theme.of(context).textTheme.body2,
-                        fillColor: Theme.of(context).primaryColorDark,
-                        filled: true,
-                        border: OutlineInputBorder(borderSide: BorderSide())),
+                      labelText: 'Name',
+                      labelStyle: TextStyle(
+                          fontFamily: 'Roboto',
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.w400,
+                          letterSpacing: 0.15),
+                    ),
                     keyboardType: TextInputType.text,
                   ),
                   Divider(
@@ -115,42 +115,47 @@ class _RegisterPageState extends State<RegisterPage> {
                       }
                     },
                     controller: _emailTextFieldController,
-                    style: Theme.of(context).textTheme.body2,
+                    style: Theme.of(context).accentTextTheme.body1,
                     decoration: InputDecoration(
-                        hintText: 'Email',
-                        hintStyle: Theme.of(context).textTheme.body2,
-                        fillColor: Theme.of(context).primaryColorLight,
-                        filled: true,
-                        border: OutlineInputBorder(borderSide: BorderSide())),
+                      labelText: 'Email',
+                      labelStyle: TextStyle(
+                          fontFamily: 'Roboto',
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.w400,
+                          letterSpacing: 0.15),
+                    ),
                     keyboardType: TextInputType.emailAddress,
                   ),
                   Divider(
                     height: 28.0,
                     color: Colors.transparent,
                   ),
-                  TextFormField(
-                    validator: (value) {
-                      String s = Validator().validatePassword(value);
-                      if (s != null) {
-                        return s;
-                      }
-                    },
-                    controller: _passwordTextFieldController,
-                    style: Theme.of(context).textTheme.body2,
-                    decoration: InputDecoration(
-                        hintText: 'Password',
-                        hintStyle: Theme.of(context).textTheme.body2,
-                        fillColor: Theme.of(context).primaryColorLight,
-                        filled: true,
-                        border: OutlineInputBorder(borderSide: BorderSide())),
-                    keyboardType: TextInputType.text,
-                    obscureText: true,
+                  Container(
+                    child: TextFormField(
+                      validator: (value) {
+                        String s = Validator().validatePassword(value);
+                        if (s != null) {
+                          return s;
+                        }
+                      },
+                      controller: _passwordTextFieldController,
+                      style: Theme.of(context).accentTextTheme.body1,
+                      decoration: InputDecoration(
+                        labelText: 'Password',
+                        labelStyle: TextStyle(
+                            fontFamily: 'Roboto',
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.w400,
+                            letterSpacing: 0.15),
+                      ),
+                      keyboardType: TextInputType.text,
+                      obscureText: true,
+                    ),
                   ),
                 ],
               ),
               Divider(
                 color: Colors.transparent,
-                height: 0.0,
               ),
               Column(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -158,8 +163,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 children: <Widget>[
                   SizedBox(
                     width: double.infinity,
-                    child: MaterialButton(
-                        color: Theme.of(context).primaryColorLight,
+                    child: OutlineButton(
                         onPressed: () {
                           /// onPressed(): If the form is valid, handle new user register
                           if (_formKey.currentState.validate()) {
@@ -173,7 +177,6 @@ class _RegisterPageState extends State<RegisterPage> {
                         },
                         child: Text(
                           'Register',
-                          style: Theme.of(context).textTheme.subtitle,
                         ),
                         shape: new RoundedRectangleBorder(
                             borderRadius: new BorderRadius.circular(5.0))),
@@ -184,28 +187,26 @@ class _RegisterPageState extends State<RegisterPage> {
                           margin:
                               const EdgeInsets.only(left: 20.0, right: 10.0),
                           child: Divider(
-                            color: Colors.white,
                             height: 36,
+                            color: Colors.transparent,
                           )),
                     ),
                     Text(
                       'OR',
-                      style: Theme.of(context).textTheme.title,
                     ),
                     Expanded(
                       child: new Container(
                           margin:
                               const EdgeInsets.only(left: 10.0, right: 20.0),
                           child: Divider(
-                            color: Colors.white,
                             height: 36,
+                            color: Colors.transparent,
                           )),
                     ),
                   ]),
                   SizedBox(
                     width: double.infinity,
                     child: OutlineButton(
-//                        color: Theme.of(context).primaryColorLight,
                         onPressed: () {
                           Navigator.push(
                               context,
@@ -214,7 +215,6 @@ class _RegisterPageState extends State<RegisterPage> {
                         },
                         child: Text(
                           'Already Have An Account?',
-                          style: Theme.of(context).textTheme.subtitle,
                         ),
                         shape: new RoundedRectangleBorder(
                             borderRadius: new BorderRadius.circular(5.0))),

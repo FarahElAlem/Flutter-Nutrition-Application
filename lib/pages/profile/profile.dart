@@ -90,9 +90,7 @@ class _ProfilePageState extends State<ProfilePage> {
         },
         child: Text(
           'Logout',
-          style: Theme.of(context).textTheme.caption,
         ),
-        color: Colors.green,
         shape: new RoundedRectangleBorder(
             borderRadius: new BorderRadius.circular(30.0)));
   }
@@ -112,21 +110,17 @@ class _ProfilePageState extends State<ProfilePage> {
                     child: Text(
                       Encrypt().decrypt(documentSnapshot['name']) +
                           '\'s Profile',
-                      style: Theme.of(context).textTheme.display1,
                       textAlign: TextAlign.center,
                     ),
                   ),
                   Divider(
-                    color: Colors.transparent,
                     height: 24.0,
                   ),
                   Text(
                     'Favorite Nutrients',
-                    style: Theme.of(context).textTheme.subhead,
                     textAlign: TextAlign.start,
                   ),
                   Divider(
-                    color: Colors.black,
                   ),
                   (nutrientDocuments.length > 0)
                       ? Container(
@@ -147,21 +141,18 @@ class _ProfilePageState extends State<ProfilePage> {
                         )
                       : Center(
                           child: Text(
-                              'Nothing Here Yet!\nGo Add Some Nutrients!',
-                              textAlign: TextAlign.center,
-                              style: Theme.of(context).textTheme.body1),
+                            'Nothing Here Yet!\nGo Add Some Nutrients!',
+                            textAlign: TextAlign.center,
+                          ),
                         ),
                   Divider(
-                    color: Colors.transparent,
                     height: 24.0,
                   ),
                   Text(
                     'Favorite Recipes',
-                    style: Theme.of(context).textTheme.subhead,
                     textAlign: TextAlign.start,
                   ),
                   Divider(
-                    color: Colors.black,
                   ),
                   (recipesDocuments.length > 0)
                       ? Container(
@@ -180,9 +171,10 @@ class _ProfilePageState extends State<ProfilePage> {
                               : SplashScreenAuth(),
                         )
                       : Center(
-                          child: Text('Nothing Here Yet!\nGo Add Some Recipes!',
-                              textAlign: TextAlign.center,
-                              style: Theme.of(context).textTheme.body1),
+                          child: Text(
+                            'Nothing Here Yet!\nGo Add Some Recipes!',
+                            textAlign: TextAlign.center,
+                          ),
                         ),
                   Center(
                     child: _buildLogoutButton(),

@@ -39,8 +39,6 @@ class _NutrientItemWidgetState extends State<NutrientItemWidget> {
         },
         child: SizedBox.shrink(
           child: new Card(
-            color: Colors.white,
-            elevation: 5.0,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(15.0),
             ),
@@ -52,13 +50,11 @@ class _NutrientItemWidgetState extends State<NutrientItemWidget> {
               children: <Widget>[
               Center(
                 child: Material(
-                  color: Colors.white,
                   child: Padding(
                     padding: EdgeInsets.only(left: 4.0, right: 4.0),
                     child: Center(
                       child: Text(
                         widget.ds['description'],
-                        style: Theme.of(context).textTheme.caption,
                         textAlign: TextAlign.center,
                         maxLines: 4,
                       ),

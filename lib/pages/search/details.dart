@@ -60,7 +60,6 @@ class _FoodGroupDetailsState extends State<FoodGroupDetails> {
       appBar: AppBar(
           iconTheme: IconThemeData(color: Colors.black),
           elevation: 0.0,
-          backgroundColor: Colors.transparent,
           actions: <Widget>[
             new IconButton(
                 splashColor: (!isFavorited) ? Colors.amber : Colors.black12,
@@ -83,7 +82,6 @@ class _FoodGroupDetailsState extends State<FoodGroupDetails> {
                         style: Theme.of(context).textTheme.body1,
                       ),
                       duration: Duration(milliseconds: 1500),
-                      backgroundColor: Colors.green,
                     );
                     Scaffold.of(context).showSnackBar(snackbar);
                   }
@@ -206,8 +204,7 @@ class _SearchDetailsState extends State<SearchDetails> {
                             })
                         : Center(
                             child: Text('No Items Found',
-                                style: Theme.of(context).textTheme.title),
-                          );
+                          ));
                   }
                 },
               ),

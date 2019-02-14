@@ -140,13 +140,14 @@ class FoodItem {
       padding: EdgeInsets.all(16.0),
       child: Text(
         this.detailItems['description']['value'],
-        style: Theme.of(context).textTheme.display1,
+        style: Theme.of(context).accentTextTheme.headline,
         maxLines: 3,
         overflow: TextOverflow.ellipsis,
       ),
     ));
     out.add(Divider(
       height: 12.0,
+      color: Colors.transparent,
     ));
     out.add(Card(
       elevation: 6.0,
@@ -160,7 +161,7 @@ class FoodItem {
           children: <Widget>[
             Text(
               'General\nInformation',
-              style: Theme.of(context).textTheme.display2,
+              style: Theme.of(context).accentTextTheme.subhead,
             ),
             Divider(
               color: Colors.black,
@@ -170,12 +171,10 @@ class FoodItem {
               children: <Widget>[
                 Text(
                   this.nutritionItems['calorie']['name'],
-                  style: Theme.of(context).textTheme.body1,
                 ),
                 Text(
                   this.nutritionItems['calorie']['value'] +
                       this.nutritionItems['calorie']['measurement'],
-                  style: Theme.of(context).textTheme.body1,
                 )
               ],
             ),
@@ -188,11 +187,9 @@ class FoodItem {
               children: <Widget>[
                 Text(
                   'Serving Size:',
-                  style: Theme.of(context).textTheme.body1,
                 ),
                 Text(
                   '100g',
-                  style: Theme.of(context).textTheme.body1,
                 )
               ],
             ),
@@ -202,13 +199,14 @@ class FoodItem {
     ));
     out.add(Divider(
       height: 12.0,
+      color: Colors.transparent,
     ));
 
     /// Nutrition Information Adding to Body
     List<Widget> temp = new List();
     temp.add(Text(
       'Nutrition\nInformation',
-      style: Theme.of(context).textTheme.display2,
+      style: Theme.of(context).accentTextTheme.subhead,
     ));
     temp.add(Padding(
         padding: EdgeInsets.fromLTRB(0.0, 16.0, 0.0, 8.0),
@@ -220,20 +218,17 @@ class FoodItem {
               flex: 3,
               child: Text(
                 'Name',
-                style: Theme.of(context).textTheme.body2,
               ),
             ),
             Expanded(
               flex: 2,
               child: Text(
                 'Amount',
-                style: Theme.of(context).textTheme.body2,
               ),
             ),
             Expanded(
               child: Text(
                 'Daily',
-                style: Theme.of(context).textTheme.body2,
               ),
             )
           ],
@@ -295,7 +290,6 @@ class FoodItem {
                 flex: 3,
                 child: Text(
                   this.nutritionItems[key]['name'],
-                  style: Theme.of(context).textTheme.body1,
                 ),
               ),
               Expanded(

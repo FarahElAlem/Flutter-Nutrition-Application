@@ -32,9 +32,6 @@ class _ItemWidgetState extends State<ItemWidget> {
   @override
   Widget build(BuildContext context) {
     return new Card(
-      elevation: 3.0,
-//    color: Colors.white,
-      color: Theme.of(context).primaryColorLight,
       child: Center(
         child: new ListTile(
           onTap: () {
@@ -49,7 +46,6 @@ class _ItemWidgetState extends State<ItemWidget> {
             aspectRatio: 1,
             child: (_loading)
                 ? Material(
-                    color: Theme.of(context).primaryColorLight,
                     child: Center(
                       child: CircularProgressIndicator(),
                     ),
@@ -66,11 +62,9 @@ class _ItemWidgetState extends State<ItemWidget> {
                       ),
                     )),
           ),
-          title: Text(widget.ds['name'],
-              style: Theme.of(context).textTheme.display1),
+          title: Text(widget.ds['name'], style: Theme.of(context).accentTextTheme.title,),
           subtitle: Text(
             widget.ds['subcategory'],
-            style: Theme.of(context).textTheme.body2,
             maxLines: 3,
           ),
           contentPadding: EdgeInsets.all(8.0),

@@ -32,64 +32,76 @@ Future<void> main() async {
           headline: TextStyle(
               fontFamily: 'Roboto',
               color: Color(0xFFFFFFFF),
-              fontSize: 48.0,
-              fontWeight: FontWeight.w400,
-              letterSpacing: 0.0),
-          subhead: TextStyle(
-              fontFamily: 'Roboto',
-              color: Color(0xFFFFFFFF),
               fontSize: 34.0,
               fontWeight: FontWeight.w400,
               letterSpacing: 0.25),
-          subtitle: TextStyle(
+          subhead: TextStyle(
               fontFamily: 'Roboto',
               color: Color(0xFFFFFFFF),
-              fontSize: 16.0,
+              fontSize: 24.0,
+              fontWeight: FontWeight.w400,
+              letterSpacing: 0.0),
+          title: TextStyle(
+              fontFamily: 'Roboto',
+              color: Color(0xFFFFFFFF),
+              fontSize: 20.0,
               fontWeight: FontWeight.w400,
               letterSpacing: 0.15),
+          subtitle: TextStyle(
+              fontFamily: 'Open Sans',
+              color: Color(0xFF212121),
+              fontSize: 14.0,
+              fontWeight: FontWeight.w400,
+              letterSpacing: 0.1),
           body1: TextStyle(
               fontFamily: 'Open Sans',
-              color: Color(0xFFFFFFFF),
+              color: Color(0xFF212121),
               fontSize: 16.0,
               fontWeight: FontWeight.w400,
               letterSpacing: 0.5),
           body2: TextStyle(
               fontFamily: 'Open Sans',
-              color: Color(0xFFFFFFFF),
+              color: Color(0xFF757575),
               fontSize: 14.0,
               fontWeight: FontWeight.w400,
               letterSpacing: 0.25),
           button: TextStyle(
               fontFamily: 'Open Sans',
-              color: Color(0xFFFFFFFF),
+              color: Color(0xFF212121),
               fontSize: 14.0,
               fontWeight: FontWeight.w500,
               letterSpacing: 1.25),
           caption: TextStyle(
               fontFamily: 'Open Sans',
-              color: Color(0xFFFFFFFF),
+              color: Color(0xFF757575),
               fontSize: 12.0,
               fontWeight: FontWeight.w400,
               letterSpacing: 0.4)),
-      primaryTextTheme: TextTheme(
+      accentTextTheme: TextTheme(
           headline: TextStyle(
-              fontFamily: 'Roboto',
-              color: Color(0xFF212121),
-              fontSize: 48.0,
-              fontWeight: FontWeight.w400,
-              letterSpacing: 0.0),
-          subhead: TextStyle(
               fontFamily: 'Roboto',
               color: Color(0xFF212121),
               fontSize: 34.0,
               fontWeight: FontWeight.w400,
               letterSpacing: 0.25),
-          subtitle: TextStyle(
+          subhead: TextStyle(
               fontFamily: 'Roboto',
               color: Color(0xFF212121),
-              fontSize: 16.0,
+              fontSize: 24.0,
+              fontWeight: FontWeight.w400,
+              letterSpacing: 0.0),
+          title: TextStyle(
+              fontFamily: 'Roboto',
+              color: Color(0xFF212121),
+              fontSize: 20.0,
               fontWeight: FontWeight.w400,
               letterSpacing: 0.15),
+          subtitle: TextStyle(
+              fontFamily: 'Open Sans',
+              color: Color(0xFF212121),
+              fontSize: 14.0,
+              fontWeight: FontWeight.w400,
+              letterSpacing: 0.1),
           body1: TextStyle(
               fontFamily: 'Open Sans',
               color: Color(0xFF212121),

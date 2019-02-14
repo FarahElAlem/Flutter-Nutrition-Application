@@ -30,13 +30,12 @@ class _LoginPageState extends State<LoginPage> {
       resizeToAvoidBottomPadding: true,
       appBar: AppBar(
         centerTitle: true,
-        backgroundColor: Colors.transparent,
         elevation: 0.0,
+        backgroundColor: Colors.transparent,
         iconTheme: IconThemeData(color: Colors.black),
       ),
       body: Container(
-        color: Theme.of(context).primaryColor,
-        padding: EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(32.0),
         child: Form(
           key: _formKey,
           child: Center(
@@ -46,8 +45,8 @@ class _LoginPageState extends State<LoginPage> {
               children: <Widget>[
                 Text(
                   'Welcome Back!',
-                  style: Theme.of(context).textTheme.display3,
                   textAlign: TextAlign.center,
+                  style: Theme.of(context).accentTextTheme.headline,
                 ),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -61,16 +60,19 @@ class _LoginPageState extends State<LoginPage> {
                         }
                       },
                       controller: _emailTextFieldController,
-                      style: Theme.of(context).textTheme.body1,
+                      style: Theme.of(context).accentTextTheme.body1,
                       decoration: InputDecoration(
-                          hintText: 'Email',
-                          border: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.grey))),
+                        labelText: 'Email',
+                        labelStyle: TextStyle(
+                            fontFamily: 'Roboto',
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.w400,
+                            letterSpacing: 0.15),
+                      ),
                       keyboardType: TextInputType.emailAddress,
                     ),
                     Divider(
                       height: 28.0,
-                      color: Colors.transparent,
                     ),
                     TextFormField(
                       validator: (value) {
@@ -80,11 +82,15 @@ class _LoginPageState extends State<LoginPage> {
                         }
                       },
                       controller: _passwordTextFieldController,
-                      style: Theme.of(context).textTheme.body1,
+                      style: Theme.of(context).accentTextTheme.body1,
                       decoration: InputDecoration(
-                          hintText: 'Password',
-                          border: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.grey))),
+                        labelText: 'Password',
+                        labelStyle: TextStyle(
+                            fontFamily: 'Roboto',
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.w400,
+                            letterSpacing: 0.15),
+                      ),
                       keyboardType: TextInputType.text,
                       obscureText: true,
                     ),
@@ -92,8 +98,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 SizedBox(
                   width: double.infinity,
-                  child: MaterialButton(
-                    color: Theme.of(context).primaryColorLight,
+                  child: OutlineButton(
                       onPressed: () async {
                         if (_formKey.currentState.validate()) {
                           String s = await Validator().validateLoggedInUser(
@@ -128,7 +133,6 @@ class _LoginPageState extends State<LoginPage> {
                       },
                       child: Text(
                         'Login',
-                        style: Theme.of(context).textTheme.subtitle,
                       ),
                       shape: new RoundedRectangleBorder(
                           borderRadius: new BorderRadius.circular(5.0))),

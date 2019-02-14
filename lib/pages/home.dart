@@ -99,14 +99,12 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
     if (!this._searching || _currentIndex != _lastIndex) {
       this._appBarTitle = new Text(
         _appBarTitles[_currentIndex],
-        style: Theme.of(context).textTheme.subhead,
       );
       this._searchIcon = new Icon(Icons.search);
     }
 
     return _currentIndex < 2
         ? AppBar(
-            backgroundColor: Theme.of(context).primaryColor,
             title: _appBarTitle,
             centerTitle: true,
             elevation: 0.0,
@@ -122,7 +120,6 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                             this._searchIcon = new Icon(Icons.close);
                             this._appBarTitle = new TextField(
                               controller: _searchController,
-                              style: Theme.of(context).textTheme.body1,
                               decoration: new InputDecoration(
                                   prefixIcon: Icon(Icons.search),
                                   hintText: 'Search...'),
@@ -132,7 +129,6 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                             this._searchIcon = new Icon(Icons.search);
                             this._appBarTitle = new Text(
                               _appBarTitles[_currentIndex],
-                              style: Theme.of(context).textTheme.subhead,
                             );
                           }
                         });
@@ -141,10 +137,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                   : new Container()
             ],
           )
-        : PreferredSize(
-            preferredSize: Size.fromHeight(0.0),
-            child: Container(),
-          );
+        : AppBar(backgroundColor: Colors.transparent, elevation: 0.0,);
   }
 
   Widget _buildDrawer(int _currentIndex, BuildContext context) {
@@ -156,7 +149,6 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                 DrawerHeader(
                   child: Text('Drawer Header'),
                   decoration: BoxDecoration(
-                    color: Theme.of(context).primaryColor,
                   ),
                 ),
                 ListTile(
@@ -249,7 +241,6 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
             bottomNavigationBar: new Material(
               child: Theme(
                 data: Theme.of(context).copyWith(
-                  canvasColor:  Color.fromRGBO(0, 91, 71, 1.0),
                 ),
                 child: new BottomNavigationBar(
                   type: BottomNavigationBarType.fixed,
@@ -264,25 +255,12 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                       icon: _currentIndex == 0
                           ? Icon(
                               Icons.fastfood,
-                              color: Colors.white,
                             )
                           : Icon(
                               Icons.fastfood,
-                              color: Colors.white54,
                             ),
                       title: Text(
                         'Nutrition',
-                        style: _currentIndex == 0
-                            ? TextStyle(
-                                fontSize: 14.0,
-                                fontFamily: 'OpenSans',
-                                fontWeight: FontWeight.w600,
-                                color: Colors.white)
-                            : TextStyle(
-                                fontSize: 14.0,
-                                fontFamily: 'OpenSans',
-                                fontWeight: FontWeight.w600,
-                                color: Colors.white54),
                       ),
                     ),
 
@@ -295,25 +273,12 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                       icon: _currentIndex == 1
                           ? Icon(
                               Icons.receipt,
-                              color: Colors.white,
                             )
                           : Icon(
                               Icons.receipt,
-                              color: Colors.white54,
                             ),
                       title: Text(
                         'Recipes',
-                        style: _currentIndex == 1
-                            ? TextStyle(
-                                fontSize: 14.0,
-                                fontFamily: 'OpenSans',
-                                fontWeight: FontWeight.w600,
-                                color: Colors.white)
-                            : TextStyle(
-                                fontSize: 14.0,
-                                fontFamily: 'OpenSans',
-                                fontWeight: FontWeight.w600,
-                                color: Colors.white54),
                       ),
                     ),
 
@@ -323,25 +288,12 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                       icon: _currentIndex == 2
                           ? Icon(
                               Icons.account_circle,
-                              color: Colors.white,
                             )
                           : Icon(
                               Icons.account_circle,
-                              color: Colors.white54,
                             ),
                       title: Text(
                         'Profile',
-                        style: _currentIndex == 2
-                            ? TextStyle(
-                                fontSize: 14.0,
-                                fontFamily: 'OpenSans',
-                                fontWeight: FontWeight.w600,
-                                color: Colors.white)
-                            : TextStyle(
-                                fontSize: 14.0,
-                                fontFamily: 'OpenSans',
-                                fontWeight: FontWeight.w600,
-                                color: Colors.white54),
                       ),
                     )
                   ],
