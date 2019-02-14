@@ -165,7 +165,7 @@ class _SearchDetailsState extends State<SearchDetails> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(backgroundColor: Colors.transparent, elevation: 0.0,),
       body: (!widget._loading)
           ? Center(
               child: CircularProgressIndicator(),

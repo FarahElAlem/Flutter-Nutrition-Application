@@ -150,7 +150,6 @@ class FoodItem {
       color: Colors.transparent,
     ));
     out.add(Card(
-      elevation: 6.0,
       color: Colors.white,
       child: Padding(
         padding: EdgeInsets.all(16.0),
@@ -326,7 +325,6 @@ class FoodItem {
     }
     temp.removeLast();
     out.add(Card(
-        elevation: 6.0,
         color: Colors.white,
         child: Padding(
           padding: EdgeInsets.all(16.0),

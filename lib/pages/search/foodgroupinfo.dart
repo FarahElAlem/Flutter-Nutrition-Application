@@ -52,7 +52,7 @@ class _FoodGroupResultState extends State<FoodGroupResult> {
     stream = Firestore.instance
         .collection('ABBREV')
         .where('foodgroup', isEqualTo: foodItemInformation['foodgroup'])
-        .limit(50)
+        .limit(20)
         .snapshots();
     _ready = true;
     if (mounted) {
