@@ -90,83 +90,100 @@ class _ProfilePageState extends State<ProfilePage> {
         },
         child: Text(
           'Logout',
-          style: Theme.of(context).textTheme.caption,
         ),
-        color: Colors.green,
         shape: new RoundedRectangleBorder(
             borderRadius: new BorderRadius.circular(30.0)));
   }
 
   @override
   Widget build(BuildContext context) {
-    return (_ready) ? Padding(
-      padding: EdgeInsets.only(top: 28.0, left: 16.0, right: 16.0),
-      child: new Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          Center(
-            child: Text(
-              Encrypt().decrypt(documentSnapshot['name']) + '\'s Profile',
-              style: Theme.of(context).textTheme.display1,
-              textAlign: TextAlign.center,
+    return (_ready)
+        ? Container(
+            child: Padding(
+              padding: EdgeInsets.only(top: 28.0, left: 16.0, right: 16.0),
+              child: new Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Center(
+                    child: Text(
+                      Encrypt().decrypt(documentSnapshot['name']) +
+                          '\'s Profile',
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  Divider(
+                    height: 24.0,
+                  ),
+                  Text(
+                    'Favorite Nutrients',
+                    textAlign: TextAlign.start,
+                  ),
+                  Divider(
+                  ),
+                  (nutrientDocuments.length > 0)
+                      ? Container(
+                          height: 180.0,
+                          child: (_loading)
+                              ? ListView.builder(
+                                  shrinkWrap: true,
+                                  itemExtent: 160.0,
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: nutrientDocuments.length,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    return NutrientItemWidget(
+                                        ds: nutrientDocuments[index],
+                                        foodGroupDetails: foodGroupDetails);
+                                  })
+                              : SplashScreenAuth(),
+                        )
+                      : Center(
+                          child: Text(
+                            'Nothing Here Yet!\nGo Add Some Nutrients!',
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                  Divider(
+                    height: 24.0,
+                  ),
+                  Text(
+                    'Favorite Recipes',
+                    textAlign: TextAlign.start,
+                  ),
+                  Divider(
+                  ),
+                  (recipesDocuments.length > 0)
+                      ? Container(
+                          height: 180.0,
+                          child: (_loading)
+                              ? ListView.builder(
+                                  shrinkWrap: true,
+                                  itemExtent: 160.0,
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: recipesDocuments.length,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    return RecipeItemWidget(
+                                        ds: recipesDocuments[index]);
+                                  })
+                              : SplashScreenAuth(),
+                        )
+                      : Center(
+                          child: Text(
+                            'Nothing Here Yet!\nGo Add Some Recipes!',
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                  Center(
+                    child: _buildLogoutButton(),
+                  ),
+                ],
+              ),
             ),
-          ),
-          Divider(
-            color: Colors.transparent,
-            height: 24.0,
-          ),
-          Text(
-            'Favorite Nutrients',
-            style: Theme.of(context).textTheme.subhead,
-            textAlign: TextAlign.start,
-          ),
-          Divider(
-            color: Colors.black,
-          ),
-          (nutrientDocuments.length > 0) ? Container(
-            height: 180.0,
-            child: (_loading) ? ListView.builder(
-                shrinkWrap: true,
-                itemExtent: 160.0,
-                scrollDirection: Axis.horizontal,
-                itemCount: nutrientDocuments.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return NutrientItemWidget(
-                      ds: nutrientDocuments[index],
-                      foodGroupDetails: foodGroupDetails);
-                }) : SplashScreenAuth(),
-          ) : Center(child: Text('Nothing Here Yet!\nGo Add Some Nutrients!', textAlign: TextAlign.center, style: Theme.of(context).textTheme.body1),),
-          Divider(
-            color: Colors.transparent,
-            height: 24.0,
-          ),
-          Text(
-            'Favorite Recipes',
-            style: Theme.of(context).textTheme.subhead,
-            textAlign: TextAlign.start,
-          ),
-          Divider(
-            color: Colors.black,
-          ),
-          (recipesDocuments.length > 0) ? Container(
-            height: 180.0,
-            child:  (_loading) ? ListView.builder(
-                shrinkWrap: true,
-                itemExtent: 160.0,
-                scrollDirection: Axis.horizontal,
-                itemCount: recipesDocuments.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return RecipeItemWidget(ds: recipesDocuments[index]);
-                }) : SplashScreenAuth(),
-          ) : Center(child: Text('Nothing Here Yet!\nGo Add Some Recipes!', textAlign: TextAlign.center, style: Theme.of(context).textTheme.body1),),
-          Center(
-            child: _buildLogoutButton(),
-          ),
-        ],
-      ),
-    ): SplashScreenAuth();
+          )
+        : SplashScreenAuth();
   }
 }
 

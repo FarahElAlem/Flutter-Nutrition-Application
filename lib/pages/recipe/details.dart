@@ -44,7 +44,7 @@ class _DetailsState extends State<Details> {
       }
     }
     _ready = true;
-    if(mounted) {
+    if (mounted) {
       setState(() {});
     }
   }
@@ -82,10 +82,8 @@ class _DetailsState extends State<Details> {
                     final snackbar = SnackBar(
                       content: Text(
                         'You must register before you can do that!',
-                        style: Theme.of(context).textTheme.body1,
                       ),
                       duration: Duration(milliseconds: 1500),
-                      backgroundColor: Colors.green,
                     );
                     Scaffold.of(context).showSnackBar(snackbar);
                   }
@@ -95,7 +93,7 @@ class _DetailsState extends State<Details> {
                   /// Remove from Firestore
                   if (isFavorited && !currentUser.isAnonymous) {
                     isFavorited = false;
-                    if(mounted) {
+                    if (mounted) {
                       setState(() {});
                     }
                     await Firestore.instance
@@ -109,7 +107,7 @@ class _DetailsState extends State<Details> {
                   /// Add to Firestore
                   else if (!isFavorited && !currentUser.isAnonymous) {
                     isFavorited = true;
-                    if(mounted) {
+                    if (mounted) {
                       setState(() {});
                     }
                     await Firestore.instance
@@ -142,14 +140,15 @@ class _DetailsState extends State<Details> {
                               child: Center(
                                 child: Text(
                                   widget.recipeItem['name'],
-                                  style: Theme.of(context).textTheme.display1,
+                                  style: Theme.of(context)
+                                      .accentTextTheme
+                                      .headline,
                                 ),
                               ),
                             ),
                           ],
                         ),
                         Divider(
-                          color: Colors.transparent,
                           height: 25.0,
                         ),
                         Hero(
@@ -165,7 +164,6 @@ class _DetailsState extends State<Details> {
                           ),
                         ),
                         Divider(
-                          color: Colors.transparent,
                           height: 14.0,
                         ),
                         Padding(
@@ -173,7 +171,6 @@ class _DetailsState extends State<Details> {
                           child: Center(
                             child: Text(
                               widget.recipeItem['description'],
-                              style: Theme.of(context).textTheme.body1,
                             ),
                           ),
                         ),
@@ -181,14 +178,14 @@ class _DetailsState extends State<Details> {
                           padding: EdgeInsets.all(16.0),
                           child: Text(
                             'Ingredients',
-                            style: Theme.of(context).textTheme.subhead,
+                            style: Theme.of(context).accentTextTheme.subhead,
                           ),
                         ),
-                        Padding(
-                          padding: EdgeInsets.all(8.0),
+                        Container(
+                          margin:
+                          const EdgeInsets.only(left: 16.0),
                           child: Divider(
-                            height: 1.0,
-                            color: Colors.black,
+                            height: 2.0,
                           ),
                         ),
                         ListView.builder(
@@ -202,14 +199,15 @@ class _DetailsState extends State<Details> {
                                   ListTile(
                                     title: Text(
                                       widget.recipeItem['ingredients'][index],
-                                      style: Theme.of(context).textTheme.body1,
+                                      style: Theme.of(context)
+                                          .accentTextTheme
+                                          .body1,
                                     ),
                                   ),
                                 ],
                               );
                             }),
                         Container(
-                          color: Theme.of(context).primaryColor,
                           alignment: Alignment.centerLeft,
                           child: Padding(
                             padding: EdgeInsets.all(8.0),
@@ -222,7 +220,16 @@ class _DetailsState extends State<Details> {
                                   padding: EdgeInsets.all(8.0),
                                   child: Text(
                                     'Directions',
-                                    style: Theme.of(context).textTheme.subhead,
+                                    style: Theme.of(context)
+                                        .accentTextTheme
+                                        .subhead,
+                                  ),
+                                ),
+                                Container(
+                                  margin:
+                                  const EdgeInsets.only(left: 16.0),
+                                  child: Divider(
+                                    height: 2.0,
                                   ),
                                 ),
                                 ListView.builder(
@@ -236,23 +243,20 @@ class _DetailsState extends State<Details> {
                                         (BuildContext context, int index) {
                                       return Card(
                                         elevation: 3.0,
-                                        color: Colors.white,
                                         child: ListTile(
                                           contentPadding: EdgeInsets.fromLTRB(
                                               32.0, 8.0, 56.0, 8.0),
                                           leading: Text(
                                             (index + 1).toString(),
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .body2,
                                           ),
                                           title: Align(
+                                            alignment: Alignment.centerLeft,
                                             child: Text(
                                               widget.recipeItem['directions']
                                                   [index],
                                               style: Theme.of(context)
-                                                  .textTheme
-                                                  .body1,
+                                                  .accentTextTheme
+                                                  .title,
                                             ),
 //                                alignment: Alignment(-80.0, 0),
                                           ),
@@ -299,7 +303,7 @@ class _SearchDetailsState extends State<SearchDetails> {
       }
     });
     _loading = false;
-    if(mounted) {
+    if (mounted) {
       setState(() {});
     }
   }

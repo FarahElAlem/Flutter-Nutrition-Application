@@ -74,7 +74,6 @@ build/
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
 
 # Data
-fonts/
 assets/images/
 assets/config.json
 assets/userdata.json

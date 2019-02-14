@@ -34,7 +34,7 @@ class _FoodGroupDetailsState extends State<FoodGroupDetails> {
           .document(Encrypt().encrypt(currentUser.email))
           .collection('NUTRIENTS')
           .where('description',
-          isEqualTo: widget.foodItem.detailItems['description']['value'])
+              isEqualTo: widget.foodItem.detailItems['description']['value'])
           .getDocuments();
       if (item.documents.length == 0) {
         isFavorited = false;
@@ -43,7 +43,7 @@ class _FoodGroupDetailsState extends State<FoodGroupDetails> {
       }
     }
     _ready = true;
-    if(mounted) {
+    if (mounted) {
       setState(() {});
     }
   }
@@ -58,21 +58,20 @@ class _FoodGroupDetailsState extends State<FoodGroupDetails> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        iconTheme: IconThemeData(color: Colors.black),
-        elevation: 0.0,
-        backgroundColor: Colors.transparent,
+          iconTheme: IconThemeData(color: Colors.black),
+          elevation: 0.0,
           actions: <Widget>[
             new IconButton(
                 splashColor: (!isFavorited) ? Colors.amber : Colors.black12,
                 icon: (!isFavorited)
                     ? Icon(
-                  Icons.favorite_border,
-                  color: Colors.grey,
-                )
+                        Icons.favorite_border,
+                        color: Colors.grey,
+                      )
                     : Icon(
-                  Icons.favorite,
-                  color: Colors.amber,
-                ),
+                        Icons.favorite,
+                        color: Colors.amber,
+                      ),
                 onPressed: () async {
                   /// Checking to see if a user can favorite an item or not
                   /// If not, displays a snackbar
@@ -83,7 +82,6 @@ class _FoodGroupDetailsState extends State<FoodGroupDetails> {
                         style: Theme.of(context).textTheme.body1,
                       ),
                       duration: Duration(milliseconds: 1500),
-                      backgroundColor: Colors.green,
                     );
                     Scaffold.of(context).showSnackBar(snackbar);
                   }
@@ -93,36 +91,39 @@ class _FoodGroupDetailsState extends State<FoodGroupDetails> {
                   /// Remove from Firestore
                   if (isFavorited && !currentUser.isAnonymous) {
                     isFavorited = false;
-                    if(mounted) {
+                    if (mounted) {
                       setState(() {});
                     }
                     await Firestore.instance
                         .collection("USERS")
                         .document(Encrypt().encrypt(currentUser.email))
                         .collection('NUTRIENTS')
-                        .document(widget.foodItem.detailItems['description']['value'])
+                        .document(
+                            widget.foodItem.detailItems['description']['value'])
                         .delete();
                   }
 
                   /// Add to Firestore
                   else if (!isFavorited && !currentUser.isAnonymous) {
                     isFavorited = true;
-                    if(mounted) {
+                    if (mounted) {
                       setState(() {});
                     }
                     await Firestore.instance
                         .collection("USERS")
                         .document(Encrypt().encrypt(currentUser.email))
                         .collection('NUTRIENTS')
-                        .document(widget.foodItem.detailItems['description']['value'])
+                        .document(
+                            widget.foodItem.detailItems['description']['value'])
                         .setData(widget.foodItem.toFirestore());
                   }
                 })
-          ]
-      ),
-      body: (_ready) ? Container(
-        child: widget.foodItem.buildListView(context),
-      ) : SplashScreenAuth(),
+          ]),
+      body: (_ready)
+          ? Container(
+              child: widget.foodItem.buildListView(context),
+            )
+          : SplashScreenAuth(),
     );
   }
 }
@@ -138,10 +139,10 @@ class SearchDetails extends StatefulWidget {
     currentUser = await FirebaseAuth.instance.currentUser();
     userNutrients = (!currentUser.isAnonymous)
         ? await Firestore.instance
-        .collection('USERS')
-        .document(Encrypt().encrypt(currentUser.email))
-        .collection('NUTRIENTS')
-        .getDocuments()
+            .collection('USERS')
+            .document(Encrypt().encrypt(currentUser.email))
+            .collection('NUTRIENTS')
+            .getDocuments()
         : null;
     _loading = false;
   }
@@ -150,15 +151,12 @@ class SearchDetails extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-   gatherData();
+    gatherData();
     return new _SearchDetailsState();
   }
-
-
 }
 
 class _SearchDetailsState extends State<SearchDetails> {
-
   @override
   void initState() {
     super.initState();
@@ -167,47 +165,49 @@ class _SearchDetailsState extends State<SearchDetails> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(backgroundColor: Colors.transparent, elevation: 0.0,),
       body: (!widget._loading)
           ? Center(
               child: CircularProgressIndicator(),
             )
-          : new StreamBuilder(
-              stream: Firestore.instance
-                  .collection('ABBREV')
-                  .orderBy('description')
-                  .snapshots(),
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return SplashScreenAuth();
-                } else {
-                  List<dynamic> verifiedDocs = new List();
-                  var docs = snapshot.data.documents;
-                  for (int i = 0; i < docs.length; i++) {
-                    if (docs[i]['description']
-                        .toString()
-                        .toLowerCase()
-                        .contains(widget.query.toLowerCase())) {
-                      verifiedDocs.add(docs[i]);
+          : Container(
+              child: new StreamBuilder(
+                stream: Firestore.instance
+                    .collection('ABBREV')
+                    .orderBy('description')
+                    .where('tokens', arrayContains: widget.query.toLowerCase())
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return SplashScreenAuth();
+                  } else {
+                    List<dynamic> verifiedDocs = new List();
+                    var docs = snapshot.data.documents;
+                    for (int i = 0; i < docs.length; i++) {
+                      if (docs[i]['description']
+                          .toString()
+                          .toLowerCase()
+                          .contains(widget.query.toLowerCase())) {
+                        verifiedDocs.add(docs[i]);
+                      }
                     }
+                    return (verifiedDocs.length > 0)
+                        ? new ListView.builder(
+                            padding: EdgeInsets.all(8.0),
+                            itemCount: verifiedDocs.length,
+                            itemBuilder: (context, index) {
+                              DocumentSnapshot ds = verifiedDocs[index];
+                              FoodItem foodItem = FoodItem(ds);
+                              return new ListItem(
+                                foodItem: foodItem,
+                              );
+                            })
+                        : Center(
+                            child: Text('No Items Found',
+                          ));
                   }
-                  return (verifiedDocs.length > 0)
-                      ? new ListView.builder(
-                          padding: EdgeInsets.all(8.0),
-                          itemCount: verifiedDocs.length,
-                          itemBuilder: (context, index) {
-                            DocumentSnapshot ds = verifiedDocs[index];
-                            FoodItem foodItem = FoodItem(ds);
-                            return new ListItem(
-                              foodItem: foodItem,
-                            );
-                          })
-                      : Center(
-                          child: Text('No Items Found',
-                              style: Theme.of(context).textTheme.title),
-                        );
-                }
-              },
+                },
+              ),
             ),
     );
   }

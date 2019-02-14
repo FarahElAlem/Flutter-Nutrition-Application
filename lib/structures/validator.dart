@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:nutrition_app_flutter/structures/encrypt.dart';
 
 class Validator {
   bool _isNumeric(String s) {
@@ -15,7 +16,7 @@ class Validator {
         r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
     RegExp regex = new RegExp(pattern);
     if (!regex.hasMatch(s)) {
-      return 'Please enter an email! (We wont spam you, promise!)';
+      return 'Please enter an email!';
     } else {
       return null;
     }
@@ -23,17 +24,17 @@ class Validator {
 
   String validateName(String s) {
     if (_isNumeric(s)) {
-      return 'Your name has characters in it? That is awesome dude!';
+      return 'Invalid Name!';
     }
     if (s.isEmpty) {
-      return 'Please enter your name! We just want to get to know you!';
+      return 'Don\'t forget your name!';
     }
     return null;
   }
 
   String validatePassword(String s) {
     if (s.isEmpty) {
-      return 'Please enter a password!';
+      return 'Gotta be secure, enter a password!';
     }
     return null;
   }
@@ -41,8 +42,8 @@ class Validator {
   Future<String> validateLoggedInUser(String email, String password) async {
     var query = await Firestore.instance
         .collection('USERS')
-        .where('email', isEqualTo: email)
-        .where('password', isEqualTo: password)
+        .where('email', isEqualTo: Encrypt().encrypt(email))
+        .where('password', isEqualTo: Encrypt().encrypt(password))
         .getDocuments();
     if (query.documents.length == 0) {
       return 'We dont have any accounts with those credentials!';

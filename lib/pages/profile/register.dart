@@ -65,144 +65,163 @@ class _RegisterPageState extends State<RegisterPage> {
   /// Builds the page for the user to register with
   Widget _buildRegisterPage() {
     return Container(
-      color: Theme.of(context).backgroundColor,
+      padding: EdgeInsets.only(left: 32.0, right: 32.0),
       child: Form(
           key: _formKey,
-          child: Center(
-            child: ListView(
-              padding: EdgeInsets.all(20.0),
-              shrinkWrap: true,
-              children: <Widget>[
-                Text(
-                  'Register With Us!',
-                  style: Theme.of(context).textTheme.display1,
-                  textAlign: TextAlign.center,
-                ),
-                Divider(
-                  color: Colors.transparent,
-                  height: 16.0,
-                ),
-                Text(
-                  'Then you can save your favorite\nrecipes & nutrients on your phone!',
-                  style: Theme.of(context).textTheme.body1,
-                  textAlign: TextAlign.center,
-                ),
-                Divider(
-                  color: Colors.transparent,
-                  height: 56.0,
-                ),
-                TextFormField(
-                  validator: (value) {
-                    String s = Validator().validateName(value);
-                    if (s != null) {
-                      return s;
-                    }
-                  },
-                  controller: _nameTextFieldController,
-                  style: Theme.of(context).textTheme.body1,
-                  decoration: InputDecoration(hintText: 'Name'),
-                  keyboardType: TextInputType.text,
-                ),
-                Divider(
-                  color: Colors.transparent,
-                  height: 12.0,
-                ),
-                TextFormField(
-                  validator: (value) {
-                    String s = Validator().validateEmail(value);
-                    if (s != null) {
-                      return s;
-                    }
-                  },
-                  controller: _emailTextFieldController,
-                  style: Theme.of(context).textTheme.body1,
-                  decoration: InputDecoration(hintText: 'Email'),
-                  keyboardType: TextInputType.emailAddress,
-                ),
-                Divider(
-                  color: Colors.transparent,
-                  height: 12.0,
-                ),
-                TextFormField(
-                  validator: (value) {
-                    String s = Validator().validatePassword(value);
-                    if (s != null) {
-                      return s;
-                    }
-                  },
-                  controller: _passwordTextFieldController,
-                  style: Theme.of(context).textTheme.body1,
-                  decoration: InputDecoration(hintText: 'Password'),
-                  keyboardType: TextInputType.text,
-                  obscureText: true,
-                ),
-                Divider(
-                  color: Colors.transparent,
-                  height: 36.0,
-                ),
-                SizedBox(
-                  width: double.infinity,
-                  child: OutlineButton(
-                      onPressed: () {
-                        /// onPressed(): If the form is valid, handle new user register
-                        if (_formKey.currentState.validate()) {
-                          _handleAccountCreation(
-                              _emailTextFieldController.text,
-                              _passwordTextFieldController.text,
-                              _nameTextFieldController.text);
-                          Scaffold.of(context).showSnackBar(
-                              SnackBar(content: Text('Creating New Account')));
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                'Register With Us!',
+                textAlign: TextAlign.center,
+                style: Theme.of(context).accentTextTheme.headline,
+              ),
+              Divider(
+                color: Colors.transparent,
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  TextFormField(
+                    validator: (value) {
+                      String s = Validator().validateName(value);
+                      if (s != null) {
+                        return s;
+                      }
+                    },
+                    controller: _nameTextFieldController,
+                    style: Theme.of(context).accentTextTheme.body1,
+                    decoration: InputDecoration(
+                      labelText: 'Name',
+                      labelStyle: TextStyle(
+                          fontFamily: 'Roboto',
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.w400,
+                          letterSpacing: 0.15),
+                    ),
+                    keyboardType: TextInputType.text,
+                  ),
+                  Divider(
+                    height: 28.0,
+                    color: Colors.transparent,
+                  ),
+                  TextFormField(
+                    validator: (value) {
+                      String s = Validator().validateEmail(value);
+                      if (s != null) {
+                        return s;
+                      }
+                    },
+                    controller: _emailTextFieldController,
+                    style: Theme.of(context).accentTextTheme.body1,
+                    decoration: InputDecoration(
+                      labelText: 'Email',
+                      labelStyle: TextStyle(
+                          fontFamily: 'Roboto',
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.w400,
+                          letterSpacing: 0.15),
+                    ),
+                    keyboardType: TextInputType.emailAddress,
+                  ),
+                  Divider(
+                    height: 28.0,
+                    color: Colors.transparent,
+                  ),
+                  Container(
+                    child: TextFormField(
+                      validator: (value) {
+                        String s = Validator().validatePassword(value);
+                        if (s != null) {
+                          return s;
                         }
                       },
-                      child: Text(
-                        'Register',
-                        style: Theme.of(context).textTheme.caption,
+                      controller: _passwordTextFieldController,
+                      style: Theme.of(context).accentTextTheme.body1,
+                      decoration: InputDecoration(
+                        labelText: 'Password',
+                        labelStyle: TextStyle(
+                            fontFamily: 'Roboto',
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.w400,
+                            letterSpacing: 0.15),
                       ),
-                      color: Colors.green,
-                      shape: new RoundedRectangleBorder(
-                          borderRadius: new BorderRadius.circular(30.0))),
-                ),
-                Row(children: <Widget>[
-                  Expanded(
-                    child: new Container(
-                        margin: const EdgeInsets.only(left: 20.0, right: 10.0),
-                        child: Divider(
-                          color: Colors.black,
-                          height: 36,
-                        )),
+                      keyboardType: TextInputType.text,
+                      obscureText: true,
+                    ),
                   ),
-                  Text(
-                    'OR',
-                    style: Theme.of(context).textTheme.title,
+                ],
+              ),
+              Divider(
+                color: Colors.transparent,
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  SizedBox(
+                    width: double.infinity,
+                    child: OutlineButton(
+                        onPressed: () {
+                          /// onPressed(): If the form is valid, handle new user register
+                          if (_formKey.currentState.validate()) {
+                            _handleAccountCreation(
+                                _emailTextFieldController.text,
+                                _passwordTextFieldController.text,
+                                _nameTextFieldController.text);
+                            Scaffold.of(context).showSnackBar(SnackBar(
+                                content: Text('Creating New Account')));
+                          }
+                        },
+                        child: Text(
+                          'Register',
+                        ),
+                        shape: new RoundedRectangleBorder(
+                            borderRadius: new BorderRadius.circular(5.0))),
                   ),
-                  Expanded(
-                    child: new Container(
-                        margin: const EdgeInsets.only(left: 20.0, right: 10.0),
-                        child: Divider(
-                          color: Colors.black,
-                          height: 36,
-                        )),
-                  ),
-                ]),
-                SizedBox(
-                  width: double.infinity,
-                  child: OutlineButton(
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => LoginPage()));
-                      },
-                      child: Text(
-                        'Already Have An Account?',
-                        style: Theme.of(context).textTheme.caption,
-                      ),
-                      color: Colors.green,
-                      shape: new RoundedRectangleBorder(
-                          borderRadius: new BorderRadius.circular(30.0))),
-                )
-              ],
-            ),
+                  Row(children: <Widget>[
+                    Expanded(
+                      child: new Container(
+                          margin:
+                              const EdgeInsets.only(left: 20.0, right: 10.0),
+                          child: Divider(
+                            height: 36,
+                            color: Colors.transparent,
+                          )),
+                    ),
+                    Text(
+                      'OR',
+                    ),
+                    Expanded(
+                      child: new Container(
+                          margin:
+                              const EdgeInsets.only(left: 10.0, right: 20.0),
+                          child: Divider(
+                            height: 36,
+                            color: Colors.transparent,
+                          )),
+                    ),
+                  ]),
+                  SizedBox(
+                    width: double.infinity,
+                    child: OutlineButton(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => LoginPage()));
+                        },
+                        child: Text(
+                          'Already Have An Account?',
+                        ),
+                        shape: new RoundedRectangleBorder(
+                            borderRadius: new BorderRadius.circular(5.0))),
+                  )
+                ],
+              )
+            ],
           )),
     );
   }

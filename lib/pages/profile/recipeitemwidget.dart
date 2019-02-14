@@ -44,7 +44,6 @@ class _RecipeItemWidgetState extends State<RecipeItemWidget> {
         },
         child: SizedBox.shrink(
           child: new Card(
-            color: Colors.white,
             elevation: 5.0,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(15.0),
@@ -73,13 +72,11 @@ class _RecipeItemWidgetState extends State<RecipeItemWidget> {
                 Expanded(
                     flex: 1,
                     child: Material(
-                      color: Colors.white,
                       child: Padding(
                         padding: EdgeInsets.only(left: 2.0, right: 2.0),
                         child: Center(
                           child: Text(
                             widget.ds['name'],
-                            style: Theme.of(context).textTheme.caption,
                             textAlign: TextAlign.center,
                           ),
                         ),
@@ -90,7 +87,7 @@ class _RecipeItemWidgetState extends State<RecipeItemWidget> {
           ),
         ),
       ),
-      height: 256.0,
+      height: 144.0,
       width: 256.0,
     );
   }

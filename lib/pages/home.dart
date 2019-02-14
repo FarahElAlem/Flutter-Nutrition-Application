@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 import 'package:flutter/material.dart';
+import 'package:nutrition_app_flutter/demo/placeholder.dart';
 import 'package:nutrition_app_flutter/pages/dashboard/title.dart';
 
 import 'package:nutrition_app_flutter/pages/profile/register.dart';
@@ -27,8 +28,14 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
 
   bool _ready = false;
 
+  bool _searching = false;
+
+  int _lastIndex = 0;
+
   /// Controller for tabview
   TabController controller;
+
+  TextEditingController _searchController = new TextEditingController();
 
   /// foodGroupDetails[key][0] = Number
   /// foodGroupDetails[key][1] = Name
@@ -39,26 +46,19 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   /// List of children that define the pages that a user sees. WIP.
   List<Widget> _bodyChildren = [];
 
-  /// This is used so that the AppBar can determine whether or not to
-  /// display the correct information when searching.
-  bool _isSearching = false;
+  Widget _appBarTitle = new Text('Index');
 
   /// Placeholder Icon set to a default value, used in the AppBar
   Icon _searchIcon = Icon(Icons.search);
 
   /// Placeholder Widget set to a default value, used in the AppBar
-  Widget _appBarTitle = new Center(child: new Text('Dashboard'));
 
   /// A list of strings that represent the AppBar titles.
   /// Works nicely with the BottomNavigationBar
-  List<String> _appBarTitles = ['Nutrition', 'Recipes', 'Profile'];
-
-  /// A list of widgets to represent the leading icons of the AppBar.
-  /// Works nicely with the BottomNavigationBar
-  List<Widget> _leadingIcons = [
-    new Icon(Icons.fastfood),
-    new Icon(Icons.receipt),
-    null
+  List<String> _appBarTitles = [
+    'Browse Nutrition',
+    'Browse Recipes',
+    'Profile'
   ];
 
   /// When a navigation item is tapped, update the
@@ -68,7 +68,6 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
       controller.index = index;
       _currentIndex = index;
       if (_currentIndex == 0 || _currentIndex == 3) {
-        _isSearching = false;
         _searchIcon = Icon(Icons.search);
       }
     });
@@ -76,7 +75,6 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
 
   /// Gathers prerequisite data from the Cloud Firestore Database.
   Future<void> _gatherData() async {
-    /// Gather our NUTRITION information from Firestore here
     QuerySnapshot foodGroupSnapshot = await Firestore.instance
         .collection('FOODGROUP')
         .orderBy('FdGrp_Desc')
@@ -85,7 +83,8 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
     for (DocumentSnapshot doc in foodGroupSnapshot.documents) {
       var url = await widget.storage
           .ref()
-          .child(doc['FdGrp_Desc'].replaceAll(' ', '').replaceAll('/', '') + '.png')
+          .child(doc['FdGrp_Desc'].replaceAll(' ', '').replaceAll('/', '') +
+              '.png')
           .getDownloadURL();
       foodGroupDetails[doc['Fd_Grp']] = {
         'name': doc['FdGrp_Desc'],
@@ -94,6 +93,84 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
         'url': url.toString()
       };
     }
+  }
+
+  Widget _buildDashboardAppBar(int _currentIndex, BuildContext context) {
+    if (!this._searching || _currentIndex != _lastIndex) {
+      this._appBarTitle = new Text(
+        _appBarTitles[_currentIndex],
+      );
+      this._searchIcon = new Icon(Icons.search);
+    }
+
+    return _currentIndex < 2
+        ? AppBar(
+            title: _appBarTitle,
+            centerTitle: true,
+            elevation: 0.0,
+            actions: <Widget>[
+              (_currentIndex < 2)
+                  ? IconButton(
+                      icon: _searchIcon,
+                      onPressed: () {
+                        setState(() {
+                          this._lastIndex = _currentIndex;
+                          if (this._searchIcon.icon == Icons.search) {
+                            this._searching = true;
+                            this._searchIcon = new Icon(Icons.close);
+                            this._appBarTitle = new TextField(
+                              controller: _searchController,
+                              decoration: new InputDecoration(
+                                  prefixIcon: Icon(Icons.search),
+                                  hintText: 'Search...'),
+                            );
+                          } else {
+                            this._searching = false;
+                            this._searchIcon = new Icon(Icons.search);
+                            this._appBarTitle = new Text(
+                              _appBarTitles[_currentIndex],
+                            );
+                          }
+                        });
+                      },
+                    )
+                  : new Container()
+            ],
+          )
+        : AppBar(backgroundColor: Colors.transparent, elevation: 0.0,);
+  }
+
+  Widget _buildDrawer(int _currentIndex, BuildContext context) {
+    return _currentIndex < 2
+        ? Drawer(
+            child: ListView(
+              padding: EdgeInsets.zero,
+              children: <Widget>[
+                DrawerHeader(
+                  child: Text('Drawer Header'),
+                  decoration: BoxDecoration(
+                  ),
+                ),
+                ListTile(
+                  leading: Icon(Icons.settings),
+                  title: Text('Settings'),
+                  onTap: () {
+                    // Update the state of the app
+                    // ...
+                  },
+                ),
+                ListTile(
+                  leading: Icon(Icons.stop),
+                  title: Text('Logout'),
+                  onTap: () {
+                    // Update the state of the app
+                    // ...
+                  },
+                ),
+              ],
+            ),
+          )
+        : null;
   }
 
   @override
@@ -110,6 +187,29 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
         foodGroupDetails: foodGroupDetails,
       )
     ];
+//    _bodyChildren = [
+//      Container(
+//        decoration: BoxDecoration(
+//            gradient: LinearGradient(colors: [
+//              Color.fromRGBO(8, 177, 139, 1.0),
+//              Color.fromRGBO(0, 91, 71, 1.0)
+//            ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
+//      ),
+//      Container(
+//        decoration: BoxDecoration(
+//            gradient: LinearGradient(colors: [
+//              Color.fromRGBO(8, 177, 139, 1.0),
+//              Color.fromRGBO(0, 91, 71, 1.0)
+//            ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
+//      ),
+//      Container(
+//        decoration: BoxDecoration(
+//            gradient: LinearGradient(colors: [
+//          Color.fromRGBO(8, 177, 139, 1.0),
+//          Color.fromRGBO(0, 91, 71, 1.0)
+//        ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
+//      )
+//    ];
 
     _gatherData().whenComplete(() {
       print(foodGroupDetails.toString());
@@ -131,52 +231,74 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
     return (!_ready)
         ? new VideoApp()
         : new Scaffold(
-//            appBar: _buildDashboardAppBar(),
+            appBar: _buildDashboardAppBar(_currentIndex, context),
+            drawer: _buildDrawer(_currentIndex, context),
             body: new TabBarView(
               physics: new NeverScrollableScrollPhysics(),
               children: _bodyChildren,
               controller: controller,
             ),
-            bottomNavigationBar: new BottomNavigationBar(
-              type: BottomNavigationBarType.fixed,
-              onTap: onTabTapped,
-              currentIndex: _currentIndex,
-              items: [
-                /// Search Navigation Bar Item:
-                /// Navigates to a search page that allows users to
-                /// search for various food items and append it to
-                /// their personal list.
-                new BottomNavigationBarItem(
-                  icon: Icon(Icons.fastfood),
-                  title: Text(
-                    'Nutrition',
-                    style: Theme.of(context).textTheme.caption,
-                  ),
+            bottomNavigationBar: new Material(
+              child: Theme(
+                data: Theme.of(context).copyWith(
                 ),
+                child: new BottomNavigationBar(
+                  type: BottomNavigationBarType.fixed,
+                  onTap: onTabTapped,
+                  currentIndex: _currentIndex,
+                  items: [
+                    /// Search Navigation Bar Item:
+                    /// Navigates to a search page that allows users to
+                    /// search for various food items and append it to
+                    /// their personal list.
+                    new BottomNavigationBarItem(
+                      icon: _currentIndex == 0
+                          ? Icon(
+                              Icons.fastfood,
+                            )
+                          : Icon(
+                              Icons.fastfood,
+                            ),
+                      title: Text(
+                        'Nutrition',
+                      ),
+                    ),
 
-                /// My Items Navigation Bar Item:
-                /// Allows users to view their total nutrition information
-                /// and edit (remove) items from their existing
-                /// nutrition list. Users can also save their
-                /// lists by name for future reference.
-                new BottomNavigationBarItem(
-                  icon: Icon(Icons.receipt),
-                  title: Text(
-                    'Recipes',
-                    style: Theme.of(context).textTheme.caption,
-                  ),
+                    /// My Items Navigation Bar Item:
+                    /// Allows users to view their total nutrition information
+                    /// and edit (remove) items from their existing
+                    /// nutrition list. Users can also save their
+                    /// lists by name for future reference.
+                    new BottomNavigationBarItem(
+                      icon: _currentIndex == 1
+                          ? Icon(
+                              Icons.receipt,
+                            )
+                          : Icon(
+                              Icons.receipt,
+                            ),
+                      title: Text(
+                        'Recipes',
+                      ),
+                    ),
+
+                    /// Profile Navigation Bar Item:
+                    /// TODO
+                    new BottomNavigationBarItem(
+                      icon: _currentIndex == 2
+                          ? Icon(
+                              Icons.account_circle,
+                            )
+                          : Icon(
+                              Icons.account_circle,
+                            ),
+                      title: Text(
+                        'Profile',
+                      ),
+                    )
+                  ],
                 ),
-
-                /// Profile Navigation Bar Item:
-                /// TODO
-                new BottomNavigationBarItem(
-                  icon: Icon(Icons.account_circle),
-                  title: Text(
-                    'Profile',
-                    style: Theme.of(context).textTheme.caption,
-                  ),
-                )
-              ],
+              ),
             ),
           );
   }

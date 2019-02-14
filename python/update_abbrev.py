@@ -3,6 +3,8 @@ from firebase_admin import credentials, db
 from firebase_admin import firestore
 import json
 
+import re
+
 cred = credentials.Certificate('configs/nutrition-app-flutter-684d31b499fb.json')
 keys = open('../assets/config.json').read()
 jsonData = json.loads(keys)
@@ -35,4 +37,5 @@ for item in parsed_json:
             altered[parsed_keys[key]] = item[key]
     altered['calorie'] = str(float(altered['calorie']) / 1000)
     altered['ndbno'] = int(round(float(altered['ndbno'])))
-    # firestore.collection(u'ABBREV').document().set(altered)
+    altered['tokens'] = re.sub('[^0-9a-zA-Z]+', ' ', altered['description']).lower().split(' ')
+    firestore.collection(u'ABBREV').document().set(altered)

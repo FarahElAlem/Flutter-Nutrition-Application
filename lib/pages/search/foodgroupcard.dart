@@ -15,7 +15,6 @@ class FoodGroupCard extends StatefulWidget {
 class _FoodGroupCardState extends State<FoodGroupCard> {
   _FoodGroupCardState({this.foodItemInformation});
 
-
   Map<String, dynamic> foodItemInformation;
 
   Image _image;
@@ -50,8 +49,6 @@ class _FoodGroupCardState extends State<FoodGroupCard> {
       },
       splashColor: Colors.transparent,
       child: new Card(
-        color: Colors.white,
-        elevation: 5.0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15.0),
         ),
@@ -64,8 +61,10 @@ class _FoodGroupCardState extends State<FoodGroupCard> {
               flex: 3,
               child: SizedBox(
                   child: (_loading)
-                      ? Center(
-                          child: CircularProgressIndicator(),
+                      ? Material(
+                    child: Center(
+                            child: CircularProgressIndicator(),
+                          ),
                         )
                       : Hero(
                           tag: foodItemInformation,
@@ -81,7 +80,6 @@ class _FoodGroupCardState extends State<FoodGroupCard> {
                 flex: 1,
                 child: SizedBox.expand(
                   child: Material(
-                    color: Colors.white,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -90,7 +88,6 @@ class _FoodGroupCardState extends State<FoodGroupCard> {
                           padding: EdgeInsets.fromLTRB(12.0, 0.0, 12.0, 0.0),
                           child: Text(
                             foodItemInformation['name'],
-                            style: Theme.of(context).textTheme.caption,
                             textAlign: TextAlign.center,
                           ),
                         )

@@ -22,20 +22,110 @@ Future<void> main() async {
 
   runApp(new MaterialApp(
     theme: ThemeData(
-      primaryColorDark: Color.fromRGBO(153, 204, 96, 1.0),
-      primaryColorLight: Color.fromRGBO(255, 255, 194, 1.0),
-      primaryColor: Color.fromRGBO(204, 255, 144, 1.0),
-      backgroundColor: Color.fromRGBO(245, 245, 246, 1.0),
+      primaryColor: Color(0xFF4CAF50),
+      primaryColorLight: Color(0xFFC8E6C9),
+      primaryColorDark: Color(0xFF388E3C),
+      backgroundColor: Color(0xFF000000),
+      accentColor: Color(0xFFFFC107),
+      dividerColor: Color(0xFFBDBDBD),
       textTheme: TextTheme(
-        headline: TextStyle(fontSize: 32.0, fontFamily: 'Montserrat', color: Colors.white, fontWeight: FontWeight.w600),
-        display1: TextStyle(fontSize: 32.0, fontFamily: 'Montserrat', color: Colors.black, fontWeight: FontWeight.bold),
-        display2: TextStyle(fontSize: 28.0, fontFamily: 'Montserrat', color: Colors.black, fontWeight: FontWeight.bold),
-        subhead: TextStyle(fontSize: 20.0, fontFamily: 'Montserrat', color: Colors.black, fontWeight: FontWeight.bold),
-        title: TextStyle(fontSize: 20.0, fontFamily: 'Montserrat', color: Colors.black),
-        body1: TextStyle(fontSize: 18.0, fontFamily: 'OpenSans'),
-        body2: TextStyle(fontSize: 18.0, fontFamily: 'OpenSans', fontWeight: FontWeight.bold),
-        caption: TextStyle(fontSize: 16.0, fontFamily: 'OpenSans', fontWeight: FontWeight.w600),
-      )
+          headline: TextStyle(
+              fontFamily: 'Roboto',
+              color: Color(0xFFFFFFFF),
+              fontSize: 34.0,
+              fontWeight: FontWeight.w400,
+              letterSpacing: 0.25),
+          subhead: TextStyle(
+              fontFamily: 'Roboto',
+              color: Color(0xFFFFFFFF),
+              fontSize: 24.0,
+              fontWeight: FontWeight.w400,
+              letterSpacing: 0.0),
+          title: TextStyle(
+              fontFamily: 'Roboto',
+              color: Color(0xFFFFFFFF),
+              fontSize: 20.0,
+              fontWeight: FontWeight.w400,
+              letterSpacing: 0.15),
+          subtitle: TextStyle(
+              fontFamily: 'Open Sans',
+              color: Color(0xFF212121),
+              fontSize: 14.0,
+              fontWeight: FontWeight.w400,
+              letterSpacing: 0.1),
+          body1: TextStyle(
+              fontFamily: 'Open Sans',
+              color: Color(0xFF212121),
+              fontSize: 16.0,
+              fontWeight: FontWeight.w400,
+              letterSpacing: 0.5),
+          body2: TextStyle(
+              fontFamily: 'Open Sans',
+              color: Color(0xFF757575),
+              fontSize: 14.0,
+              fontWeight: FontWeight.w400,
+              letterSpacing: 0.25),
+          button: TextStyle(
+              fontFamily: 'Open Sans',
+              color: Color(0xFF212121),
+              fontSize: 14.0,
+              fontWeight: FontWeight.w500,
+              letterSpacing: 1.25),
+          caption: TextStyle(
+              fontFamily: 'Open Sans',
+              color: Color(0xFF757575),
+              fontSize: 12.0,
+              fontWeight: FontWeight.w400,
+              letterSpacing: 0.4)),
+      accentTextTheme: TextTheme(
+          headline: TextStyle(
+              fontFamily: 'Roboto',
+              color: Color(0xFF212121),
+              fontSize: 34.0,
+              fontWeight: FontWeight.w400,
+              letterSpacing: 0.25),
+          subhead: TextStyle(
+              fontFamily: 'Roboto',
+              color: Color(0xFF212121),
+              fontSize: 24.0,
+              fontWeight: FontWeight.w400,
+              letterSpacing: 0.0),
+          title: TextStyle(
+              fontFamily: 'Roboto',
+              color: Color(0xFF212121),
+              fontSize: 20.0,
+              fontWeight: FontWeight.w400,
+              letterSpacing: 0.15),
+          subtitle: TextStyle(
+              fontFamily: 'Open Sans',
+              color: Color(0xFF212121),
+              fontSize: 14.0,
+              fontWeight: FontWeight.w400,
+              letterSpacing: 0.1),
+          body1: TextStyle(
+              fontFamily: 'Open Sans',
+              color: Color(0xFF212121),
+              fontSize: 16.0,
+              fontWeight: FontWeight.w400,
+              letterSpacing: 0.5),
+          body2: TextStyle(
+              fontFamily: 'Open Sans',
+              color: Color(0xFF757575),
+              fontSize: 14.0,
+              fontWeight: FontWeight.w400,
+              letterSpacing: 0.25),
+          button: TextStyle(
+              fontFamily: 'Open Sans',
+              color: Color(0xFF212121),
+              fontSize: 14.0,
+              fontWeight: FontWeight.w500,
+              letterSpacing: 1.25),
+          caption: TextStyle(
+              fontFamily: 'Open Sans',
+              color: Color(0xFF757575),
+              fontSize: 12.0,
+              fontWeight: FontWeight.w400,
+              letterSpacing: 0.4)),
     ),
     home: new Home(
       currentUser: currentUser,
@@ -60,7 +150,6 @@ Future<FirebaseUser> signInWithFirestore(String email, String password) async {
   }
   return user;
 }
-
 
 /// Debug screen for error testing
 /// TODO Remove from final build
