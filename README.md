@@ -82,3 +82,7 @@
 - ~~Create Dashboard~~
 - ~~Redesign Details UI for nutrients~~
 - ~~Design Details UI for recipes~~
+- Reconfigure Database to support Material Search
+- Add Hashing
+- Add Custom User Recipes
+- Add 'delayed update' for user items to reduce DB calls
