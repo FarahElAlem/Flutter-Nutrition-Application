@@ -86,3 +86,7 @@
 - Add Hashing
 - Add Custom User Recipes
 - Add 'delayed update' for user items to reduce DB calls
+- Convert DB from Grams to Cups
+- Multiply DB 'calorie' data by 1000 to represent proper information
+- Experiment with SliverAppBar and transparent blur effects for background
+- Find out AppBar height add appropiate padding in stack
