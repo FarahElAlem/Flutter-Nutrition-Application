@@ -81,7 +81,8 @@
 - ~~Create User Profile Page~~
 - ~~Create Dashboard~~
 - ~~Redesign Details UI for nutrients~~
-- ~~Design Details UI for recipes~~
+- ~~Design Details UI for recipes~~z
+- *IMPORTANT* Reconfigure database with new data + preformatting
 - Reconfigure Database to support Material Search
 - Attempt to support recipe(s) with estimated nutrient values
 - Add advanced data security
