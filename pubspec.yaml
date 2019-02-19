@@ -11,16 +11,19 @@ dependencies:
     sdk: flutter
   flutter_staggered_grid_view: ^0.2.7
 
-  path_provider: ^0.5.0
+  path_provider: ^0.5.0+1
 
-  cloud_firestore: ^0.8.2+3
-  firebase_core: ^0.2.5+1
-  firebase_auth: ^0.6.6
-  firebase_storage: ^1.0.0
+  cloud_firestore: ^0.9.0+2
+  firebase_core: ^0.3.0+2
+  firebase_auth: ^0.8.1+1
+  firebase_storage: ^2.0.1+1
 
-  shared_preferences: ^0.5.0
-  video_player: ^0.8.0
-  chewie: 0.9.3
+  image_picker: ^0.5.0+3
+  material_search: ^0.2.8
+
+  shared_preferences: ^0.5.1+1
+  video_player: ^0.9.0
+  chewie: ^0.9.3
 
   encrypt: ^1.0.1
 
@@ -33,6 +36,24 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   fonts:
+  - family: Lobster
+    fonts:
+    - asset: fonts/Lobster-Regular.ttf
+      weight: 400
+
+  - family: Franklin Gothic Heavy
+    fonts:
+    - asset: fonts/FranklinGothicHeavyRegular.ttf
+      weight: 400
+
+  - family: Helvetica
+    fonts:
+    - asset: fonts/Helvetica.ttf
+      weight: 400
+
+    - asset: fonts/Helvetica-Bold.ttf
+      weight: 700
+
   - family: Roboto
     fonts:
     - asset: fonts/Roboto-Thin.ttf

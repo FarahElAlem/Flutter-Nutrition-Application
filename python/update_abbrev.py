@@ -2,6 +2,8 @@ import firebase_admin
 from firebase_admin import credentials, db
 from firebase_admin import firestore
 import json
+import pandas as pd
+from fuzzywuzzy import fuzz
 
 import re
 
@@ -14,28 +16,71 @@ firebase_admin.initialize_app(cred, {
     'apiKey': str(jsonData['apiKey']),
     'databaseURL': str(jsonData['databaseURL'])
 })
-
+#
 firestore = firestore.client()
 
 data = open('data/ABBREV.json').read()
 parsed_json = json.loads(data)
 
-key_items = ['Lipid_Tot_(g)', 'Carbohydrt_(g)', 'Fiber_TD_(g)', 'Cholestrl_(mg)', 'Sugar_Tot_(g)', 'Protein_(g)',
-             'Vit_D_µg', 'Calcium_(mg)', 'Iron_(mg)', 'Potassium_(mg)', 'Shrt_Desc', 'NDB_No', 'Energ_Kcal', 'Fd_Grp',
-             'Sodium_(mg)']
+parsed_keys = {'Total lipid (fat)': ['totalfat', 'g', 55],
+               'Carbohydrate, by difference': ['carbohydrate', 'g', 250],
+               'Fiber, total dietary': ['fiber', 'g', 27],
+               'Cholesterol': ['cholesterol', 'mg', 300],
+               'Sugars, total': ['sugar', 'g', 28],
+               'Protein': ['protein', 'g', 50],
+               'Calcium, Ca': ['calcium', 'mg', 1000],
+               'Iron, Fe': ['iron', 'mg', 14.9],
+               'Sodium, Na': ['sodium', 'mg', 2300],
+               'Energy': ['calorie', 'kcal', 2000],
+               'Vitamin A, IU': ['vitamin_a', 'IU', 5000],
+               'Vitamin C, total ascorbic acid': ['vitamin_c', 'mg', 70],
+               'Fatty acids, total trans': ['trans_fat', 'g', 2],
+               'Fatty acids, total saturated': ['saturated_fat', 'g', 30]}
 
-parsed_keys = {'Lipid_Tot_(g)': 'lipid', 'Carbohydrt_(g)': 'carbohydrate', 'Fiber_TD_(g)': 'fiber',
-               'Cholestrl_(mg)': 'cholesterol', 'Sugar_Tot_(g)': 'sugar',
-               'Protein_(g)': 'protein', 'Vit_D_µg': 'vitamind', 'Calcium_(mg)': 'calcium', 'Iron_(mg)': 'iron',
-               'Potassium_(mg)': 'potassium', 'NDB_No': 'ndbno', 'Shrt_Desc': 'description', 'Energ_Kcal': 'calorie',
-               'Fd_Grp': 'foodgroup', 'Sodium_(mg)': 'sodium'}
+i = 0
+for item in parsed_json['payload']:
+    print('item: {0}'.format(item))
+    d = {}
+    n = {}
+    cached = []
+    d['ndbno'] = item['ndb']
+    d['description'] = item['description']
+    d['manufacturer'] = item['manufacturer']
+    d['ingredients'] = item['ingredients']
+    for nutrient in item['nutrients']:
+        nutrient['value'] = nutrient['value'] if nutrient['value'] != 'None' else 0.0
+        value = None
+        # print('{0}: {1}{2}'.format(item['description'], (float(item['serving_size']) / 100.0), item['serving_measurement']))
+        if item['serving_measurement'] == 'g':
+            value = str(round((float(nutrient['value']) * (float(item['serving_size']) / 100.0)), 2))
+        elif item['serving_measurement'][0] == 'm':
+            value = str(round((float(nutrient['value']) * (float(item['serving_size']) / 1000.0)), 2))
 
-for item in parsed_json:
-    altered = {}
-    for key in item.keys():
-        if key in key_items:
-            altered[parsed_keys[key]] = item[key]
-    altered['calorie'] = str(float(altered['calorie']) / 1000)
-    altered['ndbno'] = int(round(float(altered['ndbno'])))
-    altered['tokens'] = re.sub('[^0-9a-zA-Z]+', ' ', altered['description']).lower().split(' ')
-    firestore.collection(u'ABBREV').document().set(altered)
+        if nutrient['name'] in parsed_keys:
+            # print(nutrient, value)
+            cached.append(nutrient['name'])
+            n[parsed_keys[nutrient['name']][0]] = {
+                'name': parsed_keys[nutrient['name']][0],
+                'value': value,
+                'measurement': nutrient['measurement'],
+                'daily': str(round((float(value) / parsed_keys[nutrient['name']][2]), 2))
+            }
+
+    for key in parsed_keys.keys():
+        if key not in cached:
+            n[key] = {
+                'name': key,
+                'value': 0.0,
+                'measurement': parsed_keys[key][1],
+                'daily': 0.0
+            }
+
+    d['nutrients'] = n
+    d['serving_size'] = item['serving_size']
+    d['serving_measurement'] = item['serving_measurement']
+    d['serving_size_household'] = item['serving_size_household']
+    d['serving_measurement_household'] = str(item['serving_measurement_household']).lower().capitalize()
+    print(d, i)
+    i += 1
+
+    # firestore.collection(u'ABBREV').document().set(d)

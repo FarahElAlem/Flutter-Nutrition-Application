@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:nutrition_app_flutter/pages/search/details.dart';
-import 'package:nutrition_app_flutter/structures/fooditem.dart';
+import 'package:nutrition_app_flutter/storage/fooditem.dart';
 
 
 class NutrientItemWidget extends StatefulWidget {
@@ -34,7 +34,7 @@ class _NutrientItemWidgetState extends State<NutrientItemWidget> {
               context,
               MaterialPageRoute(
                   builder: (context) => FoodGroupDetails(
-                        foodItem: FoodItem(widget.ds),
+//                        foodItem: FoodItem(widget.ds),
                       )));
         },
         child: SizedBox.shrink(

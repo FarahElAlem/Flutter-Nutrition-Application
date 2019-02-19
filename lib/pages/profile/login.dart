@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:nutrition_app_flutter/structures/encrypt.dart';
-import 'package:nutrition_app_flutter/structures/validator.dart';
+import 'package:nutrition_app_flutter/actions/encrypt.dart';
+import 'package:nutrition_app_flutter/actions/validator.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 

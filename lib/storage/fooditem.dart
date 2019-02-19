@@ -32,7 +32,8 @@ class FoodItem {
           '%'
     };
     nutritionItems['calorie'] = {
-      'value': value['calorie'].toString().trim(),
+      'value':
+          (double.parse(value['calorie'].toString()) * 1000).toString().trim(),
       'measurement': 'cal',
       'name': 'Calories:',
       'daily':
@@ -161,6 +162,21 @@ class FoodItem {
             Text(
               'General\nInformation',
               style: Theme.of(context).accentTextTheme.subhead,
+            ),
+            Divider(
+              height: 12.0,
+              color: Colors.transparent,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Text(
+                  'Name',
+                ),
+                Text(
+                  'Amount',
+                ),
+              ],
             ),
             Divider(
               color: Colors.black,

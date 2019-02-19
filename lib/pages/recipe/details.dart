@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:nutrition_app_flutter/pages/recipe/itemwidget.dart';
-import 'package:nutrition_app_flutter/structures/encrypt.dart';
+import 'package:nutrition_app_flutter/actions/encrypt.dart';
 
 /// UI incomplete, details attempts to show nutrition details of some FoodItem
 /// as a Dialog
@@ -85,7 +85,7 @@ class _DetailsState extends State<Details> {
                       ),
                       duration: Duration(milliseconds: 1500),
                     );
-                    Scaffold.of(context).showSnackBar(snackbar);
+//                    Scaffold.of(context).showSnackBar(snackbar);
                   }
 
                   /// If applicable, update the user's data in Cloud Firestore.
@@ -126,8 +126,7 @@ class _DetailsState extends State<Details> {
                 builder: (BuildContext contest, BoxConstraints constraintss) {
                 return SingleChildScrollView(
                     child: ConstrainedBox(
-                  constraints:
-                      BoxConstraints(minHeight: constraintss.maxHeight),
+                  constraints: BoxConstraints(minHeight: constraintss.maxHeight),
                   child: new Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -150,6 +149,7 @@ class _DetailsState extends State<Details> {
                         ),
                         Divider(
                           height: 25.0,
+                          color: Colors.transparent,
                         ),
                         Hero(
                           tag: widget.recipeItem['name'],
@@ -165,6 +165,7 @@ class _DetailsState extends State<Details> {
                         ),
                         Divider(
                           height: 14.0,
+                          color: Colors.transparent,
                         ),
                         Padding(
                           padding: EdgeInsets.all(16.0),
@@ -192,7 +193,7 @@ class _DetailsState extends State<Details> {
                             shrinkWrap: true,
                             physics: NeverScrollableScrollPhysics(),
                             itemCount: widget.recipeItem['ingredients'].length,
-                            padding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
+                            padding: EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 8.0),
                             itemBuilder: (BuildContext context, int index) {
                               return Column(
                                 children: <Widget>[
@@ -208,6 +209,7 @@ class _DetailsState extends State<Details> {
                               );
                             }),
                         Container(
+                          color: Theme.of(context).primaryColor,
                           alignment: Alignment.centerLeft,
                           child: Padding(
                             padding: EdgeInsets.all(8.0),
@@ -221,15 +223,15 @@ class _DetailsState extends State<Details> {
                                   child: Text(
                                     'Directions',
                                     style: Theme.of(context)
-                                        .accentTextTheme
+                                        .textTheme
                                         .subhead,
                                   ),
                                 ),
                                 Container(
-                                  margin:
-                                  const EdgeInsets.only(left: 16.0),
+                                  margin: const EdgeInsets.only(left: 8.0, top: 8.0, bottom: 8.0),
                                   child: Divider(
                                     height: 2.0,
+                                    color: Colors.white70,
                                   ),
                                 ),
                                 ListView.builder(
@@ -256,7 +258,7 @@ class _DetailsState extends State<Details> {
                                                   [index],
                                               style: Theme.of(context)
                                                   .accentTextTheme
-                                                  .title,
+                                                  .body1,
                                             ),
 //                                alignment: Alignment(-80.0, 0),
                                           ),

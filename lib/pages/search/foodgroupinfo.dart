@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:nutrition_app_flutter/pages/search/details.dart';
-import 'package:nutrition_app_flutter/structures/encrypt.dart';
-import 'package:nutrition_app_flutter/structures/fooditem.dart';
+import 'package:nutrition_app_flutter/actions/encrypt.dart';
+import 'package:nutrition_app_flutter/storage/fooditem.dart';
 
 /// FoodGroupResult displays information regarding Cloud Firestore queries in a list like fashion.
 /// FoodGroupResult has a token that specifics the search key, and a type that dictates the type of
@@ -86,7 +86,11 @@ class _FoodGroupResultState extends State<FoodGroupResult> {
   @override
   Widget build(BuildContext context) {
     if (!_ready) {
-      return new Scaffold(appBar: new AppBar(backgroundColor: Colors.transparent,), body: _buildLoadingScreen());
+      return new Scaffold(
+          appBar: new AppBar(
+            backgroundColor: Colors.transparent,
+          ),
+          body: _buildLoadingScreen());
     } else {
       return new Scaffold(
         body: Container(
@@ -118,15 +122,23 @@ class _FoodGroupResultState extends State<FoodGroupResult> {
                             ),
                           ),
                         )),
-                        new AppBar(
-                          iconTheme: IconThemeData(
-                              color: (_darkgroups
-                                      .contains(foodItemInformation['name']))
-                                  ? Colors.black
-                                  : Colors.white),
-                          elevation: 0.0,
-                          backgroundColor: Colors.transparent,
-                        ),
+                        Padding(
+                          padding: EdgeInsets.only(top: 32.0),
+                          child: new Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Card(
+                                color: Theme.of(context).accentColor,
+                                child: IconButton(
+                                    icon: Icon(Icons.arrow_back, color: Colors.black,),
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    }),
+                              )
+                            ],
+                          ),
+                        )
                       ],
                     ),
                     Padding(
@@ -144,8 +156,7 @@ class _FoodGroupResultState extends State<FoodGroupResult> {
                     ),
                     Container(
                       margin: EdgeInsets.only(left: 16.0),
-                      child: Divider(
-                      ),
+                      child: Divider(),
                     ),
                     Flexible(
                       child: SizedBox(
@@ -170,8 +181,7 @@ class _FoodGroupResultState extends State<FoodGroupResult> {
                     ),
                     Container(
                       margin: EdgeInsets.only(left: 16.0),
-                      child: Divider(
-                      ),
+                      child: Divider(),
                     ),
                     StreamBuilder<QuerySnapshot>(
                       stream: stream,
@@ -272,7 +282,7 @@ class _ItemView extends State<ListItem> {
                       context,
                       MaterialPageRoute(
                           builder: (context) => FoodGroupDetails(
-                                foodItem: widget.foodItem,
+//                                foodItem: widget.foodItem,
                               )));
                 },
                 title: Align(

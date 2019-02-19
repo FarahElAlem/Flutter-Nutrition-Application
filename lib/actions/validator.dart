@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:nutrition_app_flutter/structures/encrypt.dart';
+import 'package:nutrition_app_flutter/actions/encrypt.dart';
 
 class Validator {
   bool _isNumeric(String s) {

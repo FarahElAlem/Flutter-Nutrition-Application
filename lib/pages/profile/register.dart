@@ -3,28 +3,22 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:nutrition_app_flutter/pages/profile/login.dart';
 import 'package:nutrition_app_flutter/pages/profile/profile.dart';
-import 'package:nutrition_app_flutter/structures/encrypt.dart';
-import 'package:nutrition_app_flutter/structures/validator.dart';
+import 'package:nutrition_app_flutter/actions/encrypt.dart';
+import 'package:nutrition_app_flutter/actions/validator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// class RegisterPage displays a page for the user to register with Firestore
 /// If registered, the user can save and store data.
 /// Can also navigate to a new 'login' page if the user already has an account.
 class RegisterPage extends StatefulWidget {
-  RegisterPage({this.foodGroupDetails});
+  RegisterPage();
 
-  Map<String, dynamic> foodGroupDetails;
-
-  @override
+    @override
   _RegisterPageState createState() =>
-      new _RegisterPageState(foodGroupDetails: foodGroupDetails);
+      new _RegisterPageState();
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  _RegisterPageState({this.foodGroupDetails});
-
-  Map<String, dynamic> foodGroupDetails;
-
   final _emailTextFieldController = TextEditingController();
   final _passwordTextFieldController = TextEditingController();
   final _nameTextFieldController = TextEditingController();
@@ -73,7 +67,7 @@ class _RegisterPageState extends State<RegisterPage> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Text(
-                'Register With Us!',
+                'Register\nWith Us!',
                 textAlign: TextAlign.center,
                 style: Theme.of(context).accentTextTheme.headline,
               ),
@@ -188,7 +182,6 @@ class _RegisterPageState extends State<RegisterPage> {
                               const EdgeInsets.only(left: 20.0, right: 10.0),
                           child: Divider(
                             height: 36,
-                            color: Colors.transparent,
                           )),
                     ),
                     Text(
@@ -200,7 +193,6 @@ class _RegisterPageState extends State<RegisterPage> {
                               const EdgeInsets.only(left: 10.0, right: 20.0),
                           child: Divider(
                             height: 36,
-                            color: Colors.transparent,
                           )),
                     ),
                   ]),
@@ -228,9 +220,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   /// Builds the person's profile page
   Widget _buildProfilePage() {
-    return ProfilePage(
-      foodGroupDetails: foodGroupDetails,
-    );
+    return ProfilePage();
   }
 
   @override

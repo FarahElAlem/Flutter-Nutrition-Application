@@ -3,22 +3,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:nutrition_app_flutter/pages/profile/nutrientitemwidget.dart';
 import 'package:nutrition_app_flutter/pages/profile/recipeitemwidget.dart';
-import 'package:nutrition_app_flutter/structures/encrypt.dart';
+import 'package:nutrition_app_flutter/actions/encrypt.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfilePage extends StatefulWidget {
-  ProfilePage({this.firestore, this.currentUser, this.foodGroupDetails});
-
-  Map<String, dynamic> foodGroupDetails;
-
-  Firestore firestore;
-  FirebaseUser currentUser;
-
-  @override
-  _ProfilePageState createState() => new _ProfilePageState(
-      firestore: firestore,
-      currentUser: currentUser,
-      foodGroupDetails: foodGroupDetails);
+    @override
+  _ProfilePageState createState() => new _ProfilePageState();
 }
 
 class _ProfilePageState extends State<ProfilePage> {

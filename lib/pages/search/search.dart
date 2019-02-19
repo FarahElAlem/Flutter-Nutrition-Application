@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:nutrition_app_flutter/pages/search/details.dart';
-import 'package:nutrition_app_flutter/pages/search/foodgroupcard.dart';
+import 'package:material_search/material_search.dart';
 
 /// class Search represents a Stateful widget that can have multiple states:
 /// - Seeking / Searching:
@@ -9,19 +7,19 @@ import 'package:nutrition_app_flutter/pages/search/foodgroupcard.dart';
 /// - Result Gathering
 ///     - Result of a query gathered from Firebase that users can interact with.
 class Search extends StatefulWidget {
-  Search({this.foodGroupDetails});
+  Search({this.abbrevItems});
 
-  Map<String, dynamic> foodGroupDetails;
+  Map<String, dynamic> abbrevItems;
 
   @override
   _SearchState createState() =>
-      _SearchState(foodGroupDetails: foodGroupDetails);
+      _SearchState(abbrevItems: abbrevItems);
 }
 
 class _SearchState extends State<Search> {
-  _SearchState({this.foodGroupDetails});
+  _SearchState({this.abbrevItems});
 
-  Map<String, dynamic> foodGroupDetails;
+  Map<String, dynamic> abbrevItems;
 
   TextEditingController _searchController;
 
@@ -40,31 +38,16 @@ class _SearchState extends State<Search> {
   /// TODO make db images 256px or 128px
   @override
   Widget build(BuildContext context) {
-    return new Container(
-      padding: EdgeInsets.all(8.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          new Expanded(
-            child: new Container(
-              child: new StaggeredGridView.countBuilder(
-                crossAxisCount: 2,
-                itemCount: widget.foodGroupDetails.keys.length,
-                itemBuilder: ((BuildContext context, int index) {
-                  return FoodGroupCard(
-                    foodItemInformation:
-                        foodGroupDetails[foodGroupDetails.keys.toList()[index]],
-                  );
-                }),
-                staggeredTileBuilder: (int index) =>
-                    new StaggeredTile.count(1, 1),
-                mainAxisSpacing: 1.0,
-                crossAxisSpacing: 1.0,
-              ),
-            ),
-          )
-        ],
-      ),
+    return new MaterialSearch<String>(
+      placeholder: 'Search',
+      leading: Icon(Icons.search),
+      results: abbrevItems.keys.map((name) => new MaterialSearchResult<String>(
+        value: name, //The value must be of type <String>
+        text: name, //String that will be show in the list
+        subtitle: abbrevItems[name]['manufacturer'],
+        icon: Icons.fastfood,
+      )).toList(),
+
     );
   }
 }

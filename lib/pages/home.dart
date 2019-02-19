@@ -3,12 +3,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 import 'package:flutter/material.dart';
-import 'package:nutrition_app_flutter/demo/placeholder.dart';
-import 'package:nutrition_app_flutter/pages/dashboard/title.dart';
+import 'package:nutrition_app_flutter/pages/dialog/create_recipe.dart';
+import 'package:nutrition_app_flutter/pages/onboarding//title.dart';
 
 import 'package:nutrition_app_flutter/pages/profile/register.dart';
 import 'package:nutrition_app_flutter/pages/recipe/search.dart';
+import 'package:nutrition_app_flutter/pages/search/details.dart';
 import 'package:nutrition_app_flutter/pages/search/search.dart';
+
+import 'package:flutter/services.dart' show rootBundle;
 
 class Home extends StatefulWidget {
   Home({this.currentUser, this.firestore});
@@ -37,11 +40,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
 
   TextEditingController _searchController = new TextEditingController();
 
-  /// foodGroupDetails[key][0] = Number
-  /// foodGroupDetails[key][1] = Name
-  /// foodGroupDetails[key][2] = Description
-  /// foodGroupDetails[key][3] = URL
-  Map<String, dynamic> foodGroupDetails = new Map();
+  Map<String, dynamic> abbrevItems = new Map();
 
   /// List of children that define the pages that a user sees. WIP.
   List<Widget> _bodyChildren = [];
@@ -75,23 +74,32 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
 
   /// Gathers prerequisite data from the Cloud Firestore Database.
   Future<void> _gatherData() async {
-    QuerySnapshot foodGroupSnapshot = await Firestore.instance
-        .collection('FOODGROUP')
-        .orderBy('FdGrp_Desc')
-        .getDocuments();
+    String names = await rootBundle.loadString('assets/ABBREV_NAMES.txt');
+    String manuf = await rootBundle.loadString('assets/ABBREV_MANUF.txt');
 
-    for (DocumentSnapshot doc in foodGroupSnapshot.documents) {
-      var url = await widget.storage
-          .ref()
-          .child(doc['FdGrp_Desc'].replaceAll(' ', '').replaceAll('/', '') +
-              '.png')
-          .getDownloadURL();
-      foodGroupDetails[doc['Fd_Grp']] = {
-        'name': doc['FdGrp_Desc'],
-        'foodgroup': doc['Fd_Grp'],
-        'description': doc['Paragraph'],
-        'url': url.toString()
+    List<String> tempNames = names.split('\n');
+    List<String> tempManuf = manuf.split('\n');
+
+    for(int i = 0; i < tempNames.length; i++) {
+      abbrevItems[tempNames[i]] = {
+        'name': tempNames[i],
+        'manufacturer': tempManuf[i]
       };
+    }
+
+
+    controller = new TabController(length: 3, vsync: this);
+
+    // Define the children to the tabbed body here
+    _bodyChildren = [
+      Search(abbrevItems: abbrevItems),
+      ResultsSearchPage(),
+      RegisterPage()
+    ];
+
+    _ready = true;
+    if (mounted) {
+      setState(() {});
     }
   }
 
@@ -134,40 +142,52 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                         });
                       },
                     )
-                  : new Container()
+                  : new Container(),
+              new IconButton(icon: Icon(Icons.computer), onPressed: (){
+                Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => RecipeCreate()));
+              })
             ],
           )
-        : AppBar(backgroundColor: Colors.transparent, elevation: 0.0,);
+        : AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0.0,
+          );
   }
 
   Widget _buildDrawer(int _currentIndex, BuildContext context) {
     return _currentIndex < 2
-        ? Drawer(
-            child: ListView(
-              padding: EdgeInsets.zero,
-              children: <Widget>[
-                DrawerHeader(
-                  child: Text('Drawer Header'),
-                  decoration: BoxDecoration(
+        ? SizedBox(
+      width: 190.0,
+            child: Drawer(
+              child: ListView(
+                padding: EdgeInsets.zero,
+                children: <Widget>[
+                  DrawerHeader(
+                    child: Text('Drawer Header'),
+                    decoration:
+                        BoxDecoration(color: Theme.of(context).primaryColor),
                   ),
-                ),
-                ListTile(
-                  leading: Icon(Icons.settings),
-                  title: Text('Settings'),
-                  onTap: () {
-                    // Update the state of the app
-                    // ...
-                  },
-                ),
-                ListTile(
-                  leading: Icon(Icons.stop),
-                  title: Text('Logout'),
-                  onTap: () {
-                    // Update the state of the app
-                    // ...
-                  },
-                ),
-              ],
+                  ListTile(
+                    leading: Icon(Icons.settings),
+                    title: Text('Settings'),
+                    onTap: () {
+                      // Update the state of the app
+                      // ...
+                    },
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.exit_to_app),
+                    title: Text('Logout'),
+                    onTap: () {
+                      // Update the state of the app
+                      // ...
+                    },
+                  ),
+                ],
+              ),
             ),
           )
         : null;
@@ -177,47 +197,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   void initState() {
     super.initState();
 
-    controller = new TabController(length: 3, vsync: this);
-
-    // Define the children to the tabbed body here
-    _bodyChildren = [
-      Search(foodGroupDetails: foodGroupDetails),
-      ResultsSearchPage(),
-      RegisterPage(
-        foodGroupDetails: foodGroupDetails,
-      )
-    ];
-//    _bodyChildren = [
-//      Container(
-//        decoration: BoxDecoration(
-//            gradient: LinearGradient(colors: [
-//              Color.fromRGBO(8, 177, 139, 1.0),
-//              Color.fromRGBO(0, 91, 71, 1.0)
-//            ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
-//      ),
-//      Container(
-//        decoration: BoxDecoration(
-//            gradient: LinearGradient(colors: [
-//              Color.fromRGBO(8, 177, 139, 1.0),
-//              Color.fromRGBO(0, 91, 71, 1.0)
-//            ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
-//      ),
-//      Container(
-//        decoration: BoxDecoration(
-//            gradient: LinearGradient(colors: [
-//          Color.fromRGBO(8, 177, 139, 1.0),
-//          Color.fromRGBO(0, 91, 71, 1.0)
-//        ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
-//      )
-//    ];
-
-    _gatherData().whenComplete(() {
-      print(foodGroupDetails.toString());
-      _ready = true;
-      if (mounted) {
-        setState(() {});
-      }
-    });
+    _gatherData();
   }
 
   @override
@@ -240,8 +220,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
             ),
             bottomNavigationBar: new Material(
               child: Theme(
-                data: Theme.of(context).copyWith(
-                ),
+                data: Theme.of(context).copyWith(),
                 child: new BottomNavigationBar(
                   type: BottomNavigationBarType.fixed,
                   onTap: onTabTapped,
