@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:nutrition_app_flutter/pages/profile/profile.dart';
-import 'package:nutrition_app_flutter/pages/recipe/itemwidget.dart';
+import 'package:nutrition_app_flutter/pages/recipe/recipelisttile.dart';
 //import 'package:nutrition_app_flutter/pages/profile /profile.dart';
 
 class BrowseRecipePage extends StatefulWidget {
@@ -29,13 +29,15 @@ class _BrowseRecipePageState extends State<BrowseRecipePage> {
     List<Widget> items = new List();
     for (final DocumentSnapshot snapshot in querySnapshot.documents) {
       Map<String, dynamic> data = snapshot.data;
-      items.add(ItemWidget(ds: snapshot));
+      items.add(RecipeListTile(ds: snapshot));
     }
     items.add(Align(alignment: Alignment.center, child: CircularProgressIndicator(),));
     _ready = true;
-    setState(() {
-      _browseItems.addAll(items);
-    });
+    if(mounted) {
+      setState(() {
+        _browseItems.addAll(items);
+      });
+    }
   }
 
   Future<void> _fetchFromLast() async {
@@ -54,18 +56,20 @@ class _BrowseRecipePageState extends State<BrowseRecipePage> {
     List<Widget> items = new List();
     for (final DocumentSnapshot snapshot in querySnapshot.documents) {
       Map<String, dynamic> data = snapshot.data;
-      items.add(ItemWidget(ds: snapshot));
+      items.add(RecipeListTile(ds: snapshot));
     }
     items.add(Align(alignment: Alignment.center, child: CircularProgressIndicator(),));
     print('Length of BrowseItems: ' + _browseItems.length.toString());
-    setState(() {
-      _browseItems.addAll(items);
-    });
+    if(mounted) {
+      setState(() {
+        _browseItems.addAll(items);
+      });
+    }
   }
 
   void _scrollListener() async {
     if (_nomore) return;
-    if (_controller.position.pixels == _controller.position.maxScrollExtent &&
+    if (_controller.position.pixels >= _controller.position.maxScrollExtent/1.25 &&
         _isFetching == false) {
       _isFetching = true;
       await _fetchFromLast();
@@ -84,6 +88,7 @@ class _BrowseRecipePageState extends State<BrowseRecipePage> {
   Widget build(BuildContext context) {
     return (_ready)
         ? Container(
+      padding: EdgeInsets.all(8.0),
         child: ListView.builder(
           controller: _controller,
           itemCount: _browseItems.length,

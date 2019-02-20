@@ -11,6 +11,14 @@ class UserCache {
     favoriteRecipes.add(item);
   }
 
+  void addAllToFavoriteNutrients (List<Map<String, dynamic>> item) {
+    favoriteNutrients.addAll(item);
+  }
+
+  void addAllToFavoriteRecipes (List<Map<String, dynamic>> item) {
+    favoriteRecipes.addAll(item);
+  }
+
   List<Map<String, dynamic>> getFavoriteNutrients() {
     return favoriteNutrients;
   }

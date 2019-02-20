@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:nutrition_app_flutter/pages/recipe/itemwidget.dart';
+import 'package:nutrition_app_flutter/pages/recipe/recipelisttile.dart';
 import 'package:nutrition_app_flutter/actions/encrypt.dart';
 
 /// UI incomplete, details attempts to show nutrition details of some FoodItem
@@ -348,7 +348,7 @@ class _SearchDetailsState extends State<SearchDetails> {
               itemCount: objs.length,
               itemBuilder: (context, index) {
                 DocumentSnapshot ds = objs[index];
-                return ItemWidget(ds: ds);
+                return RecipeListTile(ds: ds);
               }),
     );
   }

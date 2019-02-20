@@ -33,7 +33,7 @@ class _NutrientItemWidgetState extends State<NutrientItemWidget> {
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => FoodGroupDetails(
+                  builder: (context) => NutritionItemDetails(
 //                        foodItem: FoodItem(widget.ds),
                       )));
         },

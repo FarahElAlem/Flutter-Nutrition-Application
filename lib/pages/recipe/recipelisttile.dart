@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:nutrition_app_flutter/pages/recipe/details.dart';
 
-class ItemWidget extends StatefulWidget {
-  ItemWidget({this.ds});
+class RecipeListTile extends StatefulWidget {
+  RecipeListTile({this.ds});
 
   var ds;
 
   @override
-  _ItemWidgetState createState() => _ItemWidgetState();
+  _RecipeListTileState createState() => _RecipeListTileState();
 }
 
-class _ItemWidgetState extends State<ItemWidget> {
+class _RecipeListTileState extends State<RecipeListTile> {
   Image _image;
   bool _loading;
 
@@ -42,31 +42,35 @@ class _ItemWidgetState extends State<ItemWidget> {
                           recipeItem: widget.ds,
                         )));
           },
-          leading: AspectRatio(
-            aspectRatio: 1,
-            child: (_loading)
-                ? Material(
-                    child: Center(
-                      child: CircularProgressIndicator(),
+          leading: ConstrainedBox(
+            constraints: BoxConstraints.tight(Size(64, 64)),
+            child: AspectRatio(
+              aspectRatio: 1,
+              child: (_loading)
+                  ? Material(
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              )
+                  : Hero(
+                  tag: widget.ds['name'],
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(5.0),
+                    child: Image.network(
+                      widget.ds['image'],
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                      height: double.infinity,
                     ),
-                  )
-                : Hero(
-                    tag: widget.ds['name'],
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(5.0),
-                      child: Image.network(
-                        widget.ds['image'],
-                        fit: BoxFit.cover,
-                        width: double.infinity,
-                        height: double.infinity,
-                      ),
-                    )),
+                  )),
+            ),
           ),
           title: Text(widget.ds['name'], style: Theme.of(context).accentTextTheme.title,),
           subtitle: Text(
             widget.ds['subcategory'],
             maxLines: 3,
           ),
+          trailing: IconButton(icon: Icon(Icons.favorite_border), onPressed: (){}),
           contentPadding: EdgeInsets.all(8.0),
         ),
       ),

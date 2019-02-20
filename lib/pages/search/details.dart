@@ -1,24 +1,24 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:nutrition_app_flutter/pages/search/foodgroupinfo.dart';
+import 'package:nutrition_app_flutter/pages/legacy/foodgroupinfo.dart';
 import 'package:nutrition_app_flutter/actions/encrypt.dart';
 import 'package:nutrition_app_flutter/storage/fooditem.dart';
 
 /// UI incomplete, details attempts to show nutrition details of some FoodItem
 /// as a Dialog
-class FoodGroupDetails extends StatefulWidget {
-  FoodGroupDetails({this.itemKey});
+class NutritionItemDetails extends StatefulWidget {
+  NutritionItemDetails({this.itemKey});
 
   String itemKey;
 
   @override
-  _FoodGroupDetailsState createState() =>
-      new _FoodGroupDetailsState(itemKey: itemKey);
+  _NutritionItemDetailstate createState() =>
+      new _NutritionItemDetailstate(itemKey: itemKey);
 }
 
-class _FoodGroupDetailsState extends State<FoodGroupDetails> {
-  _FoodGroupDetailsState({this.itemKey});
+class _NutritionItemDetailstate extends State<NutritionItemDetails> {
+  _NutritionItemDetailstate({this.itemKey});
 
   String itemKey;
   DocumentSnapshot documentSnapshot;
@@ -616,92 +616,6 @@ class _FoodGroupDetailsState extends State<FoodGroupDetails> {
               ),
             )
           : SplashScreenAuth(),
-    );
-  }
-}
-
-class SearchDetails extends StatefulWidget {
-  SearchDetails({this.query});
-
-  bool _loading = true;
-  FirebaseUser currentUser;
-  var userNutrients;
-
-  void gatherData() async {
-    currentUser = await FirebaseAuth.instance.currentUser();
-    userNutrients = (!currentUser.isAnonymous)
-        ? await Firestore.instance
-            .collection('USERS')
-            .document(Encrypt().encrypt(currentUser.email))
-            .collection('NUTRIENTS')
-            .getDocuments()
-        : null;
-    _loading = false;
-  }
-
-  String query;
-
-  @override
-  State<StatefulWidget> createState() {
-    gatherData();
-    return new _SearchDetailsState();
-  }
-}
-
-class _SearchDetailsState extends State<SearchDetails> {
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(backgroundColor: Colors.transparent, elevation: 0.0),
-      body: (!widget._loading)
-          ? Center(
-              child: CircularProgressIndicator(),
-            )
-          : Container(
-              child: new StreamBuilder(
-                stream: Firestore.instance
-                    .collection('ABBREV')
-                    .orderBy('description')
-                    .where('tokens', arrayContains: widget.query.toLowerCase())
-                    .snapshots(),
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData) {
-                    return SplashScreenAuth();
-                  } else {
-                    List<dynamic> verifiedDocs = new List();
-                    var docs = snapshot.data.documents;
-                    for (int i = 0; i < docs.length; i++) {
-                      if (docs[i]['description']
-                          .toString()
-                          .toLowerCase()
-                          .contains(widget.query.toLowerCase())) {
-                        verifiedDocs.add(docs[i]);
-                      }
-                    }
-                    return (verifiedDocs.length > 0)
-                        ? new ListView.builder(
-                            padding: EdgeInsets.all(8.0),
-                            itemCount: verifiedDocs.length,
-                            itemBuilder: (context, index) {
-                              DocumentSnapshot ds = verifiedDocs[index];
-                              FoodItem foodItem = FoodItem(ds);
-                              return new ListItem(
-                                foodItem: foodItem,
-                              );
-                            })
-                        : Center(
-                            child: Text(
-                            'No Items Found',
-                          ));
-                  }
-                },
-              ),
-            ),
     );
   }
 }

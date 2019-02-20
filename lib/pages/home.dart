@@ -82,22 +82,17 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
     List<String> tempNames = names.split('\n');
     List<String> tempManuf = manuf.split('\n');
 
-    for(int i = 0; i < tempNames.length; i++) {
+    for (int i = 0; i < tempNames.length; i++) {
       abbrevItems[tempNames[i]] = {
         'name': tempNames[i],
         'manufacturer': tempManuf[i]
       };
     }
 
-
     controller = new TabController(length: 3, vsync: this);
 
     // Define the children to the tabbed body here
-    _bodyChildren = [
-      BrowseNutrientPage(),
-      BrowseRecipePage(),
-      RegisterPage()
-    ];
+    _bodyChildren = [BrowseNutrientPage(), BrowseRecipePage(), RegisterPage()];
 
     _ready = true;
     if (mounted) {
@@ -123,21 +118,17 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                   ? IconButton(
                       icon: _searchIcon,
                       onPressed: () {
-                        if(_currentIndex == 0) {
+                        if (_currentIndex == 0) {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => Search(abbrevItems: abbrevItems,)));
+                                  builder: (context) => Search(
+                                        abbrevItems: abbrevItems,
+                                      )));
                         }
                       },
                     )
-                  : new Container(),
-              new IconButton(icon: Icon(Icons.computer), onPressed: (){
-                Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => RecipeCreate()));
-              })
+                  : new Container()
             ],
           )
         : AppBar(
@@ -149,7 +140,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   Widget _buildDrawer(int _currentIndex, BuildContext context) {
     return _currentIndex < 2
         ? SizedBox(
-      width: 190.0,
+            width: 190.0,
             child: Drawer(
               child: ListView(
                 padding: EdgeInsets.zero,
@@ -201,6 +192,18 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
         ? new VideoApp()
         : new Scaffold(
             appBar: _buildDashboardAppBar(_currentIndex, context),
+            floatingActionButton: (_currentIndex == 1)
+                ? FloatingActionButton.extended(
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => RecipeCreate()));
+                    },
+                    icon: Icon(Icons.create),
+              label: Text('Create\nRecipe'),
+                  )
+                : null,
             drawer: _buildDrawer(_currentIndex, context),
             body: new TabBarView(
               physics: new NeverScrollableScrollPhysics(),

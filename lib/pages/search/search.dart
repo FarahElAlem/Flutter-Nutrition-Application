@@ -38,16 +38,16 @@ class _SearchState extends State<Search> {
   /// TODO make db images 256px or 128px
   @override
   Widget build(BuildContext context) {
-    return new MaterialSearch<String>(
-      placeholder: 'Search',
-      leading: Icon(Icons.search),
-      results: abbrevItems.keys.map((name) => new MaterialSearchResult<String>(
-        value: name, //The value must be of type <String>
-        text: name, //String that will be show in the list
-        subtitle: abbrevItems[name]['manufacturer'],
-        icon: Icons.fastfood,
-      )).toList(),
-
-    );
+//    return new MaterialSearch<String>(
+//      placeholder: 'Search',
+//      leading: Icon(Icons.search),
+//      results: abbrevItems.keys.map((name) => new MaterialSearchResult<String>(
+//        value: name, //The value must be of type <String>
+//        text: name, //String that will be show in the list
+//        subtitle: abbrevItems[name]['manufacturer'],
+//        icon: Icons.fastfood,
+//      )).toList(),
+//
+//    );
   }
 }

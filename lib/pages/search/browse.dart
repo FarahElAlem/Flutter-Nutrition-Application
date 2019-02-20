@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:nutrition_app_flutter/pages/profile/profile.dart';
+import 'package:nutrition_app_flutter/pages/search/nutrientlisttile.dart';
 //import 'package:nutrition_app_flutter/pages/profile /profile.dart';
 
 class BrowseNutrientPage extends StatefulWidget {
@@ -28,19 +29,12 @@ class _BrowseNutrientPageState extends State<BrowseNutrientPage> {
     _lastDocument = querySnapshot.documents.last;
     List<Widget> items = new List();
     for (final DocumentSnapshot snapshot in querySnapshot.documents) {
-      Map<String, dynamic> data = snapshot.data;
-      items.add(ListTile(
-        title: Text(
-          data['description'],
-          style: Theme.of(context).accentTextTheme.title,
-        ),
-        subtitle: Text(
-          data['manufacturer'],
-          style: Theme.of(context).accentTextTheme.subtitle,
-        ),
-      ));
+      items.add(NutrientListTile(ds: snapshot));
     }
-    items.add(Align(alignment: Alignment.center, child: CircularProgressIndicator(),));
+    items.add(Align(
+      alignment: Alignment.center,
+      child: CircularProgressIndicator(),
+    ));
     _ready = true;
     setState(() {
       _browseItems.addAll(items);
@@ -62,19 +56,12 @@ class _BrowseNutrientPageState extends State<BrowseNutrientPage> {
     _lastDocument = querySnapshot.documents.last;
     List<Widget> items = new List();
     for (final DocumentSnapshot snapshot in querySnapshot.documents) {
-      Map<String, dynamic> data = snapshot.data;
-      items.add(ListTile(
-        title: Text(
-          data['description'],
-          style: Theme.of(context).accentTextTheme.title,
-        ),
-        subtitle: Text(
-          data['manufacturer'],
-          style: Theme.of(context).accentTextTheme.subtitle,
-        ),
-      ));
+      items.add(NutrientListTile(ds: snapshot));
     }
-    items.add(Align(alignment: Alignment.center, child: CircularProgressIndicator(),));
+    items.add(Align(
+      alignment: Alignment.center,
+      child: CircularProgressIndicator(),
+    ));
     print('Length of BrowseItems: ' + _browseItems.length.toString());
     setState(() {
       _browseItems.addAll(items);
@@ -83,7 +70,7 @@ class _BrowseNutrientPageState extends State<BrowseNutrientPage> {
 
   void _scrollListener() async {
     if (_nomore) return;
-    if (_controller.position.pixels == _controller.position.maxScrollExtent &&
+    if (_controller.position.pixels == _controller.position.maxScrollExtent/1.25 &&
         _isFetching == false) {
       _isFetching = true;
       await _fetchFromLast();
@@ -102,13 +89,14 @@ class _BrowseNutrientPageState extends State<BrowseNutrientPage> {
   Widget build(BuildContext context) {
     return (_ready)
         ? Container(
+            padding: EdgeInsets.all(8.0),
             child: ListView.builder(
-            controller: _controller,
-            itemCount: _browseItems.length,
-            itemBuilder: (BuildContext context, int index) {
-              return _browseItems[index];
-            },
-          ))
+              controller: _controller,
+              itemCount: _browseItems.length,
+              itemBuilder: (BuildContext context, int index) {
+                return _browseItems[index];
+              },
+            ))
         : SplashScreenAuth();
   }
 }
