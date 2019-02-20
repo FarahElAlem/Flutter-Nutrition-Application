@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter/material.dart';
 import 'package:nutrition_app_flutter/actions/encrypt.dart';
+import 'package:nutrition_app_flutter/actions/usercache.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:nutrition_app_flutter/pages/home.dart';
 
@@ -15,7 +16,16 @@ Future<void> main() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   String _email = (Encrypt().decrypt(prefs.getString('email')) ?? '');
   String _password = (Encrypt().decrypt(prefs.getString('password')) ?? '');
+
   FirebaseUser currentUser = await signInWithFirestore(_email, _password);
+
+  UserCache userCache = new UserCache();
+
+  if (!currentUser.isAnonymous) {
+    QuerySnapshot snapshot = await Firestore.instance.collection('USERS').where('email', isEqualTo: _email).getDocuments();
+    Map<String, dynamic> userData = snapshot.documents[0].data;
+  }
+
 
   Firestore firestore = Firestore.instance;
   await firestore.settings(timestampsInSnapshotsEnabled: true);

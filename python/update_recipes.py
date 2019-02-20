@@ -15,12 +15,22 @@ firebase_admin.initialize_app(cred, {
 
 firestore = firestore.client()
 
-data = open('data/RECIPES2.json').read()
-parsed_json = json.loads(data)
+# data = open('data/RECIPES2.json').read()
+# parsed_json = json.loads(data)
+#
+# for item in parsed_json:
+#     print(item)
+#     firestore.collection(u'RECIPES').document().set(item)
 
-for item in parsed_json:
-    print(item)
-    firestore.collection(u'RECIPES').document().set(item)
+out = []
+docs = firestore.collection(u'RECIPES').get()
+for doc in docs:
+    d = doc.to_dict()
+    out.append(d['subcategory'])
+
+
+with open('RECIPES_CATEG.txt', 'w') as outfile:
+    outfile.write('\n'.join(out))
 
 #
 # cur = []

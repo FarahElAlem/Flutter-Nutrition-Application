@@ -7,7 +7,9 @@ import 'package:nutrition_app_flutter/pages/dialog/create_recipe.dart';
 import 'package:nutrition_app_flutter/pages/onboarding//title.dart';
 
 import 'package:nutrition_app_flutter/pages/profile/register.dart';
+import 'package:nutrition_app_flutter/pages/recipe/browse.dart';
 import 'package:nutrition_app_flutter/pages/recipe/search.dart';
+import 'package:nutrition_app_flutter/pages/search/browse.dart';
 import 'package:nutrition_app_flutter/pages/search/details.dart';
 import 'package:nutrition_app_flutter/pages/search/search.dart';
 
@@ -92,8 +94,8 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
 
     // Define the children to the tabbed body here
     _bodyChildren = [
-      Search(abbrevItems: abbrevItems),
-      ResultsSearchPage(),
+      BrowseNutrientPage(),
+      BrowseRecipePage(),
       RegisterPage()
     ];
 
@@ -121,25 +123,12 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                   ? IconButton(
                       icon: _searchIcon,
                       onPressed: () {
-                        setState(() {
-                          this._lastIndex = _currentIndex;
-                          if (this._searchIcon.icon == Icons.search) {
-                            this._searching = true;
-                            this._searchIcon = new Icon(Icons.close);
-                            this._appBarTitle = new TextField(
-                              controller: _searchController,
-                              decoration: new InputDecoration(
-                                  prefixIcon: Icon(Icons.search),
-                                  hintText: 'Search...'),
-                            );
-                          } else {
-                            this._searching = false;
-                            this._searchIcon = new Icon(Icons.search);
-                            this._appBarTitle = new Text(
-                              _appBarTitles[_currentIndex],
-                            );
-                          }
-                        });
+                        if(_currentIndex == 0) {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => Search(abbrevItems: abbrevItems,)));
+                        }
                       },
                     )
                   : new Container(),
