@@ -140,8 +140,7 @@ Future<void> main() async {
               letterSpacing: 0.4)),
     ),
     home: new Home(
-      currentUser: currentUser,
-      firestore: firestore,
+      userCache: userCache,
     ),
     routes: <String, WidgetBuilder>{
       '/Home': (BuildContext context) => new Home()

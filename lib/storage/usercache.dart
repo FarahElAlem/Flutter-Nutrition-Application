@@ -1,29 +1,48 @@
-
 class UserCache {
-  List<Map<String, dynamic>> favoriteNutrients = new List<Map<String, dynamic>>();
-  List<Map<String, dynamic>> favoriteRecipes = new List<Map<String, dynamic>>();
+  Map<String, dynamic> favoriteNutrients = new Map<String, dynamic>();
+  Map<String, dynamic> favoriteRecipes = new Map<String, dynamic>();
 
-  void addToFavoriteNutrients (Map<String, dynamic> item) {
-    favoriteNutrients.add(item);
+  void addToFavoriteNutrients(Map<String, dynamic> item) {
+    favoriteNutrients[item['description']] = item;
   }
 
-  void addToFavoriteRecipes (Map<String, dynamic> item) {
-    favoriteRecipes.add(item);
+  void addToFavoriteRecipes(Map<String, dynamic> item) {
+    favoriteRecipes[item['name']] = item;
   }
 
-  void addAllToFavoriteNutrients (List<Map<String, dynamic>> item) {
-    favoriteNutrients.addAll(item);
+  void addAllToFavoriteNutrients(List<Map<String, dynamic>> item) {
+    for (int i = 0; i < item.length; i++) {
+      favoriteNutrients[item[i]['description']] = item[i];
+    }
   }
 
-  void addAllToFavoriteRecipes (List<Map<String, dynamic>> item) {
-    favoriteRecipes.addAll(item);
+  void addAllToFavoriteRecipes(List<Map<String, dynamic>> item) {
+    for (int i = 0; i < item.length; i++) {
+      favoriteRecipes[item[i]['name']] = item[i];
+    }
   }
 
-  List<Map<String, dynamic>> getFavoriteNutrients() {
+  void removeFromFavoriteNutrients(String key) {
+    favoriteNutrients[key] = null;
+  }
+
+  void removeFromFavoriteRecipes(String key) {
+    favoriteRecipes[key] = null;
+  }
+
+  bool isInFavoriteNutrients(String key) {
+    return favoriteNutrients.keys.contains(key) == null;
+  }
+
+  bool isInFavoriteRecipes(String key) {
+    return favoriteRecipes.keys.contains(key) == null;
+  }
+
+  Map<String, dynamic> getFavoriteNutrients() {
     return favoriteNutrients;
   }
 
-  List<Map<String, dynamic>> getFavoriteRecipes() {
+  Map<String, dynamic> getFavoriteRecipes() {
     return favoriteRecipes;
   }
 }

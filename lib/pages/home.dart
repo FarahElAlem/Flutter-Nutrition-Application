@@ -1,5 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 import 'package:flutter/material.dart';
@@ -8,20 +6,19 @@ import 'package:nutrition_app_flutter/pages/onboarding//title.dart';
 
 import 'package:nutrition_app_flutter/pages/profile/register.dart';
 import 'package:nutrition_app_flutter/pages/recipe/browse.dart';
-import 'package:nutrition_app_flutter/pages/recipe/search.dart';
 import 'package:nutrition_app_flutter/pages/search/browse.dart';
-import 'package:nutrition_app_flutter/pages/search/details.dart';
 import 'package:nutrition_app_flutter/pages/search/search.dart';
 
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:nutrition_app_flutter/storage/usercache.dart';
 
 class Home extends StatefulWidget {
-  Home({this.currentUser, this.firestore});
+  Home({this.userCache});
 
-  Firestore firestore;
   final FirebaseStorage storage = FirebaseStorage(
       storageBucket: 'gs://nutrition-app-flutter-5260f.appspot.com');
-  FirebaseUser currentUser;
+
+  final UserCache userCache;
 
   @override
   _HomeState createState() => new _HomeState();
@@ -92,7 +89,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
     controller = new TabController(length: 3, vsync: this);
 
     // Define the children to the tabbed body here
-    _bodyChildren = [BrowseNutrientPage(), BrowseRecipePage(), RegisterPage()];
+    _bodyChildren = [BrowseNutrientPage(userCache: widget.userCache,), BrowseRecipePage(userCache: widget.userCache,), RegisterPage()];
 
     _ready = true;
     if (mounted) {

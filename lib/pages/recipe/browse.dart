@@ -2,9 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:nutrition_app_flutter/pages/profile/profile.dart';
 import 'package:nutrition_app_flutter/pages/recipe/recipelisttile.dart';
-//import 'package:nutrition_app_flutter/pages/profile /profile.dart';
+import 'package:nutrition_app_flutter/storage/usercache.dart';
 
 class BrowseRecipePage extends StatefulWidget {
+  BrowseRecipePage({this.userCache});
+
+  final UserCache userCache;
+
   @override
   _BrowseRecipePageState createState() => _BrowseRecipePageState();
 }
@@ -29,7 +33,7 @@ class _BrowseRecipePageState extends State<BrowseRecipePage> {
     List<Widget> items = new List();
     for (final DocumentSnapshot snapshot in querySnapshot.documents) {
       Map<String, dynamic> data = snapshot.data;
-      items.add(RecipeListTile(ds: snapshot));
+      items.add(RecipeListTile(ds: snapshot, userCache: widget.userCache,));
     }
     items.add(Align(alignment: Alignment.center, child: CircularProgressIndicator(),));
     _ready = true;
@@ -56,7 +60,7 @@ class _BrowseRecipePageState extends State<BrowseRecipePage> {
     List<Widget> items = new List();
     for (final DocumentSnapshot snapshot in querySnapshot.documents) {
       Map<String, dynamic> data = snapshot.data;
-      items.add(RecipeListTile(ds: snapshot));
+      items.add(RecipeListTile(ds: snapshot, userCache: widget.userCache));
     }
     items.add(Align(alignment: Alignment.center, child: CircularProgressIndicator(),));
     print('Length of BrowseItems: ' + _browseItems.length.toString());

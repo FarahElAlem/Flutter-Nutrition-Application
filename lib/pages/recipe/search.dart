@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:nutrition_app_flutter/pages/recipe/details.dart';
 import 'package:nutrition_app_flutter/pages/recipe/recipelisttile.dart';
 
 class ResultsSearchPage extends StatefulWidget {
