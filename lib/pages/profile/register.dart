@@ -3,28 +3,24 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:nutrition_app_flutter/pages/profile/login.dart';
 import 'package:nutrition_app_flutter/pages/profile/profile.dart';
-import 'package:nutrition_app_flutter/structures/encrypt.dart';
-import 'package:nutrition_app_flutter/structures/validator.dart';
+import 'package:nutrition_app_flutter/actions/encrypt.dart';
+import 'package:nutrition_app_flutter/actions/validator.dart';
+import 'package:nutrition_app_flutter/storage/usercache.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// class RegisterPage displays a page for the user to register with Firestore
 /// If registered, the user can save and store data.
 /// Can also navigate to a new 'login' page if the user already has an account.
 class RegisterPage extends StatefulWidget {
-  RegisterPage({this.foodGroupDetails});
+  RegisterPage({this.userCache});
 
-  Map<String, dynamic> foodGroupDetails;
+  final UserCache userCache;
 
   @override
-  _RegisterPageState createState() =>
-      new _RegisterPageState(foodGroupDetails: foodGroupDetails);
+  _RegisterPageState createState() => new _RegisterPageState();
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  _RegisterPageState({this.foodGroupDetails});
-
-  Map<String, dynamic> foodGroupDetails;
-
   final _emailTextFieldController = TextEditingController();
   final _passwordTextFieldController = TextEditingController();
   final _nameTextFieldController = TextEditingController();
@@ -48,100 +44,53 @@ class _RegisterPageState extends State<RegisterPage> {
     await FirebaseAuth.instance
         .createUserWithEmailAndPassword(email: email, password: password);
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString('email', Encrypt().encrypt(email));
-    prefs.setString('password', Encrypt().encrypt(password));
+    prefs.setString('email', email);
+    prefs.setString('password', password);
+    prefs.setString('name', name);
 
     Map<String, Object> data = Map();
-    data['email'] = Encrypt().encrypt(email);
-    data['password'] = Encrypt().encrypt(password);
-    data['name'] = Encrypt().encrypt(name);
+    data['email'] = email;
+    data['password'] = password;
+    data['name'] = name;
 
-    Firestore.instance
-        .collection('USERS')
-        .document(Encrypt().encrypt(email))
-        .setData(data);
+    Firestore.instance.collection('USERS').document(email).setData(data);
   }
 
   /// Builds the page for the user to register with
   Widget _buildRegisterPage() {
-    return Container(
-      padding: EdgeInsets.only(left: 32.0, right: 32.0),
-      child: Form(
-          key: _formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Text(
-                'Register With Us!',
-                textAlign: TextAlign.center,
-                style: Theme.of(context).accentTextTheme.headline,
-              ),
-              Divider(
-                color: Colors.transparent,
-              ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  TextFormField(
-                    validator: (value) {
-                      String s = Validator().validateName(value);
-                      if (s != null) {
-                        return s;
-                      }
-                    },
-                    controller: _nameTextFieldController,
-                    style: Theme.of(context).accentTextTheme.body1,
-                    decoration: InputDecoration(
-                      labelText: 'Name',
-                      labelStyle: TextStyle(
-                          fontFamily: 'Roboto',
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.w400,
-                          letterSpacing: 0.15),
-                    ),
-                    keyboardType: TextInputType.text,
-                  ),
-                  Divider(
-                    height: 28.0,
-                    color: Colors.transparent,
-                  ),
-                  TextFormField(
-                    validator: (value) {
-                      String s = Validator().validateEmail(value);
-                      if (s != null) {
-                        return s;
-                      }
-                    },
-                    controller: _emailTextFieldController,
-                    style: Theme.of(context).accentTextTheme.body1,
-                    decoration: InputDecoration(
-                      labelText: 'Email',
-                      labelStyle: TextStyle(
-                          fontFamily: 'Roboto',
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.w400,
-                          letterSpacing: 0.15),
-                    ),
-                    keyboardType: TextInputType.emailAddress,
-                  ),
-                  Divider(
-                    height: 28.0,
-                    color: Colors.transparent,
-                  ),
-                  Container(
-                    child: TextFormField(
+    return SingleChildScrollView(
+      child: Container(
+        padding: EdgeInsets.only(left: 32.0, right: 32.0),
+        child: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Text(
+                  'Register\nWith Us!',
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).accentTextTheme.headline,
+                ),
+                Divider(
+                  color: Colors.transparent,
+                  height: 60.0,
+                ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    TextFormField(
                       validator: (value) {
-                        String s = Validator().validatePassword(value);
+                        String s = Validator().validateName(value);
                         if (s != null) {
                           return s;
                         }
                       },
-                      controller: _passwordTextFieldController,
+                      controller: _nameTextFieldController,
                       style: Theme.of(context).accentTextTheme.body1,
                       decoration: InputDecoration(
-                        labelText: 'Password',
+                        labelText: 'Name',
                         labelStyle: TextStyle(
                             fontFamily: 'Roboto',
                             fontSize: 20.0,
@@ -149,88 +98,134 @@ class _RegisterPageState extends State<RegisterPage> {
                             letterSpacing: 0.15),
                       ),
                       keyboardType: TextInputType.text,
-                      obscureText: true,
                     ),
-                  ),
-                ],
-              ),
-              Divider(
-                color: Colors.transparent,
-              ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  SizedBox(
-                    width: double.infinity,
-                    child: OutlineButton(
-                        onPressed: () {
-                          /// onPressed(): If the form is valid, handle new user register
-                          if (_formKey.currentState.validate()) {
-                            _handleAccountCreation(
-                                _emailTextFieldController.text,
-                                _passwordTextFieldController.text,
-                                _nameTextFieldController.text);
-                            Scaffold.of(context).showSnackBar(SnackBar(
-                                content: Text('Creating New Account')));
+                    Divider(
+                      height: 28.0,
+                      color: Colors.transparent,
+                    ),
+                    TextFormField(
+                      validator: (value) {
+                        String s = Validator().validateEmail(value);
+                        if (s != null) {
+                          return s;
+                        }
+                      },
+                      controller: _emailTextFieldController,
+                      style: Theme.of(context).accentTextTheme.body1,
+                      decoration: InputDecoration(
+                        labelText: 'Email',
+                        labelStyle: TextStyle(
+                            fontFamily: 'Roboto',
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.w400,
+                            letterSpacing: 0.15),
+                      ),
+                      keyboardType: TextInputType.emailAddress,
+                    ),
+                    Divider(
+                      height: 28.0,
+                      color: Colors.transparent,
+                    ),
+                    Container(
+                      child: TextFormField(
+                        validator: (value) {
+                          String s = Validator().validatePassword(value);
+                          if (s != null) {
+                            return s;
                           }
                         },
-                        child: Text(
-                          'Register',
+                        controller: _passwordTextFieldController,
+                        style: Theme.of(context).accentTextTheme.body1,
+                        decoration: InputDecoration(
+                          labelText: 'Password',
+                          labelStyle: TextStyle(
+                              fontFamily: 'Roboto',
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.w400,
+                              letterSpacing: 0.15),
                         ),
-                        shape: new RoundedRectangleBorder(
-                            borderRadius: new BorderRadius.circular(5.0))),
-                  ),
-                  Row(children: <Widget>[
-                    Expanded(
-                      child: new Container(
-                          margin:
-                              const EdgeInsets.only(left: 20.0, right: 10.0),
-                          child: Divider(
-                            height: 36,
-                            color: Colors.transparent,
-                          )),
+                        keyboardType: TextInputType.text,
+                        obscureText: true,
+                      ),
                     ),
-                    Text(
-                      'OR',
+                  ],
+                ),
+                Divider(
+                  color: Colors.transparent,
+                  height: 60.0,
+                ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    SizedBox(
+                      width: double.infinity,
+                      child: OutlineButton(
+                          color: Theme.of(context).primaryColor,
+                          onPressed: () {
+                            /// onPressed(): If the form is valid, handle new user register
+                            if (_formKey.currentState.validate()) {
+                              _handleAccountCreation(
+                                  _emailTextFieldController.text,
+                                  _passwordTextFieldController.text,
+                                  _nameTextFieldController.text);
+                              Scaffold.of(context).showSnackBar(SnackBar(
+                                  content: Text('Creating New Account')));
+                            }
+                          },
+                          child: Text(
+                            'Register',
+                          ),
+                          shape: new RoundedRectangleBorder(
+                              borderRadius: new BorderRadius.circular(5.0))),
                     ),
-                    Expanded(
-                      child: new Container(
-                          margin:
-                              const EdgeInsets.only(left: 10.0, right: 20.0),
-                          child: Divider(
-                            height: 36,
-                            color: Colors.transparent,
-                          )),
-                    ),
-                  ]),
-                  SizedBox(
-                    width: double.infinity,
-                    child: OutlineButton(
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => LoginPage()));
-                        },
-                        child: Text(
-                          'Already Have An Account?',
-                        ),
-                        shape: new RoundedRectangleBorder(
-                            borderRadius: new BorderRadius.circular(5.0))),
-                  )
-                ],
-              )
-            ],
-          )),
+                    Row(children: <Widget>[
+                      Expanded(
+                        child: new Container(
+                            margin:
+                                const EdgeInsets.only(left: 20.0, right: 10.0),
+                            child: Divider(
+                              height: 36,
+                            )),
+                      ),
+                      Text(
+                        'OR',
+                      ),
+                      Expanded(
+                        child: new Container(
+                            margin:
+                                const EdgeInsets.only(left: 10.0, right: 20.0),
+                            child: Divider(
+                              height: 36,
+                            )),
+                      ),
+                    ]),
+                    SizedBox(
+                      width: double.infinity,
+                      child: OutlineButton(
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => LoginPage()));
+                          },
+                          child: Text(
+                            'Already Have An Account?',
+                          ),
+                          shape: new RoundedRectangleBorder(
+                              borderRadius: new BorderRadius.circular(5.0))),
+                    )
+                  ],
+                )
+              ],
+            )),
+      ),
     );
   }
 
   /// Builds the person's profile page
   Widget _buildProfilePage() {
-    return ProfilePage(
-      foodGroupDetails: foodGroupDetails,
-    );
+    return ProfilePage(userCache: widget.userCache);
   }
 
   @override

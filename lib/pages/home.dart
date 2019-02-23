@@ -3,45 +3,42 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 import 'package:flutter/material.dart';
-import 'package:nutrition_app_flutter/demo/placeholder.dart';
-import 'package:nutrition_app_flutter/pages/dashboard/title.dart';
 
+import 'package:nutrition_app_flutter/pages/onboarding//title.dart';
 import 'package:nutrition_app_flutter/pages/profile/register.dart';
-import 'package:nutrition_app_flutter/pages/recipe/search.dart';
-import 'package:nutrition_app_flutter/pages/search/search.dart';
+import 'package:nutrition_app_flutter/pages/recipe/browse.dart';
+import 'package:nutrition_app_flutter/pages/recipe/dialog/create_recipe.dart';
+import 'package:nutrition_app_flutter/pages/recipe/utilities/materialsearch.dart';
+import 'package:nutrition_app_flutter/pages/search/browse.dart';
+
+import 'package:flutter/services.dart' show rootBundle;
+import 'dart:convert' as JSON;
+
+import 'package:nutrition_app_flutter/storage/usercache.dart';
 
 class Home extends StatefulWidget {
-  Home({this.currentUser, this.firestore});
 
-  Firestore firestore;
   final FirebaseStorage storage = FirebaseStorage(
       storageBucket: 'gs://nutrition-app-flutter-5260f.appspot.com');
-  FirebaseUser currentUser;
+
+  final UserCache userCache = new UserCache();
 
   @override
   _HomeState createState() => new _HomeState();
 }
 
 class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
-  /// Current widget index.
   int _currentIndex = 0;
+  int _lastIndex = 0;
 
   bool _ready = false;
-
   bool _searching = false;
 
-  int _lastIndex = 0;
+  List<dynamic> nutrientSearchKeys;
+  List<dynamic> recipeSearchKeys;
 
   /// Controller for tabview
   TabController controller;
-
-  TextEditingController _searchController = new TextEditingController();
-
-  /// foodGroupDetails[key][0] = Number
-  /// foodGroupDetails[key][1] = Name
-  /// foodGroupDetails[key][2] = Description
-  /// foodGroupDetails[key][3] = URL
-  Map<String, dynamic> foodGroupDetails = new Map();
 
   /// List of children that define the pages that a user sees. WIP.
   List<Widget> _bodyChildren = [];
@@ -75,23 +72,44 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
 
   /// Gathers prerequisite data from the Cloud Firestore Database.
   Future<void> _gatherData() async {
-    QuerySnapshot foodGroupSnapshot = await Firestore.instance
-        .collection('FOODGROUP')
-        .orderBy('FdGrp_Desc')
-        .getDocuments();
 
-    for (DocumentSnapshot doc in foodGroupSnapshot.documents) {
-      var url = await widget.storage
-          .ref()
-          .child(doc['FdGrp_Desc'].replaceAll(' ', '').replaceAll('/', '') +
-              '.png')
-          .getDownloadURL();
-      foodGroupDetails[doc['Fd_Grp']] = {
-        'name': doc['FdGrp_Desc'],
-        'foodgroup': doc['Fd_Grp'],
-        'description': doc['Paragraph'],
-        'url': url.toString()
-      };
+    FirebaseUser currentUser = await FirebaseAuth.instance.currentUser();
+
+    if (!currentUser.isAnonymous) {
+      QuerySnapshot snapshotNutrient = await Firestore.instance.collection('USERS').document(currentUser.email).collection('NUTRIENTS').getDocuments();
+      QuerySnapshot snapshotRecipe = await Firestore.instance.collection('USERS').document(currentUser.email).collection('RECIPES').getDocuments();
+
+      List<DocumentSnapshot> userDataNutrient = snapshotNutrient.documents;
+      List<DocumentSnapshot> userDataRecipe = snapshotRecipe.documents;
+
+      widget.userCache.addAllToFavoriteNutrients(userDataNutrient);
+      widget.userCache.addAllToFavoriteRecipes(userDataRecipe);
+    }
+
+    String abbrev = await rootBundle.loadString('assets/ABBREV_SEARCH.json');
+    nutrientSearchKeys = JSON.jsonDecode(abbrev)['payload'];
+
+    String recipes = await rootBundle.loadString('assets/RECIPES_SEARCH.json');
+    recipeSearchKeys = JSON.jsonDecode(recipes)['payload'];
+
+    controller = new TabController(length: 3, vsync: this);
+
+    // Define the children to the tabbed body here
+    _bodyChildren = [
+      BrowseNutrientPage(
+        userCache: widget.userCache,
+        searchKeys: nutrientSearchKeys,
+      ),
+      BrowseRecipePage(
+        userCache: widget.userCache,
+        searchKeys: recipeSearchKeys,
+      ),
+      RegisterPage(userCache: widget.userCache)
+    ];
+
+    _ready = true;
+    if (mounted) {
+      setState(() {});
     }
   }
 
@@ -110,64 +128,59 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
             elevation: 0.0,
             actions: <Widget>[
               (_currentIndex < 2)
-                  ? IconButton(
-                      icon: _searchIcon,
-                      onPressed: () {
-                        setState(() {
-                          this._lastIndex = _currentIndex;
-                          if (this._searchIcon.icon == Icons.search) {
-                            this._searching = true;
-                            this._searchIcon = new Icon(Icons.close);
-                            this._appBarTitle = new TextField(
-                              controller: _searchController,
-                              decoration: new InputDecoration(
-                                  prefixIcon: Icon(Icons.search),
-                                  hintText: 'Search...'),
-                            );
-                          } else {
-                            this._searching = false;
-                            this._searchIcon = new Icon(Icons.search);
-                            this._appBarTitle = new Text(
-                              _appBarTitles[_currentIndex],
-                            );
-                          }
-                        });
-                      },
-                    )
+                  ? ((_currentIndex == 0) ? IconButton(
+                icon: _searchIcon,
+                onPressed: () {
+                  showSearch(context: context,
+                      delegate: MaterialSearch(items: nutrientSearchKeys, type: 'browse-nutrient'));
+                },
+              ) : IconButton(
+                icon: _searchIcon,
+                onPressed: () {
+                  showSearch(context: context,
+                      delegate: MaterialSearch(items: recipeSearchKeys, type: 'browse-recipe'));
+                },
+              ))
                   : new Container()
             ],
           )
-        : AppBar(backgroundColor: Colors.transparent, elevation: 0.0,);
+        : AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0.0,
+          );
   }
 
   Widget _buildDrawer(int _currentIndex, BuildContext context) {
     return _currentIndex < 2
-        ? Drawer(
-            child: ListView(
-              padding: EdgeInsets.zero,
-              children: <Widget>[
-                DrawerHeader(
-                  child: Text('Drawer Header'),
-                  decoration: BoxDecoration(
+        ? SizedBox(
+            width: 190.0,
+            child: Drawer(
+              child: ListView(
+                padding: EdgeInsets.zero,
+                children: <Widget>[
+                  DrawerHeader(
+                    child: Text('Drawer Header'),
+                    decoration:
+                        BoxDecoration(color: Theme.of(context).primaryColor),
                   ),
-                ),
-                ListTile(
-                  leading: Icon(Icons.settings),
-                  title: Text('Settings'),
-                  onTap: () {
-                    // Update the state of the app
-                    // ...
-                  },
-                ),
-                ListTile(
-                  leading: Icon(Icons.stop),
-                  title: Text('Logout'),
-                  onTap: () {
-                    // Update the state of the app
-                    // ...
-                  },
-                ),
-              ],
+                  ListTile(
+                    leading: Icon(Icons.settings),
+                    title: Text('Settings'),
+                    onTap: () {
+                      // Update the state of the app
+                      // ...
+                    },
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.exit_to_app),
+                    title: Text('Logout'),
+                    onTap: () {
+                      // Update the state of the app
+                      // ...
+                    },
+                  ),
+                ],
+              ),
             ),
           )
         : null;
@@ -177,47 +190,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   void initState() {
     super.initState();
 
-    controller = new TabController(length: 3, vsync: this);
-
-    // Define the children to the tabbed body here
-    _bodyChildren = [
-      Search(foodGroupDetails: foodGroupDetails),
-      ResultsSearchPage(),
-      RegisterPage(
-        foodGroupDetails: foodGroupDetails,
-      )
-    ];
-//    _bodyChildren = [
-//      Container(
-//        decoration: BoxDecoration(
-//            gradient: LinearGradient(colors: [
-//              Color.fromRGBO(8, 177, 139, 1.0),
-//              Color.fromRGBO(0, 91, 71, 1.0)
-//            ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
-//      ),
-//      Container(
-//        decoration: BoxDecoration(
-//            gradient: LinearGradient(colors: [
-//              Color.fromRGBO(8, 177, 139, 1.0),
-//              Color.fromRGBO(0, 91, 71, 1.0)
-//            ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
-//      ),
-//      Container(
-//        decoration: BoxDecoration(
-//            gradient: LinearGradient(colors: [
-//          Color.fromRGBO(8, 177, 139, 1.0),
-//          Color.fromRGBO(0, 91, 71, 1.0)
-//        ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
-//      )
-//    ];
-
-    _gatherData().whenComplete(() {
-      print(foodGroupDetails.toString());
-      _ready = true;
-      if (mounted) {
-        setState(() {});
-      }
-    });
+    _gatherData();
   }
 
   @override
@@ -232,6 +205,18 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
         ? new VideoApp()
         : new Scaffold(
             appBar: _buildDashboardAppBar(_currentIndex, context),
+            floatingActionButton: (_currentIndex == 1)
+                ? FloatingActionButton.extended(
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => RecipeCreate(searchKeys: nutrientSearchKeys,)));
+                    },
+                    icon: Icon(Icons.create),
+                    label: Text('Create\nRecipe'),
+                  )
+                : null,
             drawer: _buildDrawer(_currentIndex, context),
             body: new TabBarView(
               physics: new NeverScrollableScrollPhysics(),
@@ -240,8 +225,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
             ),
             bottomNavigationBar: new Material(
               child: Theme(
-                data: Theme.of(context).copyWith(
-                ),
+                data: Theme.of(context).copyWith(),
                 child: new BottomNavigationBar(
                   type: BottomNavigationBarType.fixed,
                   onTap: onTabTapped,

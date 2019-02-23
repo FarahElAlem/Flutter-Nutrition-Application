@@ -4,7 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter/material.dart';
-import 'package:nutrition_app_flutter/structures/encrypt.dart';
+import 'package:nutrition_app_flutter/actions/encrypt.dart';
+import 'package:nutrition_app_flutter/storage/usercache.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:nutrition_app_flutter/pages/home.dart';
 
@@ -13,8 +14,9 @@ final FirebaseAuth _auth = FirebaseAuth.instance;
 /// Main function. Gathers prerequisite information and starts the application.
 Future<void> main() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  String _email = (Encrypt().decrypt(prefs.getString('email')) ?? '');
-  String _password = (Encrypt().decrypt(prefs.getString('password')) ?? '');
+  String _email = prefs.getString('email') ?? '';
+  String _password = prefs.getString('password') ?? '';
+
   FirebaseUser currentUser = await signInWithFirestore(_email, _password);
 
   Firestore firestore = Firestore.instance;
@@ -26,7 +28,7 @@ Future<void> main() async {
       primaryColorLight: Color(0xFFC8E6C9),
       primaryColorDark: Color(0xFF388E3C),
       backgroundColor: Color(0xFF000000),
-      accentColor: Color(0xFFFFC107),
+      accentColor: Color(0xFFE040FB),
       dividerColor: Color(0xFFBDBDBD),
       textTheme: TextTheme(
           headline: TextStyle(
@@ -43,7 +45,7 @@ Future<void> main() async {
               letterSpacing: 0.0),
           title: TextStyle(
               fontFamily: 'Roboto',
-              color: Color(0xFFFFFFFF),
+              color: Colors.white,
               fontSize: 20.0,
               fontWeight: FontWeight.w400,
               letterSpacing: 0.15),
@@ -79,9 +81,9 @@ Future<void> main() async {
               letterSpacing: 0.4)),
       accentTextTheme: TextTheme(
           headline: TextStyle(
-              fontFamily: 'Roboto',
+              fontFamily: 'Lobster',
               color: Color(0xFF212121),
-              fontSize: 34.0,
+              fontSize: 48.0,
               fontWeight: FontWeight.w400,
               letterSpacing: 0.25),
           subhead: TextStyle(
@@ -128,8 +130,6 @@ Future<void> main() async {
               letterSpacing: 0.4)),
     ),
     home: new Home(
-      currentUser: currentUser,
-      firestore: firestore,
     ),
     routes: <String, WidgetBuilder>{
       '/Home': (BuildContext context) => new Home()
