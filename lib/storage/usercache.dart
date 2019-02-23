@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class UserCache {
   Map<String, dynamic> favoriteNutrients = new Map<String, dynamic>();
   Map<String, dynamic> favoriteRecipes = new Map<String, dynamic>();
@@ -10,32 +12,32 @@ class UserCache {
     favoriteRecipes[item['name']] = item;
   }
 
-  void addAllToFavoriteNutrients(List<Map<String, dynamic>> item) {
+  void addAllToFavoriteNutrients(List<DocumentSnapshot> item) {
     for (int i = 0; i < item.length; i++) {
-      favoriteNutrients[item[i]['description']] = item[i];
+      favoriteNutrients[item[i].data['description']] = item[i];
     }
   }
 
-  void addAllToFavoriteRecipes(List<Map<String, dynamic>> item) {
+  void addAllToFavoriteRecipes(List<DocumentSnapshot> item) {
     for (int i = 0; i < item.length; i++) {
-      favoriteRecipes[item[i]['name']] = item[i];
+      favoriteRecipes[item[i].data['name']] = item[i];
     }
   }
 
   void removeFromFavoriteNutrients(String key) {
-    favoriteNutrients[key] = null;
+    favoriteNutrients.remove(key);
   }
 
   void removeFromFavoriteRecipes(String key) {
-    favoriteRecipes[key] = null;
+    favoriteRecipes.remove(key);
   }
 
   bool isInFavoriteNutrients(String key) {
-    return favoriteNutrients.keys.contains(key) == null;
+    return favoriteNutrients.keys.contains(key);
   }
 
   bool isInFavoriteRecipes(String key) {
-    return favoriteRecipes.keys.contains(key) == null;
+    return favoriteRecipes.keys.contains(key);
   }
 
   Map<String, dynamic> getFavoriteNutrients() {

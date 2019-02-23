@@ -1,45 +1,44 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 import 'package:flutter/material.dart';
-import 'package:nutrition_app_flutter/pages/dialog/create_recipe.dart';
-import 'package:nutrition_app_flutter/pages/onboarding//title.dart';
 
+import 'package:nutrition_app_flutter/pages/onboarding//title.dart';
 import 'package:nutrition_app_flutter/pages/profile/register.dart';
 import 'package:nutrition_app_flutter/pages/recipe/browse.dart';
+import 'package:nutrition_app_flutter/pages/recipe/dialog/create_recipe.dart';
+import 'package:nutrition_app_flutter/pages/recipe/utilities/materialsearch.dart';
 import 'package:nutrition_app_flutter/pages/search/browse.dart';
-import 'package:nutrition_app_flutter/pages/search/search.dart';
 
 import 'package:flutter/services.dart' show rootBundle;
+import 'dart:convert' as JSON;
+
 import 'package:nutrition_app_flutter/storage/usercache.dart';
 
 class Home extends StatefulWidget {
-  Home({this.userCache});
 
   final FirebaseStorage storage = FirebaseStorage(
       storageBucket: 'gs://nutrition-app-flutter-5260f.appspot.com');
 
-  final UserCache userCache;
+  final UserCache userCache = new UserCache();
 
   @override
   _HomeState createState() => new _HomeState();
 }
 
 class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
-  /// Current widget index.
   int _currentIndex = 0;
+  int _lastIndex = 0;
 
   bool _ready = false;
-
   bool _searching = false;
 
-  int _lastIndex = 0;
+  List<dynamic> nutrientSearchKeys;
+  List<dynamic> recipeSearchKeys;
 
   /// Controller for tabview
   TabController controller;
-
-  TextEditingController _searchController = new TextEditingController();
-
-  Map<String, dynamic> abbrevItems = new Map();
 
   /// List of children that define the pages that a user sees. WIP.
   List<Widget> _bodyChildren = [];
@@ -73,23 +72,40 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
 
   /// Gathers prerequisite data from the Cloud Firestore Database.
   Future<void> _gatherData() async {
-    String names = await rootBundle.loadString('assets/ABBREV_NAMES.txt');
-    String manuf = await rootBundle.loadString('assets/ABBREV_MANUF.txt');
 
-    List<String> tempNames = names.split('\n');
-    List<String> tempManuf = manuf.split('\n');
+    FirebaseUser currentUser = await FirebaseAuth.instance.currentUser();
 
-    for (int i = 0; i < tempNames.length; i++) {
-      abbrevItems[tempNames[i]] = {
-        'name': tempNames[i],
-        'manufacturer': tempManuf[i]
-      };
+    if (!currentUser.isAnonymous) {
+      QuerySnapshot snapshotNutrient = await Firestore.instance.collection('USERS').document(currentUser.email).collection('NUTRIENTS').getDocuments();
+      QuerySnapshot snapshotRecipe = await Firestore.instance.collection('USERS').document(currentUser.email).collection('RECIPES').getDocuments();
+
+      List<DocumentSnapshot> userDataNutrient = snapshotNutrient.documents;
+      List<DocumentSnapshot> userDataRecipe = snapshotRecipe.documents;
+
+      widget.userCache.addAllToFavoriteNutrients(userDataNutrient);
+      widget.userCache.addAllToFavoriteRecipes(userDataRecipe);
     }
+
+    String abbrev = await rootBundle.loadString('assets/ABBREV_SEARCH.json');
+    nutrientSearchKeys = JSON.jsonDecode(abbrev)['payload'];
+
+    String recipes = await rootBundle.loadString('assets/RECIPES_SEARCH.json');
+    recipeSearchKeys = JSON.jsonDecode(recipes)['payload'];
 
     controller = new TabController(length: 3, vsync: this);
 
     // Define the children to the tabbed body here
-    _bodyChildren = [BrowseNutrientPage(userCache: widget.userCache,), BrowseRecipePage(userCache: widget.userCache,), RegisterPage()];
+    _bodyChildren = [
+      BrowseNutrientPage(
+        userCache: widget.userCache,
+        searchKeys: nutrientSearchKeys,
+      ),
+      BrowseRecipePage(
+        userCache: widget.userCache,
+        searchKeys: recipeSearchKeys,
+      ),
+      RegisterPage(userCache: widget.userCache)
+    ];
 
     _ready = true;
     if (mounted) {
@@ -112,19 +128,19 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
             elevation: 0.0,
             actions: <Widget>[
               (_currentIndex < 2)
-                  ? IconButton(
-                      icon: _searchIcon,
-                      onPressed: () {
-                        if (_currentIndex == 0) {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => Search(
-                                        abbrevItems: abbrevItems,
-                                      )));
-                        }
-                      },
-                    )
+                  ? ((_currentIndex == 0) ? IconButton(
+                icon: _searchIcon,
+                onPressed: () {
+                  showSearch(context: context,
+                      delegate: MaterialSearch(items: nutrientSearchKeys, type: 'browse-nutrient'));
+                },
+              ) : IconButton(
+                icon: _searchIcon,
+                onPressed: () {
+                  showSearch(context: context,
+                      delegate: MaterialSearch(items: recipeSearchKeys, type: 'browse-recipe'));
+                },
+              ))
                   : new Container()
             ],
           )
@@ -195,10 +211,10 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => RecipeCreate()));
+                              builder: (context) => RecipeCreate(searchKeys: nutrientSearchKeys,)));
                     },
                     icon: Icon(Icons.create),
-              label: Text('Create\nRecipe'),
+                    label: Text('Create\nRecipe'),
                   )
                 : null,
             drawer: _buildDrawer(_currentIndex, context),

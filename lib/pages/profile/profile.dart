@@ -4,67 +4,48 @@ import 'package:flutter/material.dart';
 import 'package:nutrition_app_flutter/pages/profile/nutrientitemwidget.dart';
 import 'package:nutrition_app_flutter/pages/profile/recipeitemwidget.dart';
 import 'package:nutrition_app_flutter/actions/encrypt.dart';
+import 'package:nutrition_app_flutter/storage/usercache.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfilePage extends StatefulWidget {
-    @override
+  ProfilePage({this.userCache});
+
+  UserCache userCache;
+
+  @override
   _ProfilePageState createState() => new _ProfilePageState();
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  _ProfilePageState({this.firestore, this.currentUser, this.foodGroupDetails});
-
-  Map<String, dynamic> foodGroupDetails;
-  Firestore firestore;
-  FirebaseUser currentUser;
-
   bool _ready = false;
   bool _loading = false;
+
+  String name;
 
   DocumentSnapshot documentSnapshot;
   List<DocumentSnapshot> nutrientDocuments;
   List<DocumentSnapshot> recipesDocuments;
 
+  void _gatherData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    name = prefs.getString('name');
+
+    if (mounted) {
+      setState(() {
+        _ready = true;
+      });
+    }
+  }
+
   @override
   void initState() {
+    _gatherData();
     super.initState();
-    gatherData();
   }
 
   @override
   void dispose() {
     super.dispose();
-  }
-
-  void gatherData() async {
-    FirebaseUser currentUser = await FirebaseAuth.instance.currentUser();
-
-    documentSnapshot = await Firestore.instance
-        .collection('USERS')
-        .document(Encrypt().encrypt(currentUser.email))
-        .get();
-    _ready = true;
-
-    QuerySnapshot nutrientsSnapshot = await Firestore.instance
-        .collection('USERS')
-        .document(Encrypt().encrypt(currentUser.email))
-        .collection('NUTRIENTS')
-        .getDocuments();
-
-    nutrientDocuments = nutrientsSnapshot.documents;
-
-    QuerySnapshot recipesSnapshot = await Firestore.instance
-        .collection('USERS')
-        .document(Encrypt().encrypt(currentUser.email))
-        .collection('RECIPES')
-        .getDocuments();
-
-    recipesDocuments = recipesSnapshot.documents;
-
-    _loading = true;
-    if (mounted) {
-      setState(() {});
-    }
   }
 
   Widget _buildLogoutButton() {
@@ -76,6 +57,7 @@ class _ProfilePageState extends State<ProfilePage> {
           SharedPreferences.getInstance().then((SharedPreferences prefs) {
             prefs.setString('email', '');
             prefs.setString('password', '');
+            prefs.setString('name', '');
           });
         },
         child: Text(
@@ -89,88 +71,99 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     return (_ready)
         ? Container(
-            child: Padding(
-              padding: EdgeInsets.only(top: 28.0, left: 16.0, right: 16.0),
-              child: new Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Center(
-                    child: Text(
-                      Encrypt().decrypt(documentSnapshot['name']) +
-                          '\'s Profile',
-                      textAlign: TextAlign.center,
-                    ),
+            padding: EdgeInsets.all(16.0),
+            child: new Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Center(
+                  child: Text(
+                    name + '\'s Profile',
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).accentTextTheme.headline,
                   ),
-                  Divider(
-                    height: 24.0,
-                  ),
-                  Text(
-                    'Favorite Nutrients',
-                    textAlign: TextAlign.start,
-                  ),
-                  Divider(
-                  ),
-                  (nutrientDocuments.length > 0)
-                      ? Container(
-                          height: 180.0,
-                          child: (_loading)
-                              ? ListView.builder(
-                                  shrinkWrap: true,
-                                  itemExtent: 160.0,
-                                  scrollDirection: Axis.horizontal,
-                                  itemCount: nutrientDocuments.length,
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    return NutrientItemWidget(
-                                        ds: nutrientDocuments[index],
-                                        foodGroupDetails: foodGroupDetails);
-                                  })
-                              : SplashScreenAuth(),
-                        )
-                      : Center(
-                          child: Text(
-                            'Nothing Here Yet!\nGo Add Some Nutrients!',
-                            textAlign: TextAlign.center,
-                          ),
+                ),
+                Divider(
+                  color: Colors.transparent,
+                  height: 24.0,
+                ),
+                Text(
+                  'Favorite Nutrients',
+                  textAlign: TextAlign.start,
+                ),
+                Divider(),
+                (widget.userCache.getFavoriteNutrients().length > 0)
+                    ? Container(
+                        height: 180.0,
+                        child: (!_loading)
+                            ? ListView.builder(
+                                shrinkWrap: true,
+                                itemExtent: 160.0,
+                                scrollDirection: Axis.horizontal,
+                                itemCount: widget.userCache
+                                    .getFavoriteNutrients()
+                                    .keys
+                                    .length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  return NutrientItemWidget(
+                                    ds: widget.userCache.getFavoriteNutrients()[
+                                        widget.userCache
+                                            .getFavoriteNutrients()
+                                            .keys
+                                            .toList()[index]],
+                                    userCache: widget.userCache,
+                                  );
+                                })
+                            : SplashScreenAuth(),
+                      )
+                    : Center(
+                        child: Text(
+                          'Nothing Here Yet!\nGo Add Some Nutrients!',
+                          textAlign: TextAlign.center,
                         ),
-                  Divider(
-                    height: 24.0,
-                  ),
-                  Text(
-                    'Favorite Recipes',
-                    textAlign: TextAlign.start,
-                  ),
-                  Divider(
-                  ),
-                  (recipesDocuments.length > 0)
-                      ? Container(
-                          height: 180.0,
-                          child: (_loading)
-                              ? ListView.builder(
-                                  shrinkWrap: true,
-                                  itemExtent: 160.0,
-                                  scrollDirection: Axis.horizontal,
-                                  itemCount: recipesDocuments.length,
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    return RecipeItemWidget(
-                                        ds: recipesDocuments[index]);
-                                  })
-                              : SplashScreenAuth(),
-                        )
-                      : Center(
-                          child: Text(
-                            'Nothing Here Yet!\nGo Add Some Recipes!',
-                            textAlign: TextAlign.center,
-                          ),
+                      ),
+                Divider(
+                  height: 24.0,
+                ),
+                Text(
+                  'Favorite Recipes',
+                  textAlign: TextAlign.start,
+                ),
+                Divider(),
+                (widget.userCache.getFavoriteRecipes().length > 0)
+                    ? Container(
+                        height: 180.0,
+                        child: (!_loading)
+                            ? ListView.builder(
+                                shrinkWrap: true,
+                                itemExtent: 160.0,
+                                scrollDirection: Axis.horizontal,
+                                itemCount: widget.userCache
+                                    .getFavoriteRecipes()
+                                    .length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  return RecipeItemWidget(
+                                    ds: widget.userCache.getFavoriteRecipes()[
+                                        widget.userCache
+                                            .getFavoriteRecipes()
+                                            .keys
+                                            .toList()[index]],
+                                    userCache: widget.userCache,
+                                  );
+                                })
+                            : SplashScreenAuth(),
+                      )
+                    : Center(
+                        child: Text(
+                          'Nothing Here Yet!\nGo Add Some Recipes!',
+                          textAlign: TextAlign.center,
                         ),
-                  Center(
-                    child: _buildLogoutButton(),
-                  ),
-                ],
-              ),
+                      ),
+                Center(
+                  child: _buildLogoutButton(),
+                ),
+              ],
             ),
           )
         : SplashScreenAuth();

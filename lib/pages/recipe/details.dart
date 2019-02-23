@@ -1,24 +1,28 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:nutrition_app_flutter/pages/recipe/recipelisttile.dart';
+import 'package:nutrition_app_flutter/pages/recipe/utilities/recipelisttile.dart';
 import 'package:nutrition_app_flutter/actions/encrypt.dart';
+import 'package:nutrition_app_flutter/storage/usercache.dart';
 
 /// UI incomplete, details attempts to show nutrition details of some FoodItem
 /// as a Dialog
 /// TODO Look at how the 'nutrients' and 'recipes' are being created
-class Details extends StatefulWidget {
-  Details({this.recipeItem});
+class RecipeDetails extends StatefulWidget {
+  RecipeDetails({this.recipeItem, this.type, this.userCache});
 
+  final UserCache userCache;
   var recipeItem;
+  final String type;
 
   @override
-  _DetailsState createState() => _DetailsState();
+  _RecipeDetailsState createState() => _RecipeDetailsState();
 }
 
-class _DetailsState extends State<Details> {
+class _RecipeDetailsState extends State<RecipeDetails> {
   bool _ready = false;
-  bool isFavorited = false;
+  bool _isFavorited = false;
+
   FirebaseUser currentUser;
   var stream;
 
@@ -26,23 +30,27 @@ class _DetailsState extends State<Details> {
 
   /// Gathers the data needed to be displayed on this page before
   /// the page is 'ready'
-  void doGathering() async {
+  void doGatheringBrowse() async {
     currentUser = await FirebaseAuth.instance.currentUser();
     if (currentUser.isAnonymous) {
-      isFavorited = false;
-    } else {
-      QuerySnapshot item = await Firestore.instance
-          .collection('USERS')
-          .document(Encrypt().encrypt(currentUser.email))
-          .collection('RECIPES')
-          .where('name', isEqualTo: widget.recipeItem['name'])
-          .getDocuments();
-      if (item.documents.length == 0) {
-        isFavorited = false;
-      } else {
-        isFavorited = true;
-      }
+      _isFavorited = false;
     }
+
+    _ready = true;
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  void doGatheringSearch() async {
+    QuerySnapshot snapshot = await Firestore.instance
+        .collection('RECIPES')
+        .where('name', isEqualTo: widget.recipeItem)
+        .getDocuments();
+    DocumentSnapshot documentSnapshot = snapshot.documents[0];
+    data = documentSnapshot.data;
+    widget.recipeItem = data;
+
     _ready = true;
     if (mounted) {
       setState(() {});
@@ -51,9 +59,22 @@ class _DetailsState extends State<Details> {
 
   @override
   void initState() {
-    data = widget.recipeItem.data;
+    if (widget.type == 'browse') {
+      doGatheringBrowse();
+      data = widget.recipeItem.data;
+
+      if (widget.userCache.isInFavoriteRecipes(data['name'])) {
+        _isFavorited = true;
+      }
+    } else if (widget.type == 'search') {
+      doGatheringSearch();
+
+      if (widget.userCache.isInFavoriteRecipes(widget.recipeItem)) {
+        _isFavorited = true;
+      }
+    }
+
     super.initState();
-    doGathering();
   }
 
   @override
@@ -65,8 +86,8 @@ class _DetailsState extends State<Details> {
           iconTheme: IconThemeData(color: Colors.black),
           actions: <Widget>[
             new IconButton(
-                splashColor: (!isFavorited) ? Colors.amber : Colors.black12,
-                icon: (!isFavorited)
+                splashColor: (!_isFavorited) ? Colors.amber : Colors.black12,
+                icon: (!_isFavorited)
                     ? Icon(
                         Icons.favorite_border,
                         color: Colors.grey,
@@ -88,34 +109,24 @@ class _DetailsState extends State<Details> {
 //                    Scaffold.of(context).showSnackBar(snackbar);
                   }
 
-                  /// If applicable, update the user's data in Cloud Firestore.
-                  ///
-                  /// Remove from Firestore
-                  if (isFavorited && !currentUser.isAnonymous) {
-                    isFavorited = false;
+                  if (_isFavorited && !currentUser.isAnonymous) {
+                    widget.userCache
+                        .removeFromFavoriteRecipes(widget.recipeItem['name']);
                     if (mounted) {
-                      setState(() {});
+                      setState(() {
+                        _isFavorited = !_isFavorited;
+                      });
                     }
-                    await Firestore.instance
-                        .collection("USERS")
-                        .document(Encrypt().encrypt(currentUser.email))
-                        .collection('RECIPES')
-                        .document(widget.recipeItem['name'])
-                        .delete();
                   }
 
-                  /// Add to Firestore
-                  else if (!isFavorited && !currentUser.isAnonymous) {
-                    isFavorited = true;
+                  else if (!_isFavorited && !currentUser.isAnonymous) {
+                    widget.userCache
+                        .addToFavoriteRecipes(data);
                     if (mounted) {
-                      setState(() {});
+                      setState(() {
+                        _isFavorited = !_isFavorited;
+                      });
                     }
-                    await Firestore.instance
-                        .collection("USERS")
-                        .document(Encrypt().encrypt(currentUser.email))
-                        .collection('RECIPES')
-                        .document(widget.recipeItem['name'])
-                        .setData(data);
                   }
                 })
           ],
@@ -126,7 +137,8 @@ class _DetailsState extends State<Details> {
                 builder: (BuildContext contest, BoxConstraints constraintss) {
                 return SingleChildScrollView(
                     child: ConstrainedBox(
-                  constraints: BoxConstraints(minHeight: constraintss.maxHeight),
+                  constraints:
+                      BoxConstraints(minHeight: constraintss.maxHeight),
                   child: new Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -183,8 +195,7 @@ class _DetailsState extends State<Details> {
                           ),
                         ),
                         Container(
-                          margin:
-                          const EdgeInsets.only(left: 16.0),
+                          margin: const EdgeInsets.only(left: 16.0),
                           child: Divider(
                             height: 2.0,
                           ),
@@ -222,13 +233,12 @@ class _DetailsState extends State<Details> {
                                   padding: EdgeInsets.all(8.0),
                                   child: Text(
                                     'Directions',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .subhead,
+                                    style: Theme.of(context).textTheme.subhead,
                                   ),
                                 ),
                                 Container(
-                                  margin: const EdgeInsets.only(left: 8.0, top: 8.0, bottom: 8.0),
+                                  margin: const EdgeInsets.only(
+                                      left: 8.0, top: 8.0, bottom: 8.0),
                                   child: Divider(
                                     height: 2.0,
                                     color: Colors.white70,

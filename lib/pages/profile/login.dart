@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:nutrition_app_flutter/actions/encrypt.dart';
@@ -73,6 +74,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     Divider(
                       height: 28.0,
+                      color: Colors.transparent,
                     ),
                     TextFormField(
                       validator: (value) {
@@ -105,7 +107,7 @@ class _LoginPageState extends State<LoginPage> {
                               _emailTextFieldController.text,
                               _passwordTextFieldController.text);
                           if (s != null) {
-                          print('Dobby is upset');
+                            print('Dobby is upset');
                           } else {
                             FirebaseUser user =
                                 await FirebaseAuth.instance.currentUser();
@@ -116,16 +118,18 @@ class _LoginPageState extends State<LoginPage> {
                                     password:
                                         _passwordTextFieldController.text);
 
+                            DocumentSnapshot doc = await Firestore.instance
+                                .collection('USERS')
+                                .document(_emailTextFieldController.text)
+                                .get();
+
                             SharedPreferences prefs =
                                 await SharedPreferences.getInstance();
                             prefs.setString(
-                                'email',
-                                Encrypt()
-                                    .encrypt(_emailTextFieldController.text));
+                                'email', _emailTextFieldController.text);
                             prefs.setString(
-                                'password',
-                                Encrypt().encrypt(
-                                    _passwordTextFieldController.text));
+                                'password', _passwordTextFieldController.text);
+                            prefs.setString('name', doc.data['name']);
 
                             Navigator.pop(context);
                           }

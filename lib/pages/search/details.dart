@@ -1,43 +1,45 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:nutrition_app_flutter/pages/legacy/foodgroupinfo.dart';
-import 'package:nutrition_app_flutter/actions/encrypt.dart';
-import 'package:nutrition_app_flutter/storage/fooditem.dart';
+import 'package:nutrition_app_flutter/storage/usercache.dart';
 
 /// UI incomplete, details attempts to show nutrition details of some FoodItem
 /// as a Dialog
-class NutritionItemDetails extends StatefulWidget {
-  NutritionItemDetails({this.itemKey});
+class NutrientDetails extends StatefulWidget {
+  NutrientDetails({this.itemKey, this.userCache});
 
-  String itemKey;
+  final String itemKey;
+  final UserCache userCache;
 
   @override
-  _NutritionItemDetailstate createState() =>
-      new _NutritionItemDetailstate(itemKey: itemKey);
+  _NutrientDetailsDetailState createState() =>
+      new _NutrientDetailsDetailState(itemKey: itemKey);
 }
 
-class _NutritionItemDetailstate extends State<NutritionItemDetails> {
-  _NutritionItemDetailstate({this.itemKey});
+class _NutrientDetailsDetailState extends State<NutrientDetails> {
+  _NutrientDetailsDetailState({this.itemKey});
 
   String itemKey;
   DocumentSnapshot documentSnapshot;
 
   bool _ready = false;
-  bool isFavorited = false;
+  bool _isFavorited = false;
   FirebaseUser currentUser;
   var stream;
 
   /// Gathers the data needed to be displayed on this page before
   /// the page is 'ready'
   void doGathering() async {
+    currentUser = await FirebaseAuth.instance.currentUser();
+
+    if (widget.userCache.isInFavoriteNutrients(itemKey)) {
+      _isFavorited = true;
+    }
+
     DocumentSnapshot querySnapshot = await Firestore.instance
         .collection('ABBREV')
         .document('008P6IqsoekQrFFwES7f')
         .get();
-    print('itemkey: ' + itemKey);
-    print(querySnapshot);
-    print(querySnapshot);
     documentSnapshot = querySnapshot;
     _ready = true;
     setState(() {});
@@ -63,8 +65,8 @@ class _NutritionItemDetailstate extends State<NutritionItemDetails> {
           centerTitle: true,
           actions: <Widget>[
             new IconButton(
-                splashColor: (!isFavorited) ? Colors.amber : Colors.black12,
-                icon: (!isFavorited)
+                splashColor: (!_isFavorited) ? Colors.amber : Colors.black12,
+                icon: (!_isFavorited)
                     ? Icon(
                         Icons.favorite_border,
                         color: Colors.grey,
@@ -74,50 +76,32 @@ class _NutritionItemDetailstate extends State<NutritionItemDetails> {
                         color: Colors.amber,
                       ),
                 onPressed: () async {
-//              /// Checking to see if a user can favorite an item or not
-//              /// If not, displays a snackbar
-//              if (currentUser.isAnonymous) {
-//                final snackbar = SnackBar(
-//                  content: Text(
-//                    'You must register before you can do that!',
-//                    style: Theme.of(context).textTheme.body1,
-//                  ),
-//                  duration: Duration(milliseconds: 1500),
-//                );
-//                Scaffold.of(context).showSnackBar(snackbar);
-//              }
-//
-//              /// If applicable, update the user's data in Cloud Firestore.
-//              ///
-//              /// Remove from Firestore
-//              if (isFavorited && !currentUser.isAnonymous) {
-//                isFavorited = false;
-//                if (mounted) {
-//                  setState(() {});
-//                }
-//                await Firestore.instance
-//                    .collection("USERS")
-//                    .document(Encrypt().encrypt(currentUser.email))
-//                    .collection('NUTRIENTS')
-//                    .document(
-//                        widget.foodItem.detailItems['description']['value'])
-//                    .delete();
-//              }
-//
-//              /// Add to Firestore
-//              else if (!isFavorited && !currentUser.isAnonymous) {
-//                isFavorited = true;
-//                if (mounted) {
-//                  setState(() {});
-//                }
-//                await Firestore.instance
-//                    .collection("USERS")
-//                    .document(Encrypt().encrypt(currentUser.email))
-//                    .collection('NUTRIENTS')
-//                    .document(
-//                        widget.foodItem.detailItems['description']['value'])
-//                    .setData(widget.foodItem.toFirestore());
-//              }
+                  if (currentUser.isAnonymous) {
+                    final snackbar = SnackBar(
+                      content: Text(
+                        'You must register before you can do that!',
+                      ),
+                      duration: Duration(milliseconds: 1500),
+                    );
+//                    Scaffold.of(context).showSnackBar(snackbar);
+                  }
+
+                  if (_isFavorited && !currentUser.isAnonymous) {
+                    widget.userCache.removeFromFavoriteNutrients(widget.itemKey);
+                    if (mounted) {
+                      setState(() {
+                        _isFavorited = !_isFavorited;
+                      });
+                    }
+                  } else if (!_isFavorited && !currentUser.isAnonymous) {
+                    widget.userCache
+                        .addToFavoriteNutrients(documentSnapshot.data);
+                    if (mounted) {
+                      setState(() {
+                        _isFavorited = !_isFavorited;
+                      });
+                    }
+                  }
                 })
           ]),
       body: (_ready)

@@ -14,20 +14,10 @@ final FirebaseAuth _auth = FirebaseAuth.instance;
 /// Main function. Gathers prerequisite information and starts the application.
 Future<void> main() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  String _email = (Encrypt().decrypt(prefs.getString('email')) ?? '');
-  String _password = (Encrypt().decrypt(prefs.getString('password')) ?? '');
+  String _email = prefs.getString('email') ?? '';
+  String _password = prefs.getString('password') ?? '';
 
   FirebaseUser currentUser = await signInWithFirestore(_email, _password);
-
-  UserCache userCache = new UserCache();
-
-  if (!currentUser.isAnonymous) {
-    QuerySnapshot snapshot = await Firestore.instance.collection('USERS').where('email', isEqualTo: _email).getDocuments();
-    Map<String, dynamic> userData = snapshot.documents[0].data;
-    userCache.addAllToFavoriteNutrients(userData['nutrients']);
-    userCache.addAllToFavoriteRecipes(userData['recipes']);
-  }
-
 
   Firestore firestore = Firestore.instance;
   await firestore.settings(timestampsInSnapshotsEnabled: true);
@@ -55,7 +45,7 @@ Future<void> main() async {
               letterSpacing: 0.0),
           title: TextStyle(
               fontFamily: 'Roboto',
-              color: Color(0xFFFFFFFF),
+              color: Colors.white,
               fontSize: 20.0,
               fontWeight: FontWeight.w400,
               letterSpacing: 0.15),
@@ -140,7 +130,6 @@ Future<void> main() async {
               letterSpacing: 0.4)),
     ),
     home: new Home(
-      userCache: userCache,
     ),
     routes: <String, WidgetBuilder>{
       '/Home': (BuildContext context) => new Home()

@@ -1,11 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:nutrition_app_flutter/pages/recipe/details.dart';
+import 'package:nutrition_app_flutter/storage/usercache.dart';
 
 class RecipeItemWidget extends StatefulWidget {
-  RecipeItemWidget({this.ds});
+  RecipeItemWidget({this.ds, this.userCache});
 
-  DocumentSnapshot ds;
+  final Map<String, dynamic> ds;
+  final UserCache userCache;
 
   @override
   _RecipeItemWidgetState createState() => new _RecipeItemWidgetState();
@@ -38,8 +40,9 @@ class _RecipeItemWidgetState extends State<RecipeItemWidget> {
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => Details(
+                  builder: (context) => RecipeDetails(
                     recipeItem: widget.ds,
+                    userCache: widget.userCache,
                   )));
         },
         child: SizedBox.shrink(

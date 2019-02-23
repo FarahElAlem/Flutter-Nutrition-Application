@@ -2,23 +2,23 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:nutrition_app_flutter/pages/search/details.dart';
 import 'package:nutrition_app_flutter/storage/fooditem.dart';
+import 'package:nutrition_app_flutter/storage/usercache.dart';
 
 
 class NutrientItemWidget extends StatefulWidget {
-  NutrientItemWidget({this.ds, this.foodGroupDetails});
+  NutrientItemWidget({this.ds, this.userCache});
 
-  Map<String, dynamic> foodGroupDetails;
-  DocumentSnapshot ds;
+  final Map<String, dynamic> ds;
+  final UserCache userCache;
 
   @override
-  _NutrientItemWidgetState createState() => new _NutrientItemWidgetState(ds: ds, foodGroupDetails: foodGroupDetails);
+  _NutrientItemWidgetState createState() => new _NutrientItemWidgetState(ds: ds);
 }
 
 class _NutrientItemWidgetState extends State<NutrientItemWidget> {
-  _NutrientItemWidgetState({this.ds, this.foodGroupDetails});
+  _NutrientItemWidgetState({this.ds});
 
-  DocumentSnapshot ds;
-  Map<String, dynamic> foodGroupDetails;
+  Map<String, dynamic> ds;
 
   @override
   void initState() {
@@ -33,9 +33,10 @@ class _NutrientItemWidgetState extends State<NutrientItemWidget> {
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => NutritionItemDetails(
-//                        foodItem: FoodItem(widget.ds),
-                      )));
+                  builder: (context) => NutrientDetails(
+                    itemKey: ds['description'],
+                    userCache: widget.userCache,
+                  )));
         },
         child: SizedBox.shrink(
           child: new Card(

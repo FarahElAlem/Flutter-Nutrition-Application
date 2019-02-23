@@ -1,13 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:nutrition_app_flutter/pages/profile/profile.dart';
-import 'package:nutrition_app_flutter/pages/search/nutrientlisttile.dart';
+import 'package:nutrition_app_flutter/pages/search/utilities/nutrientlisttile.dart';
 import 'package:nutrition_app_flutter/storage/usercache.dart';
 
 class BrowseNutrientPage extends StatefulWidget {
-  BrowseNutrientPage({this.userCache});
+  BrowseNutrientPage({this.userCache, this.searchKeys});
 
   final UserCache userCache;
+  final List<dynamic> searchKeys;
 
   @override
   _BrowseNutrientPageState createState() => _BrowseNutrientPageState();
@@ -33,16 +34,21 @@ class _BrowseNutrientPageState extends State<BrowseNutrientPage> {
     _lastDocument = querySnapshot.documents.last;
     List<Widget> items = new List();
     for (final DocumentSnapshot snapshot in querySnapshot.documents) {
-      items.add(NutrientListTile(ds: snapshot, userCache: widget.userCache,));
+      items.add(NutrientListTile(
+        ds: snapshot,
+        userCache: widget.userCache,
+      ));
     }
     items.add(Align(
       alignment: Alignment.center,
       child: CircularProgressIndicator(),
     ));
     _ready = true;
-    setState(() {
-      _browseItems.addAll(items);
-    });
+    if (mounted) {
+      setState(() {
+        _browseItems.addAll(items);
+      });
+    }
   }
 
   Future<void> _fetchFromLast() async {
@@ -50,9 +56,9 @@ class _BrowseNutrientPageState extends State<BrowseNutrientPage> {
         .collection('ABBREV')
         .orderBy('description')
         .startAfter([_lastDocument['description']])
-        .limit(10)
+        .limit(5)
         .getDocuments();
-    if (querySnapshot.documents.length < 4) {
+    if (querySnapshot.documents.length < 2) {
       _nomore = true;
       return;
     }
@@ -67,14 +73,17 @@ class _BrowseNutrientPageState extends State<BrowseNutrientPage> {
       child: CircularProgressIndicator(),
     ));
     print('Length of BrowseItems: ' + _browseItems.length.toString());
-    setState(() {
-      _browseItems.addAll(items);
-    });
+    if (mounted) {
+      setState(() {
+        _browseItems.addAll(items);
+      });
+    }
   }
 
   void _scrollListener() async {
     if (_nomore) return;
-    if (_controller.position.pixels == _controller.position.maxScrollExtent/1.25 &&
+    if (_controller.position.pixels >=
+            _controller.position.maxScrollExtent / 1.25 &&
         _isFetching == false) {
       _isFetching = true;
       await _fetchFromLast();

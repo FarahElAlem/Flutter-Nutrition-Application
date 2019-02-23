@@ -42,8 +42,8 @@ class Validator {
   Future<String> validateLoggedInUser(String email, String password) async {
     var query = await Firestore.instance
         .collection('USERS')
-        .where('email', isEqualTo: Encrypt().encrypt(email))
-        .where('password', isEqualTo: Encrypt().encrypt(password))
+        .where('email', isEqualTo: email)
+        .where('password', isEqualTo: password)
         .getDocuments();
     if (query.documents.length == 0) {
       return 'We dont have any accounts with those credentials!';

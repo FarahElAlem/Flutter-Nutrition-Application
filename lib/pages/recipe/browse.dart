@@ -1,13 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:nutrition_app_flutter/pages/profile/profile.dart';
-import 'package:nutrition_app_flutter/pages/recipe/recipelisttile.dart';
+import 'package:nutrition_app_flutter/pages/recipe/utilities/recipelisttile.dart';
 import 'package:nutrition_app_flutter/storage/usercache.dart';
 
 class BrowseRecipePage extends StatefulWidget {
-  BrowseRecipePage({this.userCache});
+  BrowseRecipePage({this.userCache, this.searchKeys});
 
   final UserCache userCache;
+  final List<dynamic> searchKeys;
 
   @override
   _BrowseRecipePageState createState() => _BrowseRecipePageState();
@@ -49,7 +50,7 @@ class _BrowseRecipePageState extends State<BrowseRecipePage> {
         .collection('RECIPES')
         .orderBy('name')
         .startAfter([_lastDocument['name']])
-        .limit(10)
+        .limit(5)
         .getDocuments();
     if (querySnapshot.documents.length < 4) {
       _nomore = true;
@@ -67,7 +68,7 @@ class _BrowseRecipePageState extends State<BrowseRecipePage> {
     if(mounted) {
       setState(() {
         _browseItems.addAll(items);
-      });
+    });
     }
   }
 
