@@ -82,12 +82,12 @@
 - ~~Create Dashboard~~
 - ~~Redesign Details UI for nutrients~~
 - ~~Design Details UI for recipes~~z
-- *IMPORTANT* Reconfigure database with new data + preformatting
+- ~~*IMPORTANT* Reconfigure database with new data + preformatting~~
 - ~~Reconfigure Database to support Material Search~~
 - Attempt to support recipe(s) with estimated nutrient values
 - Add advanced data security
-- Add Custom User Recipes
-- Add 'delayed update' for user items to reduce DB calls
+- ~~Add Custom User Recipes~~
+- ~~Add 'delayed update' for user items to reduce DB calls~~
 - ~~Convert DB from Grams to appropiate unit(s) of measure~~
 - ~~Multiply DB 'calorie' data by 1000 to represent proper information~~
 - Experiment with SliverAppBar and transparent blur effects for background
