@@ -53,6 +53,7 @@
 - Once your are done with a task, submit a pull request to the **dev** branch for review.
 
 ## TODO
+# Exam Week, Taking a Break....
 - ~~Setup 4 placeholder pages~~
 - ~~Setup Firebase DB~~
     - ~~Setup Nutrient data~~
@@ -74,7 +75,7 @@
 - Privacy Policy
 - ~~First Name Register Field~~
 - "Hello User" Splash Screen for returning users
-- "Welcome User" Splash Screen for new users
+- ~~"Welcome User" Splash Screen for new users~~
 - ~~Login Button for users who got logged out but already have an account~~
 - ~~Hero buttons, 3/4ths image 1/4 text on item selection~~
 - ~~Clean up recipes and nutrition for better user experience~~
@@ -84,7 +85,7 @@
 - ~~Design Details UI for recipes~~z
 - ~~*IMPORTANT* Reconfigure database with new data + preformatting~~
 - ~~Reconfigure Database to support Material Search~~
-- Attempt to support recipe(s) with estimated nutrient values
+- ~~Attempt to support recipe(s) with estimated nutrient values~~
 - Add advanced data security
 - ~~Add Custom User Recipes~~
 - ~~Add 'delayed update' for user items to reduce DB calls~~
