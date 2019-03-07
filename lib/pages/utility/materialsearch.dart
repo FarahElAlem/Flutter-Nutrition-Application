@@ -1,14 +1,16 @@
+import 'package:NutriAssistant/pages/search/details.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 /// TODO https://www.youtube.com/watch?v=FPcl1tu0gDs
 
 import 'package:flutter/material.dart';
-import 'package:nutrition_app_flutter/pages/recipe/details.dart';
-import 'package:nutrition_app_flutter/pages/search/details.dart';
-import 'package:nutrition_app_flutter/storage/usercache.dart';
+import 'package:NutriAssistant/pages/recipe/details.dart';
+
+/// TODO https://www.youtube.com/watch?v=FPcl1tu0gDs
 
 class MaterialSearch extends SearchDelegate<String> {
-  MaterialSearch({this.items, this.type, this.userCache});
+  MaterialSearch({this.items, this.type});
 
-  final UserCache userCache;
   final List<dynamic> items;
   final String type;
 
@@ -56,7 +58,7 @@ class MaterialSearch extends SearchDelegate<String> {
             .trim()
             .contains(new RegExp(r'' + query.toLowerCase().trim() + '')))
         .toList();
-    
+
     return (suggestionList.length > 0)
         ? Padding(
             padding: EdgeInsets.all(8.0),
@@ -74,10 +76,11 @@ class MaterialSearch extends SearchDelegate<String> {
                           text: suggestionList[index]['subtitle'],
                           style: Theme.of(context).accentTextTheme.subtitle),
                     ),
-                    onTap: () {
+                    onTap: () async {
                       if (type == 'create') {
                         close(context, suggestionList[index]['title']);
                       } else if (type == 'browse-recipe') {
+                        print('called browse-recipe');
                         Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -85,15 +88,14 @@ class MaterialSearch extends SearchDelegate<String> {
                                       recipeItem: suggestionList[index]
                                           ['title'],
                                       type: 'search',
-                                  userCache: userCache,
                                     )));
                       } else if (type == 'browse-nutrient') {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
                                 builder: (context) => NutrientDetails(
-                                    itemKey: suggestionList[index]['title'],
-                                  userCache: userCache,)));
+                                      itemKey: suggestionList[index]['title'],
+                                    )));
                       }
                     },
                   );

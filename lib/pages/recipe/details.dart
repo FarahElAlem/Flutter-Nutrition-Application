@@ -1,17 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:nutrition_app_flutter/pages/recipe/utilities/recipelisttile.dart';
-import 'package:nutrition_app_flutter/actions/encrypt.dart';
-import 'package:nutrition_app_flutter/storage/usercache.dart';
+import 'package:NutriAssistant/pages/recipe/utilities/recipelisttile.dart';
+import 'package:NutriAssistant/pages/utility/splash.dart';
 
 /// UI incomplete, details attempts to show nutrition details of some FoodItem
 /// as a Dialog
 /// TODO Look at how the 'nutrients' and 'recipes' are being created
 class RecipeDetails extends StatefulWidget {
-  RecipeDetails({this.recipeItem, this.type, this.userCache});
+  RecipeDetails({this.recipeItem, this.type});
 
-  final UserCache userCache;
   var recipeItem;
   final String type;
 
@@ -21,7 +19,6 @@ class RecipeDetails extends StatefulWidget {
 
 class _RecipeDetailsState extends State<RecipeDetails> {
   bool _ready = false;
-  bool _isFavorited = false;
 
   FirebaseUser currentUser;
   var stream;
@@ -31,11 +28,6 @@ class _RecipeDetailsState extends State<RecipeDetails> {
   /// Gathers the data needed to be displayed on this page before
   /// the page is 'ready'
   void doGatheringBrowse() async {
-    currentUser = await FirebaseAuth.instance.currentUser();
-    if (currentUser.isAnonymous) {
-      _isFavorited = false;
-    }
-
     _ready = true;
     if (mounted) {
       setState(() {});
@@ -62,16 +54,8 @@ class _RecipeDetailsState extends State<RecipeDetails> {
     if (widget.type == 'browse') {
       doGatheringBrowse();
       data = widget.recipeItem.data;
-
-      if (widget.userCache.isInFavoriteRecipes(data['name'])) {
-        _isFavorited = true;
-      }
     } else if (widget.type == 'search') {
       doGatheringSearch();
-
-      if (widget.userCache.isInFavoriteRecipes(widget.recipeItem)) {
-        _isFavorited = true;
-      }
     }
 
     super.initState();
@@ -84,52 +68,6 @@ class _RecipeDetailsState extends State<RecipeDetails> {
           elevation: 0.0,
           backgroundColor: Colors.transparent,
           iconTheme: IconThemeData(color: Colors.black),
-          actions: <Widget>[
-            new IconButton(
-                splashColor: (!_isFavorited) ? Colors.amber : Colors.black12,
-                icon: (!_isFavorited)
-                    ? Icon(
-                        Icons.favorite_border,
-                        color: Colors.grey,
-                      )
-                    : Icon(
-                        Icons.favorite,
-                        color: Colors.amber,
-                      ),
-                onPressed: () async {
-                  /// Checking to see if a user can favorite an item or not
-                  /// If not, displays a snackbar
-                  if (currentUser.isAnonymous) {
-                    final snackbar = SnackBar(
-                      content: Text(
-                        'You must register before you can do that!',
-                      ),
-                      duration: Duration(milliseconds: 1500),
-                    );
-//                    Scaffold.of(context).showSnackBar(snackbar);
-                  }
-
-                  if (_isFavorited && !currentUser.isAnonymous) {
-                    widget.userCache
-                        .removeFromFavoriteRecipes(widget.recipeItem['name']);
-                    if (mounted) {
-                      setState(() {
-                        _isFavorited = !_isFavorited;
-                      });
-                    }
-                  }
-
-                  else if (!_isFavorited && !currentUser.isAnonymous) {
-                    widget.userCache
-                        .addToFavoriteRecipes(data);
-                    if (mounted) {
-                      setState(() {
-                        _isFavorited = !_isFavorited;
-                      });
-                    }
-                  }
-                })
-          ],
         ),
         body: (!_ready)
             ? SplashScreenAuth()
@@ -164,7 +102,7 @@ class _RecipeDetailsState extends State<RecipeDetails> {
                           color: Colors.transparent,
                         ),
                         Hero(
-                          tag: widget.recipeItem['name'],
+                          tag: widget.recipeItem['image'],
                           child: AspectRatio(
                             aspectRatio: 16 / 9,
                             child: Image.network(
@@ -210,7 +148,8 @@ class _RecipeDetailsState extends State<RecipeDetails> {
                                 children: <Widget>[
                                   ListTile(
                                     title: Text(
-                                      widget.recipeItem['ingredients'][index],
+                                      widget.recipeItem['ingredients'][index]
+                                          .toString(),
                                       style: Theme.of(context)
                                           .accentTextTheme
                                           .body1,
@@ -274,7 +213,35 @@ class _RecipeDetailsState extends State<RecipeDetails> {
                                           ),
                                         ),
                                       );
-                                    })
+                                    }),
+                                Container(
+                                  padding: EdgeInsets.symmetric(vertical: 16.0),
+                                  child: Align(
+                                    alignment: Alignment.center,
+                                    child: Column(
+                                      children: <Widget>[
+                                        Text(
+                                          'Contributed By',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                              fontFamily: 'Open Sans',
+                                              color: Color(0xFFFFFFFF),
+                                              fontSize: 16.0,
+                                              fontWeight: FontWeight.bold,
+                                              letterSpacing: 0.5),
+                                        ),
+                                        Text(widget.recipeItem['credit'],
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                fontFamily: 'Open Sans',
+                                                color: Color(0xFFFFFFFF),
+                                                fontSize: 14.0,
+                                                fontWeight: FontWeight.w400,
+                                                letterSpacing: 0.5))
+                                      ],
+                                    ),
+                                  ),
+                                )
                               ],
                             ),
                           ),
@@ -360,17 +327,6 @@ class _SearchDetailsState extends State<SearchDetails> {
                 DocumentSnapshot ds = objs[index];
                 return RecipeListTile(ds: ds);
               }),
-    );
-  }
-}
-
-/// Splash Screen
-/// TODO Make a global splash screen
-class SplashScreenAuth extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: CircularProgressIndicator(),
     );
   }
 }

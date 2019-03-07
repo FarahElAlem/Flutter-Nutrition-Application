@@ -1,4 +1,4 @@
-name: nutrition_app_flutter
+name: NutriAssistant
 description: A new Flutter project.
 
 version: 1.0.0+1
@@ -16,22 +16,17 @@ dependencies:
   cloud_firestore: ^0.9.0+2
   firebase_core: ^0.3.0+2
   firebase_auth: ^0.8.1+1
-  firebase_storage: ^2.0.1+1
 
-  image_picker: ^0.5.0+3
-#  material_search: ^0.2.8
-
-  shared_preferences: ^0.5.1+1
-  video_player: ^0.9.0
-  chewie: ^0.9.3
-
-  encrypt: ^1.0.1
-
+  flutter_launcher_icons: ^0.7.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
+flutter_icons:
+  image_path: "assets/images/icon-large.png"
+  android: true
+  ios: false
 
 flutter:
   uses-material-design: true

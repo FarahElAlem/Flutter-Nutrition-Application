@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:nutrition_app_flutter/pages/recipe/utilities/recipelisttile.dart';
+import 'package:NutriAssistant/pages/recipe/utilities/recipelisttile.dart';
+import 'package:NutriAssistant/pages/utility/splash.dart';
 
 class ResultsSearchPage extends StatefulWidget {
   _ResultsSearchPageState createState() => new _ResultsSearchPageState();
@@ -44,13 +45,13 @@ class _ResultsSearchPageState extends State<ResultsSearchPage>
                   if (!snapshot.hasData) {
                     return SplashScreenAuth();
                   } else {
+
                     return new ListView.builder(
                         itemExtent: 130.0,
                         padding: EdgeInsets.all(8.0),
                         itemCount: snapshot.data.documents.length,
                         itemBuilder: (context, index) {
-                          DocumentSnapshot ds =
-                          snapshot.data.documents[index];
+                          DocumentSnapshot ds = snapshot.data.documents[index];
                           return RecipeListTile(ds: ds);
                         });
                   }
@@ -60,17 +61,6 @@ class _ResultsSearchPageState extends State<ResultsSearchPage>
           ],
         ),
       ),
-    );
-  }
-}
-
-/// Splash Screen
-/// TODO Make a global splash screen
-class SplashScreenAuth extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: CircularProgressIndicator(),
     );
   }
 }

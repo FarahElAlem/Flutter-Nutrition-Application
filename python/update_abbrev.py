@@ -38,49 +38,47 @@ parsed_keys = {'Total lipid (fat)': ['totalfat', 'g', 55],
                'Fatty acids, total saturated': ['saturated_fat', 'g', 30]}
 
 i = 0
+c = True
 for item in parsed_json['payload']:
-    print('item: {0}'.format(item))
-    d = {}
-    n = {}
-    cached = []
-    d['ndbno'] = item['ndb']
-    d['description'] = item['description']
-    d['manufacturer'] = item['manufacturer']
-    d['ingredients'] = item['ingredients']
-    for nutrient in item['nutrients']:
-        nutrient['value'] = nutrient['value'] if nutrient['value'] != 'None' else 0.0
-        value = None
-        # print('{0}: {1}{2}'.format(item['description'], (float(item['serving_size']) / 100.0), item['serving_measurement']))
-        if item['serving_measurement'] == 'g':
-            value = str(round((float(nutrient['value']) * (float(item['serving_size']) / 100.0)), 2))
-        elif item['serving_measurement'][0] == 'm':
-            value = str(round((float(nutrient['value']) * (float(item['serving_size']) / 1000.0)), 2))
 
-        if nutrient['name'] in parsed_keys:
-            # print(nutrient, value)
-            cached.append(nutrient['name'])
-            n[parsed_keys[nutrient['name']][0]] = {
-                'name': parsed_keys[nutrient['name']][0],
-                'value': value,
-                'measurement': nutrient['measurement'],
-                'daily': str(round((float(value) / parsed_keys[nutrient['name']][2]), 2))
-            }
+    if c:
+        print('item: {0}'.format(item))
+        d = {}
+        n = {}
+        cached = []
+        d['ndbno'] = item['ndb']
+        d['description'] = item['description']
+        d['manufacturer'] = item['manufacturer']
+        d['ingredients'] = item['ingredients']
+        for nutrient in item['nutrients']:
+            nutrient['value'] = str(round(float(nutrient['value']), 2)) if nutrient['value'] != 'None' else 0.0
 
-    for key in parsed_keys.keys():
-        if key not in cached:
-            n[key] = {
-                'name': key,
-                'value': 0.0,
-                'measurement': parsed_keys[key][1],
-                'daily': 0.0
-            }
+            if nutrient['name'] in parsed_keys:
+                # print(nutrient, value)
+                cached.append(nutrient['name'])
+                n[parsed_keys[nutrient['name']][0]] = {
+                    'name': parsed_keys[nutrient['name']][0],
+                    'value':  nutrient['value'],
+                    'measurement': nutrient['measurement'],
+                    'daily': str(round((float(nutrient['value']) / parsed_keys[nutrient['name']][2] * 100), 2))
+                }
 
-    d['nutrients'] = n
-    d['serving_size'] = item['serving_size']
-    d['serving_measurement'] = item['serving_measurement']
-    d['serving_size_household'] = item['serving_size_household']
-    d['serving_measurement_household'] = str(item['serving_measurement_household']).lower().capitalize()
-    print(d, i)
-    i += 1
+        for key in parsed_keys.keys():
+            if key not in cached:
+                n[key] = {
+                    'name': key,
+                    'value': 0.0,
+                    'measurement': parsed_keys[key][1],
+                    'daily': 0.0
+                }
 
-    # firestore.collection(u'ABBREV').document().set(d)
+        d['nutrients'] = n
+        d['serving_size'] = item['serving_size']
+        d['serving_measurement'] = item['serving_measurement']
+        d['serving_size_household'] = item['serving_size_household']
+        d['serving_measurement_household'] = str(item['serving_measurement_household']).lower().capitalize()
+        print(d, i)
+        i += 1
+
+        firestore.collection(u'ABBREV').document().set(d)
+        # break

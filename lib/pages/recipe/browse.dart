@@ -1,13 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:nutrition_app_flutter/pages/profile/profile.dart';
-import 'package:nutrition_app_flutter/pages/recipe/utilities/recipelisttile.dart';
-import 'package:nutrition_app_flutter/storage/usercache.dart';
+import 'package:NutriAssistant/pages/recipe/utilities/recipelisttile.dart';
+import 'package:NutriAssistant/pages/utility/splash.dart';
 
 class BrowseRecipePage extends StatefulWidget {
-  BrowseRecipePage({this.userCache, this.searchKeys});
+  BrowseRecipePage({this.searchKeys});
 
-  final UserCache userCache;
   final List<dynamic> searchKeys;
 
   @override
@@ -33,12 +31,14 @@ class _BrowseRecipePageState extends State<BrowseRecipePage> {
     _lastDocument = querySnapshot.documents.last;
     List<Widget> items = new List();
     for (final DocumentSnapshot snapshot in querySnapshot.documents) {
-      Map<String, dynamic> data = snapshot.data;
-      items.add(RecipeListTile(ds: snapshot, userCache: widget.userCache,));
+      items.add(RecipeListTile(ds: snapshot));
     }
-    items.add(Align(alignment: Alignment.center, child: CircularProgressIndicator(),));
+    items.add(Align(
+      alignment: Alignment.center,
+      child: CircularProgressIndicator(),
+    ));
     _ready = true;
-    if(mounted) {
+    if (mounted) {
       setState(() {
         _browseItems.addAll(items);
       });
@@ -60,21 +60,24 @@ class _BrowseRecipePageState extends State<BrowseRecipePage> {
     _lastDocument = querySnapshot.documents.last;
     List<Widget> items = new List();
     for (final DocumentSnapshot snapshot in querySnapshot.documents) {
-      Map<String, dynamic> data = snapshot.data;
-      items.add(RecipeListTile(ds: snapshot, userCache: widget.userCache));
+      items.add(RecipeListTile(ds: snapshot));
     }
-    items.add(Align(alignment: Alignment.center, child: CircularProgressIndicator(),));
+    items.add(Align(
+      alignment: Alignment.center,
+      child: CircularProgressIndicator(),
+    ));
     print('Length of BrowseItems: ' + _browseItems.length.toString());
-    if(mounted) {
+    if (mounted) {
       setState(() {
         _browseItems.addAll(items);
-    });
+      });
     }
   }
 
   void _scrollListener() async {
     if (_nomore) return;
-    if (_controller.position.pixels >= _controller.position.maxScrollExtent/1.25 &&
+    if (_controller.position.pixels >=
+            _controller.position.maxScrollExtent / 1.1 &&
         _isFetching == false) {
       _isFetching = true;
       await _fetchFromLast();
@@ -93,14 +96,14 @@ class _BrowseRecipePageState extends State<BrowseRecipePage> {
   Widget build(BuildContext context) {
     return (_ready)
         ? Container(
-      padding: EdgeInsets.all(8.0),
-        child: ListView.builder(
-          controller: _controller,
-          itemCount: _browseItems.length,
-          itemBuilder: (BuildContext context, int index) {
-            return _browseItems[index];
-          },
-        ))
+            padding: EdgeInsets.all(8.0),
+            child: ListView.builder(
+              controller: _controller,
+              itemCount: _browseItems.length,
+              itemBuilder: (BuildContext context, int index) {
+                return _browseItems[index];
+              },
+            ))
         : SplashScreenAuth();
   }
 }

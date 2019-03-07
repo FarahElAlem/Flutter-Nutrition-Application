@@ -51,14 +51,12 @@ def replace_ingredients(ingredients, actions, abvr):
     new_ingredients = []
 
     for ingredient in ingredients:
-        # print(ingredient)
-        # ingredient = re.sub(r'\W+', ' ', ingredient)
         tokens = ingredient.split(' ')
         for token in tokens:
             if token in actions.keys():
                 ingredient = ingredient.replace(token, actions[token])
         parsed = parse_ingredient(ingredient, abvr)
-        new_ingredients.append({'ingredient': ingredient, 'details': parsed})
+        new_ingredients.append(ingredient)
     return new_ingredients
 
 
@@ -94,5 +92,5 @@ for item in dat:
     new.append(item)
     print(new)
 
-with open('data/RECIPES2.json', 'w') as outfile:
-    json.dump(new, outfile)
+f = open('RECIPES2.json', 'w')
+json.dump(new, f)

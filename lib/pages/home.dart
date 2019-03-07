@@ -1,28 +1,15 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-
-import 'package:flutter/material.dart';
-
-import 'package:nutrition_app_flutter/pages/onboarding//title.dart';
-import 'package:nutrition_app_flutter/pages/profile/register.dart';
-import 'package:nutrition_app_flutter/pages/recipe/browse.dart';
-import 'package:nutrition_app_flutter/pages/recipe/dialog/create_recipe.dart';
-import 'package:nutrition_app_flutter/pages/recipe/utilities/materialsearch.dart';
-import 'package:nutrition_app_flutter/pages/search/browse.dart';
-
-import 'package:flutter/services.dart' show rootBundle;
 import 'dart:convert' as JSON;
+import 'dart:io';
 
-import 'package:nutrition_app_flutter/storage/usercache.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show rootBundle;
+import 'package:NutriAssistant/pages/onboarding//title.dart';
+import 'package:NutriAssistant/pages/recipe/browse.dart';
+import 'package:NutriAssistant/pages/search/browse.dart';
+import 'package:NutriAssistant/pages/utility/materialsearch.dart';
 
 class Home extends StatefulWidget {
-
-  final FirebaseStorage storage = FirebaseStorage(
-      storageBucket: 'gs://nutrition-app-flutter-5260f.appspot.com');
-
-  final UserCache userCache = new UserCache();
-
   @override
   _HomeState createState() => new _HomeState();
 }
@@ -73,18 +60,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   /// Gathers prerequisite data from the Cloud Firestore Database.
   Future<void> _gatherData() async {
 
-    FirebaseUser currentUser = await FirebaseAuth.instance.currentUser();
-
-    if (!currentUser.isAnonymous) {
-      QuerySnapshot snapshotNutrient = await Firestore.instance.collection('USERS').document(currentUser.email).collection('NUTRIENTS').getDocuments();
-      QuerySnapshot snapshotRecipe = await Firestore.instance.collection('USERS').document(currentUser.email).collection('RECIPES').getDocuments();
-
-      List<DocumentSnapshot> userDataNutrient = snapshotNutrient.documents;
-      List<DocumentSnapshot> userDataRecipe = snapshotRecipe.documents;
-
-      widget.userCache.addAllToFavoriteNutrients(userDataNutrient);
-      widget.userCache.addAllToFavoriteRecipes(userDataRecipe);
-    }
+    await FirebaseAuth.instance.signInAnonymously();
 
     String abbrev = await rootBundle.loadString('assets/ABBREV_SEARCH.json');
     nutrientSearchKeys = JSON.jsonDecode(abbrev)['payload'];
@@ -92,21 +68,19 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
     String recipes = await rootBundle.loadString('assets/RECIPES_SEARCH.json');
     recipeSearchKeys = JSON.jsonDecode(recipes)['payload'];
 
-    controller = new TabController(length: 3, vsync: this);
+    controller = new TabController(length: 2, vsync: this);
 
     // Define the children to the tabbed body here
     _bodyChildren = [
       BrowseNutrientPage(
-        userCache: widget.userCache,
         searchKeys: nutrientSearchKeys,
       ),
       BrowseRecipePage(
-        userCache: widget.userCache,
         searchKeys: recipeSearchKeys,
       ),
-      RegisterPage(userCache: widget.userCache)
     ];
 
+    sleep(const Duration(seconds: 2));
     _ready = true;
     if (mounted) {
       setState(() {});
@@ -128,19 +102,29 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
             elevation: 0.0,
             actions: <Widget>[
               (_currentIndex < 2)
-                  ? ((_currentIndex == 0) ? IconButton(
-                icon: _searchIcon,
-                onPressed: () {
-                  showSearch(context: context,
-                      delegate: MaterialSearch(items: nutrientSearchKeys, type: 'browse-nutrient'));
-                },
-              ) : IconButton(
-                icon: _searchIcon,
-                onPressed: () {
-                  showSearch(context: context,
-                      delegate: MaterialSearch(items: recipeSearchKeys, type: 'browse-recipe'));
-                },
-              ))
+                  ? ((_currentIndex == 0)
+                      ? IconButton(
+                          icon: _searchIcon,
+                          onPressed: () {
+                            showSearch(
+                                context: context,
+                                delegate: MaterialSearch(
+                                  items: nutrientSearchKeys,
+                                  type: 'browse-nutrient',
+                                ));
+                          },
+                        )
+                      : IconButton(
+                          icon: _searchIcon,
+                          onPressed: () {
+                            showSearch(
+                                context: context,
+                                delegate: MaterialSearch(
+                                  items: recipeSearchKeys,
+                                  type: 'browse-recipe',
+                                ));
+                          },
+                        ))
                   : new Container()
             ],
           )
@@ -150,46 +134,9 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
           );
   }
 
-  Widget _buildDrawer(int _currentIndex, BuildContext context) {
-    return _currentIndex < 2
-        ? SizedBox(
-            width: 190.0,
-            child: Drawer(
-              child: ListView(
-                padding: EdgeInsets.zero,
-                children: <Widget>[
-                  DrawerHeader(
-                    child: Text('Drawer Header'),
-                    decoration:
-                        BoxDecoration(color: Theme.of(context).primaryColor),
-                  ),
-                  ListTile(
-                    leading: Icon(Icons.settings),
-                    title: Text('Settings'),
-                    onTap: () {
-                      // Update the state of the app
-                      // ...
-                    },
-                  ),
-                  ListTile(
-                    leading: Icon(Icons.exit_to_app),
-                    title: Text('Logout'),
-                    onTap: () {
-                      // Update the state of the app
-                      // ...
-                    },
-                  ),
-                ],
-              ),
-            ),
-          )
-        : null;
-  }
-
   @override
   void initState() {
     super.initState();
-
     _gatherData();
   }
 
@@ -205,19 +152,6 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
         ? new VideoApp()
         : new Scaffold(
             appBar: _buildDashboardAppBar(_currentIndex, context),
-            floatingActionButton: (_currentIndex == 1)
-                ? FloatingActionButton.extended(
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => RecipeCreate(searchKeys: nutrientSearchKeys,)));
-                    },
-                    icon: Icon(Icons.create),
-                    label: Text('Create\nRecipe'),
-                  )
-                : null,
-            drawer: _buildDrawer(_currentIndex, context),
             body: new TabBarView(
               physics: new NeverScrollableScrollPhysics(),
               children: _bodyChildren,
@@ -265,21 +199,6 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                         'Recipes',
                       ),
                     ),
-
-                    /// Profile Navigation Bar Item:
-                    /// TODO
-                    new BottomNavigationBarItem(
-                      icon: _currentIndex == 2
-                          ? Icon(
-                              Icons.account_circle,
-                            )
-                          : Icon(
-                              Icons.account_circle,
-                            ),
-                      title: Text(
-                        'Profile',
-                      ),
-                    )
                   ],
                 ),
               ),

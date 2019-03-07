@@ -1,3 +1,4 @@
+
 import firebase_admin
 from firebase_admin import credentials, db
 from firebase_admin import firestore
@@ -15,22 +16,26 @@ firebase_admin.initialize_app(cred, {
 
 firestore = firestore.client()
 
-# data = open('data/RECIPES2.json').read()
-# parsed_json = json.loads(data)
+data = open('RECIPES2.json').read()
+parsed_json = json.loads(data)
+
+
+sett = set()
+for item in parsed_json:
+    if item['name'] not in sett:
+        print(item)
+        sett.add(item['name'])
+        firestore.collection(u'RECIPES').document().set(item)
+
+# out = []
+# docs = firestore.collection(u'RECIPES').get()
+# for doc in docs:
+#     d = doc.to_dict()
+#     out.append(d['subcategory'])
 #
-# for item in parsed_json:
-#     print(item)
-#     firestore.collection(u'RECIPES').document().set(item)
-
-out = []
-docs = firestore.collection(u'RECIPES').get()
-for doc in docs:
-    d = doc.to_dict()
-    out.append(d['subcategory'])
-
-
-with open('RECIPES_CATEG.txt', 'w') as outfile:
-    outfile.write('\n'.join(out))
+#
+# with open('RECIPES_CATEG.txt', 'w') as outfile:
+#     outfile.write('\n'.join(out))
 
 #
 # cur = []

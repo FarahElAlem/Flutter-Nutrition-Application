@@ -2,6 +2,8 @@ import json
 from bs4 import BeautifulSoup
 import requests
 
+f = open('RECIPES.json', 'w')
+
 _categories = {'http://recipes.wikia.com': {'Standard,Main Dish': '/wiki/Category:Main_Dish_Recipes',
                                             'Standard,Appetizer': '/wiki/Category:Appetizer_Recipes',
                                             'Standard,Side Dish': '/wiki/Category:Side_Dish_Recipes',
@@ -55,11 +57,12 @@ for base in _baseurls:
                         'ingredients': ingredients,
                         'directions': directions,
                         'category': _tokens[0],
-                        'subcategory': _tokens[1]
+                        'subcategory': _tokens[1],
+                        'credit': itemUrl
                     }
                     _recipes.append(_recipe)
             except Exception:
                 pass
 
-with open('../data/RECIPES.json', 'w') as outfile:
-    json.dump(_recipes, outfile)
+
+json.dump(_recipes, f)

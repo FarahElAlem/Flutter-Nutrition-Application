@@ -14,10 +14,11 @@
          FlutterApplication and put your custom class here. -->
     <application
             android:name="io.flutter.app.FlutterApplication"
-            android:label="nutrition_app_flutter"
+            android:label="NutriAssistant"
             android:icon="@mipmap/ic_launcher">
         <activity
                 android:name=".MainActivity"
+                android:label="NutriAssistant"
                 android:launchMode="singleTop"
                 android:theme="@style/LaunchTheme"
                 android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale|screenLayout|density"
@@ -33,7 +34,7 @@
             <meta-data
                     android:name="firebase_performance_logcat_enabled"
                     android:value="true"/>
-            <intent-filter>
+            <intent-filter android:label="NutriAssistant">
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
