@@ -1,6 +1,7 @@
 # Flutter-Nutrition-Application ( WIP )
 
-### Exam Week, Taking a Break....
+### ~~Exam Week, Taking a Break....~~
+### Recently found out about Flutter Create, currently going to take a break from this nutrition app to work on a small app for that competition. Maybe I can learn some new things to help simplify this project as well!
 
 ## Notable Links:
 - [Flutter Information](https://flutter.io/docs)
